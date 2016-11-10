@@ -7,13 +7,14 @@
  */
 
 public class User {
-	private String username;
+	private String email;
+	private String password;
 	private boolean isAdmin;
 	private boolean isActive = true;
 	
 	
-	public User(String username) {
-		
+	public User(String email) {
+		this.email = email;
 	}
 	
 	public User() {
