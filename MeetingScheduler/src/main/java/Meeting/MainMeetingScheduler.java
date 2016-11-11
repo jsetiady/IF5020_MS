@@ -6,24 +6,37 @@ package Meeting;
 
 import java.util.Scanner;
 
+import com.model.User;
+
 public class MainMeetingScheduler {
 
 	public static void main(String args[]) {
 		//variable initialization
 		Scanner scanner = new Scanner(System.in);
+		String email, password;
 		int choise;
 		
 		System.out.println("Welcome to meeting scheduler");
 		
 		//@putra, please implements Log -in logic here :)
 		
+		
 		//temporary
-		System.out.println("Enter username: jeje");
-		System.out.println("Enter password: *****");
+		System.out.println("Enter username: ");
+		email = scanner.nextLine();
+		System.out.println("Enter password: ");
+		password = scanner.nextLine();
 		System.out.println("Press enter to continue");
 		scanner.nextLine();
 		
-		System.out.println("Hey, Jeje. You are logged in as Superuser!");
+		User user = new User(email, password);
+		
+		if (user.isAuth(email, password)) {
+			System.out.println("Hey " + email + " You are logged in as Superuser!");
+		} else {
+			System.out.println("Unauthorized user");
+		}
+		
 		System.out.println("Wow, You have 2 pending meeting invitation! ");
 		System.out.println(" ");
 		System.out.println("================================");

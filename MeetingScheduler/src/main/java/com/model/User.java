@@ -1,3 +1,4 @@
+package com.model;
 
 /*
  * Filename: User.java
@@ -13,9 +14,9 @@ public class User {
 	private boolean isActive = true;
 	
 	//Data nanti di load dari json file
-		private String[][] accounts = {{"jeje@gmail.com", "1234"}, {"putra@gmail.com", "1234"}, {"siti", "1234"}};
+	private String[][] accounts = {{"jeje@gmail.com", "1234"}, {"putra@gmail.com", "1234"}, {"siti", "1234"}};
 	
-	public User(String username, String email) {
+	public User(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}
