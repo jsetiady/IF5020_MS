@@ -11,7 +11,6 @@ public class MainMeetingScheduler {
 	
 	public static void main(String args[]) {
 		//load default view: login
-		
 		UserView userView = new UserView();
 		userView.displayLogin();
 

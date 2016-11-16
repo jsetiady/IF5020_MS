@@ -11,59 +11,67 @@ public class MeetingView {
 		//variables
 		Scanner s = new Scanner(System.in);
 		String title, agenda, location, strStartDate, 
-			strEndDate, strMaxResponseDate, strMaxResponseTime;
-		int duration;
+			 strEndDate, strMaxResponseDate, strMaxResponseTime;
+		
+		int duration, input;
 		boolean invalidInput;
 		
 		System.out.println("CREATE MEETING");
-		System.out.println("-----------------------------");
+		System.out.println("--------------------------------");
 		
-		System.out.print("# Title\t\t\t: ");
+		System.out.print("# Title\t\t\t\t: ");
 		title = s.nextLine();
 		
-		System.out.print("# Agenda\t\t: ");
+		System.out.print("# Agenda\t\t\t: ");
 		agenda = s.nextLine();
 		
-		System.out.print("# Location\t\t: ");
+		System.out.print("# Location\t\t\t: ");
 		location = s.nextLine();
 		
 		do {
-		    System.out.print("# Duration (hours) (1-8) \t:");
+		    System.out.print("# Duration (hours) (1-8)\t: ");
 		    while (!s.hasNextInt()) {
-		        System.out.println("Please enter a Positive Integer value");
-		        s.next(); // this is important!
+		        System.out.println("Please enter a positive integer value");
+		        s.next();
 		    }
 		    duration = s.nextInt();
 		} while (duration <= 0);
-		System.out.println("Thank you! Got " + duration);
-		
-		/*
-		do {
-			invalidInput = false;
-			try {
-				System.out.print("# Duration (hours)\t: ");
-				duration = s.nextInt();
-				s.nextLine();
-			} catch(Exception e) {
-				System.out.println("Invalid input. Please enter an Integer value");
-				invalidInput = true;
-			}
-		} while(invalidInput);
-		*/
+		s.nextLine();
 		
 		System.out.println("# Proposed date range");
-		System.out.print("    Start date\t\t: ");
-		strStartDate = s.nextLine();
-		
-		System.out.print("    End date\t\t: ");
-		strEndDate = s.nextLine();
+		strStartDate = getAndValidateInput(s, "    Start date\t\t\t: ", "date");
+		strEndDate = getAndValidateInput(s, "    End date\t\t\t: ", "date");
 		
 		System.out.println("# Max response time");
-		System.out.print("    Date (dd/mm/yy)\t: ");
-		strMaxResponseDate = s.nextLine();
+		strMaxResponseDate = getAndValidateInput(s, "    Date\t\t\t: ", "date");
 		
-		System.out.print("    Time (hh:mm)\t: ");
+		System.out.print("    Time (hh:mm)\t\t: ");
 		strMaxResponseTime = s.nextLine();
 		
 	}
+	
+	public String getAndValidateInput(Scanner s, String label, String type) {
+		int test;
+		String input, regex = ".", errorMsg = ".";
+		
+		if(type.equals("date")) {
+			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
+			errorMsg = "Invalid date format. Please re-enter.";
+		} else if(type.equals("posInt")) {
+			regex = "^[1-9]\\d*$";
+			errorMsg = "Invalid date format. Please re-enter.";
+		}
+		
+		do {
+			test = 1;
+			System.out.print(label);
+			input = s.nextLine();
+			if (!input.matches(regex)) {
+				System.out.println(errorMsg);
+				test = 0;
+			}
+		} while (test == 0);
+		return input;
+	}
+
 }
