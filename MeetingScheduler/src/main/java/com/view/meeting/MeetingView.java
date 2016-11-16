@@ -28,16 +28,8 @@ public class MeetingView {
 		System.out.print("# Location\t\t\t: ");
 		location = s.nextLine();
 		
-		do {
-		    System.out.print("# Duration (hours) (1-8)\t: ");
-		    while (!s.hasNextInt()) {
-		        System.out.println("Please enter a positive integer value");
-		        s.next();
-		    }
-		    duration = s.nextInt();
-		} while (duration <= 0);
-		s.nextLine();
-		
+		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-8)\t: ", "duration"));
+		System.out.println("dur: " + duration);
 		System.out.println("# Proposed date range");
 		strStartDate = getAndValidateInput(s, "    Start date\t\t\t: ", "date");
 		strEndDate = getAndValidateInput(s, "    End date\t\t\t: ", "date");
@@ -57,9 +49,9 @@ public class MeetingView {
 		if(type.equals("date")) {
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
 			errorMsg = "Invalid date format. Please re-enter.";
-		} else if(type.equals("posInt")) {
-			regex = "^[1-9]\\d*$";
-			errorMsg = "Invalid date format. Please re-enter.";
+		} else if(type.equals("duration")) { //positive integer between 1-8
+			regex = "^[1-8]+$";
+			errorMsg = "Please enter a value between 1-8";
 		}
 		
 		do {
