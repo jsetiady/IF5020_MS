@@ -38,7 +38,7 @@ public class MeetingView {
 		strMaxResponseDate = getAndValidateInput(s, "    Date\t\t\t: ", "date");
 		
 		System.out.print("    Time (hh:mm)\t\t: ");
-		strMaxResponseTime = s.nextLine();
+		strMaxResponseTime = getAndValidateInput(s, "    Time\t\t\t: ", "time");
 		
 	}
 	
@@ -46,12 +46,17 @@ public class MeetingView {
 		int test;
 		String input, regex = ".", errorMsg = ".";
 		
-		if(type.equals("date")) {
+		if(type.equals("date")) { //format: dd/mm/yyyy
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
 			errorMsg = "Invalid date format. Please re-enter.";
-		} else if(type.equals("duration")) { //positive integer between 1-8
+		}
+		else if(type.equals("duration")) { //positive integer between 1-8
 			regex = "^[1-8]+$";
 			errorMsg = "Please enter a value between 1-8";
+		}
+		else if(type.equals("time")) { //format: hh:mm
+			regex = "[0-9]{2}:[0-9]{2}";
+			errorMsg = "Invalid time format. Please re-enter.";
 		}
 		
 		do {
