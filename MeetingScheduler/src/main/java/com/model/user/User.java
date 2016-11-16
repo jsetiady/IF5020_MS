@@ -1,23 +1,30 @@
+package com.model.user;
 
-/*
- * Filename: User.java
- * Author: jessie setiady
- * Description:
- * Date created: 
+
+/**
+ * @author jessiesetiady
+ *
  */
-
 public class User {
 	private String email;
 	private String password;
-	private boolean isAdmin;
+	private boolean isAdmin = false;
 	private boolean isActive = true;
 	
 	//Data nanti di load dari json file
-		private String[][] accounts = {{"jeje@gmail.com", "1234"}, {"putra@gmail.com", "1234"}, {"siti", "1234"}};
+	private String[][] accounts = {{"jeje@gmail.com", "1234"}, {"putra@gmail.com", "1234"}, {"siti", "1234"}};
 	
-	public User(String username, String email) {
+	public User(String email, String password) {
 		this.email = email;
 		this.password = password;
+	}
+	
+	public boolean isAdmin() {
+		return this.isAdmin;
+	}
+	
+	public String getEmail() {
+		return this.email;
 	}
 	
 	
