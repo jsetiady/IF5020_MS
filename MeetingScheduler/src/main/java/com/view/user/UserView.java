@@ -76,7 +76,7 @@ public class UserView {
 		
 		switch(choice) {
 			case 1:
-				meetingView.displayCreateMeetingView();
+				meetingView.createMeetingView();
 				break;
 			case 2: break;
 			case 3: break;

@@ -31,6 +31,5 @@ class MeetingTimeSlot {
 		return this.endTime;
 	}
 	
-	public 
 	
 }

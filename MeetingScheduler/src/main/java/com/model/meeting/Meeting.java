@@ -9,17 +9,28 @@ import java.util.ArrayList;
  */
 
 public class Meeting {
-	private int id; //supaya lebih mudah dicari
+	private int id;
 	private String title;
 	private String agenda;
 	private String location;
-	private String duration;
-	private Date proposedStartDate;
-	private Date proposedEndDate;
-	private Date negotiationDeadline;
+	private int duration;
+	private String proposedStartDate;
+	private String proposedEndDate;
+	private String negotiationDeadline;
 	private ArrayList<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
 	private ArrayList<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
 	private int meetingStatus;
+	
+	//constructor
+	public Meeting(String title, String agenda, String location, int duration, String proposedStartDate, String proposedEndDate, String negotiationDeadline) {
+		this.title = title;
+		this.agenda = agenda;
+		this.location = location;
+		this.duration = duration;
+		this.proposedStartDate = proposedStartDate;
+		this.proposedEndDate = proposedEndDate;
+		this.negotiationDeadline = negotiationDeadline;
+	}
 	
 	// begin setter & getter
 	
