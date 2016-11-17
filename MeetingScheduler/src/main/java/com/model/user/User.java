@@ -7,14 +7,14 @@ package com.model.user;
  */
 public class User {
 	private String firstName;
-	private String lastname;
+	private String lastName;
 	private String address;
 	private String phone;
 	private String dob;
 	private char sex;
 	private String email;
 	private String password;
-	//boolean isAdmin;
+	boolean isAdmin;
 	private Authority authority;
 	private boolean isActive = true;
 	
@@ -22,10 +22,10 @@ public class User {
 		
 	}
 	
-	public User(String firstName, String lastname, String address, String phone, String dob, char sex, String email,
-			String password, Authority authority, boolean isActive) {
+	public User(String firstName, String lastName, String address, String phone, String dob, char sex, String email,
+			String password, Authority authority, boolean isAdmin, boolean isActive) {
 		this.firstName = firstName;
-		this.lastname = lastname;
+		this.lastName = lastName;
 		this.address = address;
 		this.phone = phone;
 		this.dob = dob;
@@ -34,6 +34,7 @@ public class User {
 		this.password = password;
 		this.authority = authority;
 		this.isActive = isActive;
+		this.isAdmin = isAdmin;
 	}
 
 
@@ -45,10 +46,10 @@ public class User {
 		this.firstName = firstName;
 	}
 	public String getLastName() {
-		return lastname;
+		return lastName;
 	}
-	public void setLastName(String lastname) {
-		this.lastname = lastname;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getAddress() {
 		return address;
@@ -93,6 +94,15 @@ public class User {
 		this.authority = authority;
 	}
 	
+	
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
 	public boolean isActive() {
 		return isActive;
 	}

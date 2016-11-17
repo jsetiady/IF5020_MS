@@ -43,8 +43,7 @@ public class UserView {
 	}
 	
 	public void displayMenu(User user) {
-		user.setAuthority(Authority.ADMIN);
-		if(user.getAuthority().equals(Authority.ADMIN)) {
+		if(user.isAdmin()) {
 			//call displayAdminMainMenu()
 		} else {
 			displayUserMainMenu(user);
