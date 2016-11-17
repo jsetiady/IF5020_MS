@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import com.controller.meeting.MeetingController;
+import com.model.meeting.Meeting;
 
 /**
  * @author jessiesetiady
@@ -19,7 +20,7 @@ public class MeetingView {
 	MeetingController mc = new MeetingController();
 	
 	
-	public void createMeetingView() {
+	public void createMeetingView(String meetingInitiatorID) {
 		//variables
 		Scanner s = new Scanner(System.in);
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
@@ -27,7 +28,7 @@ public class MeetingView {
 		String title, agenda, location, strStartDate = null, 
 			 strEndDate = null, strMaxResponseDate, strMaxResponseTime;
 		
-		int duration, input;
+		int duration, input, choice;
 		boolean invalidInput;
 		
 		System.out.println("CREATE MEETING");
@@ -43,7 +44,6 @@ public class MeetingView {
 		location = s.nextLine();
 		
 		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-8)\t: ", "duration"));
-		System.out.println("dur: " + duration);
 		
 		System.out.println("# Proposed date range");
 		
@@ -59,61 +59,92 @@ public class MeetingView {
 		System.out.println("# Max response time");
 		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
 		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
+
+		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID);
+	
+		do {
+			System.out.println("\nConfirmation");
+			System.out.println("1. Next (add participant)");
+			System.out.println("2. Cancel Meeting Creation");
+			System.out.print("Enter your choice: ");
+			choice = s.nextInt();
+			s.nextLine();
+			
+			switch(choice) {
+				case 1:
+					createMeetingAddParticipantView();
+					break;
+				case 2: 
+					System.out.println("\nMeeting creation has been canceled\nPress enter to continue");
+					s.nextLine();
+					break;
+				default:
+					System.out.println("\nInvalid input\nPlease choose between 1 and 2\nPress enter to continue");
+					s.nextLine();
+			}
+		} while(choice!=1 && choice!=2);
 		
-		clearConsole();
-		
-		//call add participant
-		
-		//TODO @jeje create instance meeting with above properties
-		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate);
-		
+	}
+	
+	
+	public void createMeetingSummaryView() {
+		Meeting m = mc.getMeetingDraft();
 		System.out.println("CREATE MEETING - SUMMARY");
 		System.out.println("--------------------------------");
-		System.out.println("# Title\t\t\t\t: " + title);
-		System.out.println("# Agenda\t\t\t: " + agenda);
-		System.out.println("# Location\t\t\t: " + location);
-		System.out.println("# Duration\t\t\t: " + duration);
-		System.out.println("Proposed date range");
-		System.out.println("    Start date (dd/mm/yyyy)\t: " + strStartDate);
-		System.out.println("    End date (dd/mm/yyyy)\t: " + strEndDate);
+		System.out.println("# Title\t\t\t\t: " + m.getTitle());
+		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
+		System.out.println("# Location\t\t\t: " + m.getLocation());
+		System.out.println("# Duration\t\t\t: " + m.getDuration());
+		System.out.println("# Proposed date range");
+		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
+		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
 		System.out.println("# Max response time");
-		System.out.println("    Date (dd/mm/yyyy)\t\t: " + strMaxResponseDate);
-		System.out.println("    Time (hh:mm)\t\t: " + strMaxResponseTime);
-
-		
+		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
+		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());
 	}
 	
 	public void participantListView() {
-		System.out.println("Participant List");
+		Scanner s = new Scanner(System.in);
+		System.out.println("\n\nParticipant List");
 		System.out.println("--------------------------------");
-		MeetingController mc = new MeetingController();
-		mc.getParticipantList();
+		
+		//MeetingController mc = new MeetingController();
+		//mc.getParticipantList();
+		s.nextLine();
+		
 	}
+	
+	public void createMeetingAddParticipantView() {
+		Scanner s = new Scanner(System.in);
+		String email, strImportant;
+		
+		System.out.println("\n\nAdd Participant");
+		System.out.println("--------------------------------");
+		email = getAndValidateInput(s, "Email\t\t\t\t: ", "text");
+		strImportant = getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
+		
+		//add to mc
+		mc.addMeetingParticipant(email, strImportantToBoolean(strImportant));
+		
+		System.out.println("\n\nParticipant successfully added. Press enter to continue\n\n");
+		
+		s.nextLine();
+	}
+	
+	public boolean strImportantToBoolean(String isImportant) {
+		return isImportant.equals("Y") ? true : false;
+	}
+	
+	public String boolImportantToString(boolean isImportant) {
+		return isImportant ? "Y" : "N";
+	} 
 	
 	public void addMeetingParticipantView() {
-		System.out.println("Participant List");
+		System.out.println("CREATE MEETING - Add Participant");
 		System.out.println("--------------------------------");
-	}
-	
-	public void clearConsole()
-	{
-	    try
-	    {
-	        final String os = System.getProperty("os.name");
-
-	        if (os.contains("Windows"))
-	        {
-	            Runtime.getRuntime().exec("cls");
-	        }
-	        else
-	        {
-	            Runtime.getRuntime().exec("clear");
-	        }
-	    }
-	    catch (final Exception e)
-	    {
-	        //  Handle any exceptions.
-	    }
+		System.out.println("Participant List");
+		
+		
 	}
 	
 	public Date getSpecificDate(int x) {
@@ -138,6 +169,14 @@ public class MeetingView {
 		else if(type.equals("time")) { //format: hh:mm
 			regex = "[0-9]{2}:[0-9]{2}";
 			errorMsg = "Invalid time format. Please re-enter.";
+		}
+		else if(type.equals("YN")) {
+			regex = "[NYny]{1}";
+			errorMsg = "Please enter either Y or N character";
+		}
+		else if(type.equals("text")) {
+			regex = "^(?!\\s*$).+";
+			errorMsg = "This field cannot be empty";
 		}
 		
 		do {

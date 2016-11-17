@@ -2,6 +2,10 @@ package com.model.meeting;
 
 import java.util.Date;
 
+/**
+ * @author jessiesetiady
+ *
+ */
 public class MeetingParticipant {
 	
 	//constant
@@ -13,7 +17,7 @@ public class MeetingParticipant {
 	private String email = "";
 	private boolean isImportant = false;
 	private int response;
-	private int responseDate;
+	private String responseDate = "";
 	
 	public MeetingParticipant(String email, boolean isImportant) {
 		this.email = email;
