@@ -16,20 +16,132 @@ public class Meeting {
 	private int duration;
 	private String proposedStartDate;
 	private String proposedEndDate;
-	private String negotiationDeadline;
+	private String maxResponseDate;
+	private String maxResponseTime;
 	private ArrayList<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
 	private ArrayList<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
 	private int meetingStatus;
+	private String meetingInitiator;
 	
 	//constructor
-	public Meeting(String title, String agenda, String location, int duration, String proposedStartDate, String proposedEndDate, String negotiationDeadline) {
+	public Meeting(int id, String title, String agenda, String location,
+			int duration, String proposedStartDate, String proposedEndDate,
+			String maxResponseDate, String maxResponseTime, String meetingInitiator) {
+		
+		this.id = id; //id generated in Meeting Controller
 		this.title = title;
 		this.agenda = agenda;
 		this.location = location;
 		this.duration = duration;
 		this.proposedStartDate = proposedStartDate;
 		this.proposedEndDate = proposedEndDate;
-		this.negotiationDeadline = negotiationDeadline;
+		this.maxResponseDate = maxResponseDate;
+		this.maxResponseTime = maxResponseTime;
+		this.meetingInitiator = meetingInitiator;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getAgenda() {
+		return agenda;
+	}
+
+	public void setAgenda(String agenda) {
+		this.agenda = agenda;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public String getProposedStartDate() {
+		return proposedStartDate;
+	}
+
+	public void setProposedStartDate(String proposedStartDate) {
+		this.proposedStartDate = proposedStartDate;
+	}
+
+	public String getProposedEndDate() {
+		return proposedEndDate;
+	}
+
+	public void setProposedEndDate(String proposedEndDate) {
+		this.proposedEndDate = proposedEndDate;
+	}
+
+	public String getMaxResponseDate() {
+		return maxResponseDate;
+	}
+
+	public void setMaxResponseDate(String maxResponseDate) {
+		this.maxResponseDate = maxResponseDate;
+	}
+	
+	public String getMaxResponseTime() {
+		return maxResponseTime;
+	}
+
+	public void setMaxResponseTime(String maxResponseTime) {
+		this.maxResponseTime = maxResponseTime;
+	}
+
+	public ArrayList<MeetingTimeSlot> getMeetingTimeSlots() {
+		return meetingTimeSlots;
+	}
+
+	public void setMeetingTimeSlots(ArrayList<MeetingTimeSlot> meetingTimeSlots) {
+		this.meetingTimeSlots = meetingTimeSlots;
+	}
+
+	public ArrayList<MeetingParticipant> getMeetingParticipant() {
+		return meetingParticipant;
+	}
+
+	public void setMeetingParticipant(ArrayList<MeetingParticipant> meetingParticipant) {
+		this.meetingParticipant = meetingParticipant;
+	}
+
+	public int getMeetingStatus() {
+		return meetingStatus;
+	}
+
+	public void setMeetingStatus(int meetingStatus) {
+		this.meetingStatus = meetingStatus;
+	}
+
+	public String getMeetingInitiator() {
+		return meetingInitiator;
+	}
+
+	public void setMeetingInitiator(String meetingInitiator) {
+		this.meetingInitiator = meetingInitiator;
 	}
 	
 	// begin setter & getter
