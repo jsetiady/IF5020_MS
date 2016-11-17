@@ -3,6 +3,7 @@ package com.view.meeting;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import java.util.Scanner;
 
 import com.controller.meeting.MeetingController;
 import com.model.meeting.Meeting;
+import com.model.meeting.MeetingParticipant;
 
 /**
  * @author jessiesetiady
@@ -140,11 +142,31 @@ public class MeetingView {
 	} 
 	
 	public void addMeetingParticipantView() {
-		System.out.println("CREATE MEETING - Add Participant");
-		System.out.println("--------------------------------");
-		System.out.println("Participant List");
-		
-		
+		int choice;
+		ArrayList<MeetingParticipant> arrMP;
+		do {
+			System.out.println("CREATE MEETING - Add Participant");
+			System.out.println("--------------------------------");
+			System.out.println("Participant List");
+			arrMP = mc.getParticipantList();
+			if(arrMP.size()==0) {
+				System.out.println("\nThis meeting has no participant. Add one now\n");
+			} else {
+				for(int i=0;i<arrMP.size();i++) {
+					System.out.println((i+1) + " " + arrMP.get(i).getEmail() + " " + arrMP.get(i).isImportant());
+				}
+			}
+			
+			System.out.println("\n\n");
+			System.out.println("1. Add meeting participant");
+			System.out.println("2. Edit meeting participant");
+			System.out.println("3. Show meeting information");
+			System.out.println("4. Save meeting");
+			System.out.println("5. Cancel meeting creation");
+			System.out.println("Enter your choice");
+			
+			choice = 3;
+		} while(choice != 3);
 	}
 	
 	public Date getSpecificDate(int x) {
