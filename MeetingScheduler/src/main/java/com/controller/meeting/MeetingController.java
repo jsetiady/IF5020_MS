@@ -1,19 +1,11 @@
 package com.controller.meeting;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,9 +13,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingParticipant;
-import com.view.meeting.MeetingView;
-
-import examples.Staff;
 
 /**
  * @author jessiesetiady
@@ -44,15 +33,13 @@ public class MeetingController {
 	}
 	
 	public int getNextMeetingID() {
-		int length = 4;
 		int id = 0;
-		int idInt;
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			id =  mapper.readValue(new File("resources/id"), Integer.class);
+			id =  mapper.readValue(new File("resources/lastid"), Integer.class);
 			id++;
-			mapper.writeValue(new File("resources/id"), id);
+			mapper.writeValue(new File("resources/lastid"), id);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,26 +52,6 @@ public class MeetingController {
 		}
 		
 		return id;
-	}
-	
-	public void saveMeetingCreation() {
-		ObjectMapper mapper = new ObjectMapper();
-		//List<Meeting> meetingList = new ArrayList<Meeting>();
-
-		try {
-			System.out.println("Meeting id: " + meetingDraft.getId());
-			mapper.writeValue(new File(meetingPath + "M" +  meetingDraft.getId() + ".json"), meetingDraft);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 	
 	public void addMeetingParticipant(String email, boolean isImportant) {
@@ -100,6 +67,49 @@ public class MeetingController {
 	
 	public Meeting getMeetingDraft() {
 		return meetingDraft;
+	}
+	
+	public boolean findMeetingParticipantByEmail(List<MeetingParticipant> arrMP, String email) {
+		for(int i=0;i<arrMP.size();i++) {
+			if(arrMP.get(i).getEmail().equals(email)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	public void saveMeetingCreation() {
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			
+			//save meetingDraft to json
+			System.out.println("Meeting id: " + meetingDraft.getId());
+			mapper.writeValue(new File(meetingPath + "M" +  meetingDraft.getId() + ".json"), meetingDraft);
+			
+			//add new meeting id to json meeting_id
+			ArrayList<Integer> meetingIds = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
+			meetingIds.add(meetingDraft.getId());
+			mapper.writeValue(new File("meeting_id.json"),  new TypeReference<List<Integer>>(){});
+			
+			//generate time slot
+			
+			
+			//generate invitation
+			
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
