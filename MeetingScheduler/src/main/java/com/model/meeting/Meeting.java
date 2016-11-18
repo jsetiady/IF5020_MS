@@ -39,6 +39,8 @@ public class Meeting {
 		this.maxResponseTime = maxResponseTime;
 		this.meetingInitiator = meetingInitiator;
 	}
+	
+	public Meeting() {}
 
 	public int getId() {
 		return id;

@@ -74,7 +74,7 @@ public class MeetingView {
 			
 			switch(choice) {
 				case 1:
-					createMeetingAddParticipantView();
+					addMeetingParticipantView();
 					break;
 				case 2: 
 					System.out.println("\nMeeting creation has been canceled\nPress enter to continue");
@@ -138,11 +138,12 @@ public class MeetingView {
 	}
 	
 	public String boolImportantToString(boolean isImportant) {
-		return isImportant ? "Y" : "N";
+		return isImportant ? "(important)" : "";
 	} 
 	
 	public void addMeetingParticipantView() {
 		int choice;
+		Scanner s = new Scanner(System.in);
 		ArrayList<MeetingParticipant> arrMP;
 		do {
 			System.out.println("CREATE MEETING - Add Participant");
@@ -153,21 +154,46 @@ public class MeetingView {
 				System.out.println("\nThis meeting has no participant. Add one now\n");
 			} else {
 				for(int i=0;i<arrMP.size();i++) {
-					System.out.println((i+1) + " " + arrMP.get(i).getEmail() + " " + arrMP.get(i).isImportant());
+					System.out.println((i+1) + ". " + arrMP.get(i).getEmail() + " " + boolImportantToString(arrMP.get(i).isImportant()));
 				}
 			}
 			
-			System.out.println("\n\n");
+			System.out.println("\n");
+			System.out.println("Menu");
 			System.out.println("1. Add meeting participant");
 			System.out.println("2. Edit meeting participant");
 			System.out.println("3. Show meeting information");
 			System.out.println("4. Save meeting");
 			System.out.println("5. Cancel meeting creation");
-			System.out.println("Enter your choice");
+			System.out.print("Enter your choice: ");
+			choice = s.nextInt();
+			s.nextLine();
 			
-			choice = 3;
-		} while(choice != 3);
+			switch(choice) {
+				case 1: createMeetingAddParticipantView(); break;
+				case 2: break;
+				case 3: break;
+				case 4: saveMeetingView(); break;
+				case 5: cancelMeetingCreation(); break;
+				default: break;
+			}
+			
+		} while(choice!= 4 && choice!=5);
 	}
+	
+	public void cancelMeetingCreation() {
+		System.out.println("Are you sure wants to cancel the meeting creation (Y/N) ? ");
+		
+		System.out.println("\nSuccessfully save the meeting\nPress enter to continue\n");
+	}
+	
+	public void saveMeetingView() {
+		mc.saveMeetingCreation();
+		Scanner s = new Scanner(System.in);
+		System.out.println("\nSuccessfully save the meeting\nPress enter to continue\n");
+		s.nextLine();
+	}
+	
 	
 	public Date getSpecificDate(int x) {
 		//DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
