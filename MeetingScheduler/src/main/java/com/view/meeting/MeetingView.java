@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -28,7 +29,7 @@ public class MeetingView {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate, strMaxResponseTime;
+			 strEndDate = null, strMaxResponseDate, strMaxResponseTime, createdDate;
 		
 		int duration, input, choice;
 		boolean invalidInput;
@@ -57,8 +58,11 @@ public class MeetingView {
 		System.out.println("# Max response time");
 		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
 		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
+		
+		Calendar cal = Calendar.getInstance();
+		createdDate = format.format(cal);
 
-		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID);
+		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
 	
 		do {
 			System.out.println("\nConfirmation");
@@ -329,6 +333,43 @@ public class MeetingView {
 				}
 			} while(test == 0);
 		return input;
+	}
+	
+	public void displayCreatedMeeting(String email) {
+		Scanner s = new Scanner(System.in);
+		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
+		if(createdMeetingList.isEmpty()) {
+			System.out.println("You have not created any meeting yet.");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		} else {
+			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+			for(int i=0;i<createdMeetingList.size();i++) {
+				System.out.print(i+1 + "\t");
+				System.out.print("M" + createdMeetingList.get(i).getId() + "\t\t");
+				System.out.print(getStrMeetingStatus(createdMeetingList.get(i).getMeetingStatus()) + "\t");
+				System.out.print(createdMeetingList.get(i).getCreatedDate() + "\t");
+				System.out.print(createdMeetingList.get(i).getScheduledDate() + "\t");
+				System.out.print(createdMeetingList.get(i).getTitle());
+				System.out.println();
+			}
+			System.out.println("--------------------------------");
+			System.out.println("You have created " + createdMeetingList.size() + " meeting");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		}
+		
+	}
+	
+	public String getStrMeetingStatus(int status) {
+		switch(status) {
+			case 0 : return "Negotiating";
+			case -9 : return "Canceled   ";
+			case 1 : return "Scheduled   ";
+			case 2 : return "Running    ";
+			case 3 : return "Finish     ";
+		}
+		return "";
 	}
 
 }

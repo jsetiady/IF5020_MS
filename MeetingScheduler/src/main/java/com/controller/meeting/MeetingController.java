@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingParticipant;
 
+import examples.Staff;
+
 /**
  * @author jessiesetiady
  *
@@ -24,11 +26,11 @@ public class MeetingController {
 	
 	public void createMeetingDraft(String title, String agenda, String location,
 			int duration, String proposedStartDate, String proposedEndDate,
-			String maxReponseDate, String maxResponseTime, String meetingInitiator) {
+			String maxReponseDate, String maxResponseTime, String meetingInitiator, String createdDate) {
 		
 		meetingDraft = new Meeting(getNextMeetingID(), title, agenda, location,
 				duration, proposedStartDate, proposedEndDate,
-				maxReponseDate, maxResponseTime, meetingInitiator);
+				maxReponseDate, maxResponseTime, meetingInitiator, createdDate);
 		
 	}
 	
@@ -78,7 +80,6 @@ public class MeetingController {
 		return false;
 	}
 	
-	
 	public void saveMeetingCreation() {
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -89,9 +90,9 @@ public class MeetingController {
 			mapper.writeValue(new File(meetingPath + "M" +  meetingDraft.getId() + ".json"), meetingDraft);
 			
 			//add new meeting id to json meeting_id
-			ArrayList<Integer> meetingIds = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
+			List<Integer> meetingIds = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
 			meetingIds.add(meetingDraft.getId());
-			mapper.writeValue(new File("meeting_id.json"),  new TypeReference<List<Integer>>(){});
+			mapper.writeValue(new File("resources/meeting_id.json"),  meetingIds);
 			
 			//generate time slot
 			
@@ -110,6 +111,51 @@ public class MeetingController {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	
+	public List<Meeting> getListOfCreatedMeeting(String initiator) {
+		ObjectMapper mapper = new ObjectMapper();
+		Meeting m = new Meeting();
+		List<Meeting> createdMeetingList = new ArrayList<Meeting>();
+		
+		try {
+			//load meeting_id
+			List<Integer> listMeetingID = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
+			
+			//for each meeting id
+			for(int i=0;i<listMeetingID.size();i++) {
+				//load file json
+				m = mapper.readValue(new File("resources/meeting/M"+listMeetingID.get(i)+".json"), Meeting.class);
+				if(m.getMeetingInitiator().equals(initiator)) {
+					//add Meeting to createdMeetingList
+					createdMeetingList.add(m);
+				}
+			}
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return createdMeetingList;
+	}
+	
+	public String getStrMeetingStatus(int meetingStatus) {
+		String str = "";
+		switch(meetingStatus) {
+			case '0': str = "NEGOTIATING"; break;
+			case '9': str = "CANCELED"; break;
+			case '1': str = "CONFIRMED"; break;
+			case '2': str = "RUNNING"; break;
+			case '3': str = "FINISHED"; break;
+		}
+		return str;
 	}
 	
 }

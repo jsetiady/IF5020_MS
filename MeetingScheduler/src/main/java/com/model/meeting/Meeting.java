@@ -22,11 +22,13 @@ public class Meeting {
 	private ArrayList<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
 	private int meetingStatus;
 	private String meetingInitiator;
+	private String createdDate;
+	private String scheduledDate;
 	
 	//constructor
 	public Meeting(int id, String title, String agenda, String location,
 			int duration, String proposedStartDate, String proposedEndDate,
-			String maxResponseDate, String maxResponseTime, String meetingInitiator) {
+			String maxResponseDate, String maxResponseTime, String meetingInitiator, String createdDate) {
 		
 		this.id = id; //id generated in Meeting Controller
 		this.title = title;
@@ -38,6 +40,9 @@ public class Meeting {
 		this.maxResponseDate = maxResponseDate;
 		this.maxResponseTime = maxResponseTime;
 		this.meetingInitiator = meetingInitiator;
+		this.meetingStatus = 0;
+		this.createdDate = createdDate;
+		this.scheduledDate = "-";
 	}
 	
 	public Meeting() {}
@@ -145,6 +150,24 @@ public class Meeting {
 	public void setMeetingInitiator(String meetingInitiator) {
 		this.meetingInitiator = meetingInitiator;
 	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getScheduledDate() {
+		return scheduledDate;
+	}
+
+	public void setScheduledDate(String scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+	
+	
 	
 	// begin setter & getter
 	
