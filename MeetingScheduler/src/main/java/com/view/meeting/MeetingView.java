@@ -59,8 +59,7 @@ public class MeetingView {
 		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
 		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
 		
-		Calendar cal = Calendar.getInstance();
-		createdDate = format.format(cal);
+		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
 
 		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
 	

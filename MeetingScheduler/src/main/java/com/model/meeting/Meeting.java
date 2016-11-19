@@ -42,7 +42,7 @@ public class Meeting {
 		this.meetingInitiator = meetingInitiator;
 		this.meetingStatus = 0;
 		this.createdDate = createdDate;
-		this.scheduledDate = "-";
+		this.scheduledDate = "-         ";
 	}
 	
 	public Meeting() {}
