@@ -158,4 +158,44 @@ public class MeetingController {
 		return str;
 	}
 	
+	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {
+		ObjectMapper mapper = new ObjectMapper();
+		Meeting m = new Meeting();
+		List<Meeting> scheduledMeetingList = new ArrayList<Meeting>();
+		List<MeetingParticipant> participantList = new ArrayList<MeetingParticipant>();
+		
+		try {
+			//load meeting_id
+			List<Integer> listMeetingID = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
+			
+			//for each meeting id
+			for(int i=0;i<listMeetingID.size();i++) {
+				//load file json
+				m = mapper.readValue(new File("resources/meeting/M"+listMeetingID.get(i)+".json"), Meeting.class);
+				
+				if(m.getMeetingStatus()==m.SCHEDULED)
+				participantList = m.getMeetingParticipant();
+				
+				for(int j=0;i<participantList.size();j++) {
+					if(participantList.get(j).equals(participant)) {
+						//add Meeting to createdMeetingList
+						scheduledMeetingList.add(m);
+					}
+				}
+				
+			}
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return scheduledMeetingList;
+	}
+	
 }

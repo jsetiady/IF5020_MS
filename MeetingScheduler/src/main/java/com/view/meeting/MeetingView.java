@@ -360,6 +360,31 @@ public class MeetingView {
 		
 	}
 	
+	public void viewMeetingScheduleByEmail(String email) {
+		Scanner s = new Scanner(System.in);
+		List<Meeting> scheduledMeetingList = mc.getListOfScheduledMeetingByEmail(email);
+		if(scheduledMeetingList.isEmpty()) {
+			System.out.println("You have not listed in any scheduled meeting.");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		} else {
+			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+			for(int i=0;i<scheduledMeetingList.size();i++) {
+				System.out.print(i+1 + "\t");
+				System.out.print("M" + scheduledMeetingList.get(i).getId() + "\t\t");
+				System.out.print(getStrMeetingStatus(scheduledMeetingList.get(i).getMeetingStatus()) + "\t");
+				System.out.print(scheduledMeetingList.get(i).getCreatedDate() + "\t");
+				System.out.print(scheduledMeetingList.get(i).getScheduledDate() + "\t");
+				System.out.print(scheduledMeetingList.get(i).getTitle());
+				System.out.println();
+			}
+			System.out.println("--------------------------------");
+			System.out.println("You are listed as participant in " + scheduledMeetingList.size() + " meeting");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		}
+	}
+	
 	public String getStrMeetingStatus(int status) {
 		switch(status) {
 			case 0 : return "Negotiating";

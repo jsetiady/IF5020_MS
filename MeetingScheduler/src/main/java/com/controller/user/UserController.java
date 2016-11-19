@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.parser.JSONParser;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,7 +18,6 @@ import com.model.user.User;
 public class UserController {
 	
 	ArrayList<User> listUser= new ArrayList<User>();
-	JSONParser parser = new JSONParser();
 	/**
 	public User authenticateUser(String email, String password){
 		try {
