@@ -1,5 +1,8 @@
 import java.util.Scanner;
+
+import com.controller.user.UserController;
 import com.model.user.User;
+import com.view.user.MenuView;
 import com.view.user.UserView;
 
 /**
@@ -9,11 +12,69 @@ import com.view.user.UserView;
 public class MainMeetingScheduler {
 
 	
-	public static void main(String args[]) {
-		//load default view: login
-		UserView userView = new UserView();
-		userView.displayLogin();
+	private static Scanner scan;
 
+	public static void main(String args[]) {
+		scan = new Scanner(System.in);
+		int choice;
+		MenuView menu = new MenuView();
+		UserView userView = new UserView();
+		UserController controller = new UserController();
+		controller.createDummyUser();
+		controller.save();
+		
+		menu.menuLogin();
+		/** 1. find User by email
+		 * 2. Jika ketemu, return nya User else null
+		 * 3. Jika returnnya user, cek user.getPassword() == password ?
+		 * 4. Jika benar, masuk ke menu admin, jika salah balik ke form login lagi
+		 */
+		
+		
+		//System.out.println(user.getEmail() + " " + user.getPassword());
+		
+		//controller.findUser(user.getEmail());
+		
+		//userView.displayMenu(user);
+		//userView.displayUserMainMenu(user);
+		System.out.print("Type your choice :");
+		do {
+			choice = scan.nextInt();
+			switch(choice) {
+			case 1:
+				//@putra
+				//call menu for manage user
+				controller.add(userView.createUser());
+				int set;
+				set = scan.nextInt();
+				if (set==1) {
+					controller.add(userView.createUser());
+				} else if (set==2) {
+					controller.save();
+				}
+				break;
+			case 2:
+				//controller.getAllUser().stream().forEach(System.out::println);
+				userView.showListUser(controller.getAllUser());
+				break;
+			case 3:
+				System.out.println("not yet available");
+				break;
+			case 4:
+				System.out.println("not yet available");
+				break;
+			case 5:
+				System.out.println("not yet available");
+				break;
+			default:
+				System.out.println("menu not found!");
+			}
+		} while (choice != 5);
+		
+		
+		
+		
+		
 	}
 	
 	

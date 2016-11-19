@@ -1,9 +1,10 @@
 package com.view.user;
 
-import java.io.Console;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import com.model.user.Authority;
+import com.controller.user.UserController;
 import com.model.user.User;
 import com.view.meeting.MeetingView;
 
@@ -12,17 +13,74 @@ import com.view.meeting.MeetingView;
  *
  */
 public class UserView {
+	Scanner scan = new Scanner(System.in);
+	UserController uc = new UserController();
+	
+	public void showListUser(List<User> listUser) {
+		listUser = uc.getAllUser();
+		
+		System.out.println("|===========================================|");
+		System.out.println("|        IF5021 MEETING SCHEDULER           |");
+		System.out.println("|===========================================|");
+		System.out.println("|LIST USER                                	|");
+		System.out.println("|===========================================|");
+		System.out.println("|First Name\t\t|LastName\t\t|Address\t\t|Phone\t\t|DOB\t\t|Sex\t|Email\t\t");
+		for (User usr: listUser) {
+			System.out.println("|"+usr.getFirstName()+"\t\t|"+usr.getLastName()+"\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
+		}
+		
+	}
+	
+	public void viewDetailUser (User user) {
+		System.out.println("First Name :" + user.getFirstName());
+		System.out.println("Last Name :" + user.getLastName());
+		System.out.println("Address :" + user.getAddress());
+		System.out.println("Phone :" + user.getPhone());
+	}
+	
+	public User createUser() 
+	{
+		User user = new User();
+		
+		System.out.println("|===========================================|");
+		System.out.println("|        IF5021 MEETING SCHEDULER           |");
+		System.out.println("|===========================================|");
+		System.out.println("|CREATE USER                                |");
+		System.out.println("|===========================================|");
+		System.out.print("|First Name       :"); user.setFirstName(scan.nextLine()); 
+		System.out.print("|Last Name        :"); user.setLastName(scan.nextLine());
+		System.out.print("|Address          :"); user.setAddress(scan.nextLine());
+		System.out.print("|Phone            :"); user.setPhone(scan.nextLine());
+		System.out.print("|DOB              :"); user.setDob(scan.nextLine());
+		System.out.print("|Sex              :"); user.setSex(scan.next(".").charAt(0));
+		scan.nextLine();
+		System.out.print("|Email            :"); user.setEmail(scan.nextLine());
+		System.out.print("|Password         :"); user.setPassword(scan.nextLine());
+		System.out.print("|Admin         	:"); user.setAdmin(scan.nextBoolean());
+		System.out.print("|Active         :"); user.setActive(scan.nextBoolean());
+		System.out.println("--------------------------------------------|");
+		System.out.println("[1] Add More");
+		System.out.println("[2] Save");
+		
+		
+		return user;
+		
+	}
 		
 	public void displayLogin() {
 		//variables
-		Scanner s = new Scanner(System.in);
+		MenuView menuView = new MenuView();
 		String username, password;
 		
 		//ask for username and password
+		/**
 		System.out.print("email: ");
 		username = s.nextLine();
 		System.out.print("password: ");
 		password = s.nextLine();
+		*/
+		
+		//User user = menuView.menuLogin();
 		
 		//@putra, please implements auth logic in UserController
 		//authenticated means user is exist, return user object
@@ -43,8 +101,10 @@ public class UserView {
 	}
 	
 	public void displayMenu(User user) {
+		MenuView menuView = new MenuView();
+		System.out.println(user.isAdmin());
 		if(user.isAdmin()) {
-			//call displayAdminMainMenu()
+			menuView.menuHome();
 		} else {
 			displayUserMainMenu(user);
 		}

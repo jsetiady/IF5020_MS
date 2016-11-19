@@ -15,7 +15,6 @@ public class User {
 	private String email;
 	private String password;
 	boolean isAdmin;
-	private Authority authority;
 	private boolean isActive = true;
 	
 	public User() {
@@ -23,7 +22,7 @@ public class User {
 	}
 	
 	public User(String firstName, String lastName, String address, String phone, String dob, char sex, String email,
-			String password, Authority authority, boolean isAdmin, boolean isActive) {
+			String password, boolean isAdmin, boolean isActive) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -32,7 +31,6 @@ public class User {
 		this.sex = sex;
 		this.email = email;
 		this.password = password;
-		this.authority = authority;
 		this.isActive = isActive;
 		this.isAdmin = isAdmin;
 	}
@@ -86,12 +84,6 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	public Authority getAuthority() {
-		return authority;
-	}
-	public void setAuthority(Authority authority) {
-		this.authority = authority;
 	}
 	
 	
