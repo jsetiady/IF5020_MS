@@ -16,7 +16,7 @@ public class MeetingParticipant {
 	//variable
 	private String email = "";
 	private boolean isImportant = false;
-	private int response;
+	private int response = PENDING;
 	private String responseDate = "";
 	
 	public MeetingParticipant(String email, boolean isImportant) {
@@ -25,28 +25,46 @@ public class MeetingParticipant {
 		response = PENDING;
 	}
 	
+	public MeetingParticipant() {}
+	
 	public MeetingParticipant(String email) {
 		this(email, false);
 	}
-	
-	public String getEmail() {
-		return this.email;
-	}
-	
-	public boolean isImportant() {
-		return this.isImportant;
-	}
-	
-	public int getResponse() {
-		return this.response;
-	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getEmail() {
+		return email;
+	}
 	
-	public void setIsImportant(boolean isImportant) {
+	public boolean isImportant() {
+		return isImportant;
+	}
+
+	public void setImportant(boolean isImportant) {
 		this.isImportant = isImportant;
-	} 
+	}
+
+	public int getResponse() {
+		return response;
+	}
+
+	public void setResponse(int response) {
+		this.response = response;
+	}
+
+	public String getResponseDate() {
+		return responseDate;
+	}
+
+	public void setResponseDate(String responseDate) {
+		this.responseDate = responseDate;
+	}
+	
+	
+	
+	
 	
 }

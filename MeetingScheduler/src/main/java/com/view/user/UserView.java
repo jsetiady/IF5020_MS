@@ -141,7 +141,9 @@ public class UserView {
 				case 1:
 					meetingView.createMeetingView(user.getEmail());
 					break;
-				case 2: break;
+				case 2:
+					meetingView.displayCreatedMeeting(user.getEmail());
+					break;
 				case 3: break;
 				case 4: break;
 				case 5: break;

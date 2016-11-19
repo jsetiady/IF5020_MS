@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -28,7 +29,7 @@ public class MeetingView {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate, strMaxResponseTime;
+			 strEndDate = null, strMaxResponseDate, strMaxResponseTime, createdDate;
 		
 		int duration, input, choice;
 		boolean invalidInput;
@@ -36,16 +37,13 @@ public class MeetingView {
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
 		
-		System.out.print("# Title\t\t\t\t: ");
-		title = s.nextLine();
+		title = getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
 		
-		System.out.print("# Agenda\t\t\t: ");
-		agenda = s.nextLine();
+		agenda = getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
 		
-		System.out.print("# Location\t\t\t: ");
-		location = s.nextLine();
+		location = getAndValidateInput(s, "# Location\t\t\t: ", "text");
 		
-		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-8)\t: ", "duration"));
+		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
 		
 		System.out.println("# Proposed date range");
 		
@@ -54,15 +52,17 @@ public class MeetingView {
 			strStartDate = getAndValidateInput(s, "    Start date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
 			strEndDate = getAndValidateInput(s, "    End date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
 		} catch (ParseException e) {
-			
 			e.printStackTrace();
 		}
 		
 		System.out.println("# Max response time");
 		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
 		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
+		
+		Calendar cal = Calendar.getInstance();
+		createdDate = format.format(cal);
 
-		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID);
+		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
 	
 		do {
 			System.out.println("\nConfirmation");
@@ -75,6 +75,7 @@ public class MeetingView {
 			switch(choice) {
 				case 1:
 					createMeetingAddParticipantView();
+					addMeetingParticipantView();
 					break;
 				case 2: 
 					System.out.println("\nMeeting creation has been canceled\nPress enter to continue");
@@ -89,7 +90,7 @@ public class MeetingView {
 	}
 	
 	
-	public void createMeetingSummaryView() {
+	public void createMeetingSummaryView(Scanner s) {
 		Meeting m = mc.getMeetingDraft();
 		System.out.println("CREATE MEETING - SUMMARY");
 		System.out.println("--------------------------------");
@@ -102,71 +103,156 @@ public class MeetingView {
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
 		System.out.println("# Max response time");
 		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
-		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());
-	}
-	
-	public void participantListView() {
-		Scanner s = new Scanner(System.in);
-		System.out.println("\n\nParticipant List");
-		System.out.println("--------------------------------");
+		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
 		
-		//MeetingController mc = new MeetingController();
-		//mc.getParticipantList();
+		System.out.println("Press enter to continue\n\n");
 		s.nextLine();
-		
 	}
 	
 	public void createMeetingAddParticipantView() {
 		Scanner s = new Scanner(System.in);
+		ArrayList<MeetingParticipant> arrMP = new ArrayList<MeetingParticipant>();
 		String email, strImportant;
+		arrMP = mc.getParticipantList();
 		
 		System.out.println("\n\nAdd Participant");
 		System.out.println("--------------------------------");
 		email = getAndValidateInput(s, "Email\t\t\t\t: ", "text");
-		strImportant = getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
-		
-		//add to mc
-		mc.addMeetingParticipant(email, strImportantToBoolean(strImportant));
-		
-		System.out.println("\n\nParticipant successfully added. Press enter to continue\n\n");
-		
-		s.nextLine();
+		if(mc.findMeetingParticipantByEmail(arrMP, email)) {
+			System.out.println(email + " already exist in Participant list");
+			s.nextLine();
+		} else {
+			strImportant = getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
+			
+			//add to mc
+			mc.addMeetingParticipant(email, strImportantToBoolean(strImportant));
+			
+			System.out.println("\n\nParticipant successfully added.\nPress enter to continue\n\n");
+			
+			s.nextLine();
+		}
 	}
-	
-	public boolean strImportantToBoolean(String isImportant) {
-		return isImportant.equals("Y") ? true : false;
-	}
-	
-	public String boolImportantToString(boolean isImportant) {
-		return isImportant ? "Y" : "N";
-	} 
 	
 	public void addMeetingParticipantView() {
 		int choice;
+		Scanner s = new Scanner(System.in);
 		ArrayList<MeetingParticipant> arrMP;
 		do {
 			System.out.println("CREATE MEETING - Add Participant");
 			System.out.println("--------------------------------");
 			System.out.println("Participant List");
 			arrMP = mc.getParticipantList();
-			if(arrMP.size()==0) {
-				System.out.println("\nThis meeting has no participant. Add one now\n");
-			} else {
-				for(int i=0;i<arrMP.size();i++) {
-					System.out.println((i+1) + " " + arrMP.get(i).getEmail() + " " + arrMP.get(i).isImportant());
-				}
-			}
+			printParticipantList(arrMP);
 			
-			System.out.println("\n\n");
+			System.out.println("\n");
+			System.out.println("Menu");
 			System.out.println("1. Add meeting participant");
 			System.out.println("2. Edit meeting participant");
 			System.out.println("3. Show meeting information");
 			System.out.println("4. Save meeting");
 			System.out.println("5. Cancel meeting creation");
-			System.out.println("Enter your choice");
+			System.out.print("Enter your choice: ");
+			choice = s.nextInt();
+			s.nextLine();
 			
-			choice = 3;
-		} while(choice != 3);
+			switch(choice) {
+				case 1: createMeetingAddParticipantView(); break;
+				case 2: createMeetingEditParticipantView(s); break;
+				case 3: createMeetingSummaryView(s); break;
+				case 4: saveMeetingView(s); break;
+				case 5: cancelMeetingCreation(s); break;
+				default: break;
+			}
+			
+		} while(choice!= 4 && choice!=5);
+	}
+	
+	public void createMeetingEditParticipantView(Scanner s) {
+		String email, strImportant;
+		ArrayList<MeetingParticipant> arrMP;
+		String num, confirm, selected;
+		int choice;
+		
+		System.out.println("\nEdit Participant");
+		System.out.println("--------------------------------");
+		System.out.println("*Participant list");
+		arrMP = mc.getParticipantList();
+		printParticipantList(arrMP);
+		
+		System.out.println("\nEnter participant number that you want to edit (1-" + arrMP.size() + ")");		
+		num = getAndValidateInput(s, "Participant num: ", "number");
+		if(Integer.parseInt(num)<0 || Integer.parseInt(num)>arrMP.size()) {
+			System.out.println("The entered participant number is not valid\nPress Enter to continue\n");
+			s.nextLine();
+		} else {
+			selected = arrMP.get(Integer.parseInt(num)-1).getEmail();
+			System.out.println("Selected: " + selected);
+			System.out.println("1. Remove participant");
+			System.out.println("2. Set as Important Participant");
+			System.out.println("3. Set as Ordinary Participant");
+			System.out.println("4. Cancel edit");
+			System.out.print("Enter your choice: ");
+			choice = s.nextInt();
+			s.nextLine();
+			
+			switch(choice) {
+				case 1: 
+					confirm = getAndValidateInput(s, "Are you sure wants to remove "
+							+ selected +
+							" from participant list (Y/N) ? ", "YN");
+					if(confirm.equals("Y")) {
+						arrMP.remove(Integer.parseInt(num)-1);
+						mc.getMeetingDraft().setMeetingParticipant(arrMP);
+						System.out.println(selected + " successfully removed");
+					} else {
+						System.out.println("Canceled");
+					}
+					s.nextLine();
+					break;
+				case 2:
+					arrMP.get(Integer.parseInt(num)-1).setImportant(true);
+					mc.getMeetingDraft().setMeetingParticipant(arrMP);
+					System.out.println(selected 
+							+ " marked as Important Participant\n");
+					s.nextLine();
+					break;
+				case 3:
+					arrMP.get(Integer.parseInt(num)-1).setImportant(false);
+					mc.getMeetingDraft().setMeetingParticipant(arrMP);
+					System.out.println(selected
+							+ " marked as Ordinary Participant\n");
+					s.nextLine();
+					break;
+				case 4:
+					System.out.println("Canceled");
+					break;
+				default: 
+					System.out.println("Input invalid.\nPress enter to continue");
+					s.nextLine();
+					break;
+			}
+		}
+	}
+	
+	public void printParticipantList(ArrayList<MeetingParticipant> arrMP) {
+		if(arrMP.size()==0) {
+			System.out.println("\nThis meeting has no participant. Add one now\n");
+		} else {
+			for(int i=0;i<arrMP.size();i++) {
+				System.out.println((i+1) + ". " + arrMP.get(i).getEmail() + " " + boolImportantToString(arrMP.get(i).isImportant()));
+			}
+		}
+	}
+	
+	public void cancelMeetingCreation(Scanner s) {		
+		System.out.println("\nMeeting creation has been canceled\nPress enter to continue\n");
+		s.nextLine();
+	}
+	
+	public void saveMeetingView(Scanner s) {
+		mc.saveMeetingCreation();
+		System.out.println("\nSuccessfully save the meeting\nPress enter to continue\n");
+		s.nextLine();
 	}
 	
 	public Date getSpecificDate(int x) {
@@ -175,6 +261,14 @@ public class MeetingView {
 		cal.add(Calendar.DATE, x);
 		return cal.getTime();
 	}
+	
+	public boolean strImportantToBoolean(String isImportant) {
+		return isImportant.equals("Y") ? true : false;
+	}
+	
+	public String boolImportantToString(boolean isImportant) {
+		return isImportant ? "(important)" : "";
+	} 
 	
 	public String getAndValidateInput(Scanner s, String label, String type) {
 		int test;
@@ -185,8 +279,8 @@ public class MeetingView {
 			errorMsg = "Invalid date format. Please re-enter.";
 		}
 		else if(type.equals("duration")) { //positive integer between 1-8
-			regex = "^[1-8]+$";
-			errorMsg = "Please enter a value between 1-8";
+			regex = "^[1-9]+$";
+			errorMsg = "Please enter a value between 1-9";
 		}
 		else if(type.equals("time")) { //format: hh:mm
 			regex = "[0-9]{2}:[0-9]{2}";
@@ -199,6 +293,10 @@ public class MeetingView {
 		else if(type.equals("text")) {
 			regex = "^(?!\\s*$).+";
 			errorMsg = "This field cannot be empty";
+		}
+		else if(type.equals("number")) {
+			regex = "[0-9]";
+			errorMsg = "Invalid time format. Please re-enter.";
 		}
 		
 		do {
@@ -235,6 +333,43 @@ public class MeetingView {
 				}
 			} while(test == 0);
 		return input;
+	}
+	
+	public void displayCreatedMeeting(String email) {
+		Scanner s = new Scanner(System.in);
+		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
+		if(createdMeetingList.isEmpty()) {
+			System.out.println("You have not created any meeting yet.");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		} else {
+			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+			for(int i=0;i<createdMeetingList.size();i++) {
+				System.out.print(i+1 + "\t");
+				System.out.print("M" + createdMeetingList.get(i).getId() + "\t\t");
+				System.out.print(getStrMeetingStatus(createdMeetingList.get(i).getMeetingStatus()) + "\t");
+				System.out.print(createdMeetingList.get(i).getCreatedDate() + "\t");
+				System.out.print(createdMeetingList.get(i).getScheduledDate() + "\t");
+				System.out.print(createdMeetingList.get(i).getTitle());
+				System.out.println();
+			}
+			System.out.println("--------------------------------");
+			System.out.println("You have created " + createdMeetingList.size() + " meeting");
+			System.out.println("Press enter to continue");
+			s.nextLine();
+		}
+		
+	}
+	
+	public String getStrMeetingStatus(int status) {
+		switch(status) {
+			case 0 : return "Negotiating";
+			case -9 : return "Canceled   ";
+			case 1 : return "Scheduled   ";
+			case 2 : return "Running    ";
+			case 3 : return "Finish     ";
+		}
+		return "";
 	}
 
 }
