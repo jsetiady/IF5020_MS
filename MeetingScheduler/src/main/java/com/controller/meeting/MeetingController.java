@@ -172,16 +172,16 @@ public class MeetingController {
 			for(int i=0;i<listMeetingID.size();i++) {
 				//load file json
 				m = mapper.readValue(new File("resources/meeting/M"+listMeetingID.get(i)+".json"), Meeting.class);
-				
-				if(m.getMeetingStatus()==m.SCHEDULED)
-				participantList = m.getMeetingParticipant();
-				
-				for(int j=0;i<participantList.size();j++) {
-					if(participantList.get(j).getEmail().equals(participant)) {
-						System.out.println(participantList.get(j).getEmail());
-						//add Meeting to createdMeetingList
-						scheduledMeetingList.add(m);
+				if(m.getMeetingStatus()==m.SCHEDULED) {
+					participantList = m.getMeetingParticipant();
+					
+					for(int j=0;j<participantList.size();j++) {
+						if(participantList.get(j).getEmail().equals(participant)) {
+							//add Meeting to createdMeetingList
+							scheduledMeetingList.add(m);
+						}
 					}
+					
 				}
 				
 			}
