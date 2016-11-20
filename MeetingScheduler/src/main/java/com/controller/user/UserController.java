@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.parser.JSONParser;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,8 +17,8 @@ import com.model.user.User;
  */
 public class UserController {
 	
-	ArrayList<User> listUser= new ArrayList<User>();
-	JSONParser parser = new JSONParser();
+
+	List<User> listUser= new ArrayList<User>();
 	/**
 	public User authenticateUser(String email, String password){
 		try {
@@ -42,18 +41,8 @@ public class UserController {
 		return null;
 	}
 	*/
+
 	
-	/**
-	
-	public void createUser(User user) {
-		
-	}
-	
-	public void save(User user) {
-		listUser.add(user);
-	}
-	
-	*/
 	public List<User> getAllUser() {
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -65,6 +54,9 @@ public class UserController {
 		return listUser;
 	}
 	
+	public void editUser() {
+		System.out.println("Edit User");
+	}
 	
 	public void save () {
 		ObjectMapper mapper = new ObjectMapper();
@@ -78,9 +70,6 @@ public class UserController {
 			//Convert object to Json String
 			 jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(listUser);
 			 
-			 //System.out.println(jsonString);
-			 
-			 
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -89,6 +78,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public void createDummyUser() {
 		User user = new User();
@@ -120,7 +110,9 @@ public class UserController {
 		listUser.add(user2);
 	}
 	
+	
 	public void add(User user) {
+		listUser = getAllUser();
 		listUser.add(user);
 	}
 	
@@ -138,14 +130,31 @@ public class UserController {
 				} 			
 			}
 			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 		return usr;
+	}
+	
+	public User findUserByEmail(String email) {
+		ObjectMapper mapper = new ObjectMapper();
+		User usr = null;
+		try {
+			// Convert JSON String from file into object
+			List<User> listUser = mapper.readValue(new File("D:\\user.json"), new TypeReference<List<User>>(){});
+			
+			for (User user: listUser) {
+				if (email.equals(user.getEmail())) {
+					usr = user;
+				} 			
+			}
+			
+		} catch (Exception e) {
+		e.printStackTrace();
+		}
 		
-		
+		return usr;
 	}
 	
 	

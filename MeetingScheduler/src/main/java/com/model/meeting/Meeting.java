@@ -25,6 +25,13 @@ public class Meeting {
 	private String createdDate;
 	private String scheduledDate;
 	
+	//meetingstatus
+	public int NEGOTIATING = 0;
+	public int CANCELED = -9;
+	public int SCHEDULED = 1;
+	public int RUNNING = 2;
+	public int FINISH = 3;
+	
 	//constructor
 	public Meeting(int id, String title, String agenda, String location,
 			int duration, String proposedStartDate, String proposedEndDate,
@@ -42,7 +49,7 @@ public class Meeting {
 		this.meetingInitiator = meetingInitiator;
 		this.meetingStatus = 0;
 		this.createdDate = createdDate;
-		this.scheduledDate = "-";
+		this.scheduledDate = "-         ";
 	}
 	
 	public Meeting() {}
