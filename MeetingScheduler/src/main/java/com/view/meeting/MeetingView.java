@@ -368,6 +368,7 @@ public class MeetingView {
 			System.out.println("Press enter to continue");
 			s.nextLine();
 		} else {
+			System.out.println("Schedule for " + email);
 			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
 			for(int i=0;i<scheduledMeetingList.size();i++) {
 				System.out.print(i+1 + "\t");
