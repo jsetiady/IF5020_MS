@@ -177,7 +177,8 @@ public class MeetingController {
 				participantList = m.getMeetingParticipant();
 				
 				for(int j=0;i<participantList.size();j++) {
-					if(participantList.get(j).equals(participant)) {
+					if(participantList.get(j).getEmail().equals(participant)) {
+						System.out.println(participantList.get(j).getEmail());
 						//add Meeting to createdMeetingList
 						scheduledMeetingList.add(m);
 					}
