@@ -17,7 +17,31 @@ import com.model.user.User;
  */
 public class UserController {
 	
+
 	List<User> listUser= new ArrayList<User>();
+	/**
+	public User authenticateUser(String email, String password){
+		try {
+			Object obj = parser.parse(new FileReader("D:\\user.json"));
+			
+			JSONObject object = (JSONObject) obj;
+			
+			String name = (String) object.get("name");
+			System.out.println(email.equals(name));
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Error");
+		}
+		//if (FOUND) then
+		//return User object
+		//else
+		//return null
+		
+		return null;
+	}
+	*/
+
 	
 	public List<User> getAllUser() {
 		ObjectMapper mapper = new ObjectMapper();
