@@ -16,12 +16,8 @@ public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
 	
-	public boolean login(String email, String password) {
-		if(uc.checkLogin(email, password)!=null) {
-			return true;
-		} else {
-			return false;
-		}
+	public User login(String email, String password) {
+		return uc.checkLogin(email, password);
 	}
 	
 	public void showListUser() {
