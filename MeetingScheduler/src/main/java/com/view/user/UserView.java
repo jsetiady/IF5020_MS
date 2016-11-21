@@ -16,12 +16,8 @@ public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
 	
-	public boolean login(String email, String password) {
-		if(uc.checkLogin(email, password)!=null) {
-			return true;
-		} else {
-			return false;
-		}
+	public User login(String email, String password) {
+		return uc.checkLogin(email, password);
 	}
 	
 	public void showListUser() {
@@ -55,11 +51,20 @@ public class UserView {
 		
 	}
 	
+	
+	public void viewUserByEmail(String email) {
+		viewDetailUser(uc.getUserByEmail(email));
+	}
+	
 	public void viewDetailUser (User user) {
-		System.out.println("First Name :" + user.getFirstName());
-		System.out.println("Last Name :" + user.getLastName());
-		System.out.println("Address :" + user.getAddress());
-		System.out.println("Phone :" + user.getPhone());
+		if(user==null) {
+			System.out.println("User not found");
+		} else {
+			System.out.println("First Name :" + user.getFirstName());
+			System.out.println("Last Name :" + user.getLastName());
+			System.out.println("Address :" + user.getAddress());
+			System.out.println("Phone :" + user.getPhone());
+		}
 	}
 	
 	public User createUser() 

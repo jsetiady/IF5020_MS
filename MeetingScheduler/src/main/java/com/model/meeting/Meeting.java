@@ -1,6 +1,7 @@
 package com.model.meeting;
 
 import java.util.Date;
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -18,8 +19,8 @@ public class Meeting {
 	private String proposedEndDate;
 	private String maxResponseDate;
 	private String maxResponseTime;
-	private ArrayList<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
-	private ArrayList<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
+	private List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
+	private List<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
 	private int meetingStatus;
 	private String meetingInitiator;
 	private String createdDate;
@@ -126,19 +127,19 @@ public class Meeting {
 		this.maxResponseTime = maxResponseTime;
 	}
 
-	public ArrayList<MeetingTimeSlot> getMeetingTimeSlots() {
+	public List<MeetingTimeSlot> getMeetingTimeSlots() {
 		return meetingTimeSlots;
 	}
 
-	public void setMeetingTimeSlots(ArrayList<MeetingTimeSlot> meetingTimeSlots) {
-		this.meetingTimeSlots = meetingTimeSlots;
+	public void setMeetingTimeSlots(List<MeetingTimeSlot> meetingTimeSlots2) {
+		this.meetingTimeSlots = meetingTimeSlots2;
 	}
 
-	public ArrayList<MeetingParticipant> getMeetingParticipant() {
+	public List<MeetingParticipant> getMeetingParticipant() {
 		return meetingParticipant;
 	}
 
-	public void setMeetingParticipant(ArrayList<MeetingParticipant> meetingParticipant) {
+	public void setMeetingParticipant(List<MeetingParticipant> meetingParticipant) {
 		this.meetingParticipant = meetingParticipant;
 	}
 

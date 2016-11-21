@@ -29,7 +29,7 @@ public class UserController {
 			System.out.println(email.equals(name));
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			// handle exception
 			System.out.println("Error");
 		}
 		//if (FOUND) then
@@ -62,6 +62,18 @@ public class UserController {
 			e.printStackTrace();
 		}
 		return listUser;
+	}
+	
+	public User getUserByEmail(String email) {
+		List<User> listuser = new ArrayList<User>();
+		listuser = getAllUser();
+		User user = null;
+		for(int i=0;i<listuser.size();i++) {
+			if(listuser.get(i).getEmail().equals(email)) {
+				user = listuser.get(i);
+			}
+		}
+		return user;
 	}
 	
 	
@@ -139,12 +151,10 @@ public class UserController {
 			
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			// handle exception
 		}
 		
 		return usr;
-		
-		
 	}
 	
 	
