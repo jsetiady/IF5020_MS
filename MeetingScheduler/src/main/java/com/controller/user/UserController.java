@@ -29,7 +29,7 @@ public class UserController {
 			System.out.println(email.equals(name));
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			// handle exception
 			System.out.println("Error");
 		}
 		//if (FOUND) then
@@ -150,7 +150,7 @@ public class UserController {
 			
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			// handle exception
 		}
 		
 		return usr;

@@ -43,13 +43,13 @@ public class MeetingController {
 			id++;
 			mapper.writeValue(new File("resources/lastid"), id);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -101,13 +101,13 @@ public class MeetingController {
 			
 			
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -134,13 +134,13 @@ public class MeetingController {
 			}
 			
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}	
 		return createdMeetingList;
@@ -163,16 +163,16 @@ public class MeetingController {
 		ObjectMapper mapper = new ObjectMapper();
 		//load file json
 		try {
-			m = mapper.readValue(new File("resources/meeting/M"+meetingID.substring(1)+".json"), Meeting.class);
+			m = mapper.readValue(new File("resources/meeting/M"+Integer.parseInt(meetingID.substring(1))+".json"), Meeting.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("You don't have privilege to view this meeting");
+			//e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("You don't have privilege to view this meeting");
+			//e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("You don't have privilege to view this meeting");
+			//e.printStackTrace();
 		}
 		return m;
 	}
@@ -206,13 +206,13 @@ public class MeetingController {
 			}
 			
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}	
 		return scheduledMeetingList;

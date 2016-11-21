@@ -86,19 +86,19 @@ public class NewInterfaceMain {
 			case "del-user": break;
 			
 			case "create-meeting" :
-				if (checkCommandRole(1, role))
+				if (checkCommandRole(2, role))
 					mv.createMeetingView(email);
 				else
 					showErrorPrivilegeCommand();
 				break;
 			case "list-meeting" : 
-				if (checkCommandRole(1, role))
+				if (checkCommandRole(2, role))
 					mv.displayCreatedMeeting(email);
 				else
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-meeting" :
-				if (checkCommandRole(1, role))
+				if (checkCommandRole(2, role))
 					mv.viewMeetingByID(cmd[1]);
 				else
 					showErrorPrivilegeCommand();
@@ -151,7 +151,7 @@ public class NewInterfaceMain {
 		login = false;
 		do {
 			do {
-			System.out.print("Please select a role:\n1.administrator\n2.initiator\n3.participant\n> ");role = s.nextInt(); s.nextLine();
+			System.out.print("Please select a role (1-3):\n1.administrator\n2.initiator\n3.participant\n> ");role = s.nextInt(); s.nextLine();
 				if(role<1 || role>3) {
 					System.out.println("## Role does not exist, please re-enter. ##");
 				}

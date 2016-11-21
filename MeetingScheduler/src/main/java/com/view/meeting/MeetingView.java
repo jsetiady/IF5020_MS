@@ -235,18 +235,48 @@ public class MeetingView {
 	}
 	
 	public void printParticipantList(ArrayList<MeetingParticipant> arrMP, boolean withResponse) {
+		s = new Scanner(System.in);
+		int choice, num;
 		if(arrMP.size()==0) {
 			System.out.println("\nThis meeting has no participant. Add one now\n");
 		} else {
 			if(withResponse) {
+				//TODO @jeje get meetingParticipant instance
 				System.out.println("No\tResponse\tResponse Date\tEmail\t\t");
 				for(int i=0;i<arrMP.size();i++) {
 					System.out.print((i+1) + "\t");
-					System.out.print("PENDING\t\t");
-					System.out.print("--/--/----\t");
+					System.out.print(getStrResponseStatus(arrMP.get(i).getResponse()) + "\t\t");
+					System.out.print(arrMP.get(i).getResponseDate()+"\t");
 					System.out.print(arrMP.get(i).getEmail() + "\t");
 					System.out.println(boolImportantToString(arrMP.get(i).isImportant()) + "\t");
 				}
+				System.out.println("Menu:");
+				System.out.println("1. View response detail");
+				System.out.println("2. Show response by timeslot");
+				System.out.println("3. Back");
+				System.out.print("Enter your choice: "); choice = s.nextInt();
+				
+				switch(choice) {
+				case 1 : 
+					System.out.print("Enter participant number: ");
+					num = s.nextInt();
+					
+					//TODO: @jeje error handling
+					
+					System.out.println("Participant email\t: " + arrMP.get(num-1).getEmail());
+					System.out.println("Response\t\t: " + getStrResponseStatus(arrMP.get(num-1).getResponse()));
+					System.out.println("Response date\t\t: " + arrMP.get(num-1).getResponseDate());
+					System.out.println("Available slot\t\t: ");
+					
+					//TODO show arr meeting timeslot
+					
+					s.nextLine();
+					break;
+				case 2 : break;
+				case 3 : break;
+				default: System.out.println("Input invalid\n");s.nextLine();break;
+				}
+				
 			} else {
 				for(int i=0;i<arrMP.size();i++) {
 					System.out.println((i+1) + ". " + arrMP.get(i).getEmail() + " " + boolImportantToString(arrMP.get(i).isImportant()));
@@ -414,8 +444,10 @@ public class MeetingView {
 	public void viewCreatedMeetingDetails(Meeting m) {
 		System.out.println("MEETING DETAILS");
 		System.out.println("--------------------------------");
-		System.out.println("# Meeting ID\t\t\t: " + m.getId());
-		System.out.println("# Title\t\t\t\t: " + m.getTitle());
+		System.out.println("# Meeting ID\t\t\t: M" + m.getId());
+		System.out.println("# Initiator\t\t\t: " + m.getMeetingInitiator());
+		System.out.println("# Status\t\t\t: " + getStrMeetingStatus(m.getMeetingStatus()));
+		System.out.println("---\n# Title\t\t\t\t: " + m.getTitle());
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
 		System.out.println("# Location\t\t\t: " + m.getLocation());
 		System.out.println("# Duration\t\t\t: " + m.getDuration());
@@ -487,6 +519,15 @@ public class MeetingView {
 			case 1 : return "Scheduled   ";
 			case 2 : return "Running    ";
 			case 3 : return "Finish     ";
+		}
+		return "";
+	}
+	
+	public String getStrResponseStatus(int status) {
+		switch(status) {
+			case -1 : return "Pending";
+			case 0 : return "Reject ";
+			case 1 : return "Accept ";
 		}
 		return "";
 	}

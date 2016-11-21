@@ -11,7 +11,7 @@ public class MeetingParticipant {
 	//constant
 	static int PENDING = -1;
 	static int ACCEPT = 1;
-	static int REJECT = 1;
+	static int REJECT = 0;
 	
 	//variable
 	private String email = "";
@@ -22,6 +22,7 @@ public class MeetingParticipant {
 	public MeetingParticipant(String email, boolean isImportant) {
 		this.email = email;
 		this.isImportant = isImportant;
+		this.responseDate = "--/--/----";
 		response = PENDING;
 	}
 	
