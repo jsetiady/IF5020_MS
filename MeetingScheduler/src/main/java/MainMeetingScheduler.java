@@ -45,18 +45,17 @@ public class MainMeetingScheduler {
 				//@putra
 				//call menu for manage user
 				controller.add(userView.createUser());
-				int set;
-				set = scan.nextInt();
-				if (set==1) {
+				int option;
+				option = scan.nextInt();
+				if (option==1) {
 					controller.add(userView.createUser());
-				} else if (set==2) {
+				} else if (option==2) {
 					controller.save();
-<<<<<<< HEAD
+
 					menu.menuHome();
 				} else if (option==2) {
 					menu.menuHome();
-=======
->>>>>>> staging
+
 				}
 				break;
 			case 2:
@@ -75,11 +74,7 @@ public class MainMeetingScheduler {
 			default:
 				System.out.println("menu not found!");
 			}
-<<<<<<< HEAD
 		} while (choice != 4);
-				
-=======
-		} while (choice != 5);
 		
 		
 		

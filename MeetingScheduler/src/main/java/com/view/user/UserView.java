@@ -15,6 +15,7 @@ import com.view.meeting.MeetingView;
 public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
+	int choice;
 	
 	public boolean login(String email, String password) {
 		if(uc.checkLogin(email, password)!=null) {
@@ -28,7 +29,6 @@ public class UserView {
 		List<User> listUser = new ArrayList<User>();
 		listUser = uc.getAllUser();
 		
-<<<<<<< HEAD
 		do {
 			System.out.println("|======================================================================================================================================|");
 			System.out.println("|                                                       IF5021 MEETING SCHEDULER                                                       |");
@@ -61,7 +61,6 @@ public class UserView {
 			}
 		} while (choice != 3);
 		
-=======
 		System.out.println("|===========================================|");
 		System.out.println("|        IF5021 MEETING SCHEDULER           |");
 		System.out.println("|===========================================|");
@@ -86,7 +85,7 @@ public class UserView {
 		for (User usr: listUser) {
 			System.out.println("|"+usr.getFirstName()+"\t\t|"+usr.getLastName()+"\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
 		}
->>>>>>> staging
+
 		
 	}
 	
@@ -97,7 +96,7 @@ public class UserView {
 		System.out.println("Phone :" + user.getPhone());
 	}
 	
-<<<<<<< HEAD
+
 	public void editUser() {
 		/*
 		 * 1. Minta input data user (Misalnya minta email yang akan diubah)
@@ -121,8 +120,6 @@ public class UserView {
 		
 	}
 	
-=======
->>>>>>> staging
 	public User createUser() 
 	{
 		User user = new User();
