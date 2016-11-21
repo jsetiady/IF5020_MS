@@ -31,7 +31,6 @@ public class UserView {
 				System.out.println("|"+usr.getFirstName()+" "+usr.getLastName()+ "\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
 			}
 			System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
-			//System.out.println("[1] Add User");
 			System.out.println("[1] Edit User");
 			System.out.println("[2] View Detail User");
 			System.out.println("[3] Back");
@@ -68,10 +67,13 @@ public class UserView {
 		 * 2. Cari user menggunakan finduser menggunakan email yang mau diubah (controller)
 		 * 3. Jalankan method edit untuk menyimpan ke file json (controller)
 		 * */
-		System.out.println("Edit User");
+		System.out.println("Masukkan email");
+		
 	}
 	
 	public void delete() {
+		String email;
+		
 		/**
 		 * 1. Minta input email
 		 * 2. Jalankan method delete 
