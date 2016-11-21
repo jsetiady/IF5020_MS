@@ -427,6 +427,7 @@ public class MeetingView {
 		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
+		System.out.println();
 	}
 	
 	public void viewMeetingScheduleByEmail(String email) {

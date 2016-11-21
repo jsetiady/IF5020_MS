@@ -16,6 +16,14 @@ public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
 	
+	public boolean login(String email, String password) {
+		if(uc.checkLogin(email, password)!=null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void showListUser() {
 		List<User> listUser = new ArrayList<User>();
 		listUser = uc.getAllUser();
