@@ -21,6 +21,7 @@ import com.model.meeting.MeetingParticipant;
 public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
+	private Scanner s;
 	
 	
 	public void createMeetingView(String meetingInitiatorID) {
@@ -141,7 +142,7 @@ public class MeetingView {
 			System.out.println("--------------------------------");
 			System.out.println("Participant List");
 			arrMP = mc.getParticipantList();
-			printParticipantList(arrMP);
+			printParticipantList(arrMP, false);
 			
 			System.out.println("\n");
 			System.out.println("Menu");
@@ -176,7 +177,7 @@ public class MeetingView {
 		System.out.println("--------------------------------");
 		System.out.println("*Participant list");
 		arrMP = mc.getParticipantList();
-		printParticipantList(arrMP);
+		printParticipantList(arrMP, false);
 		
 		System.out.println("\nEnter participant number that you want to edit (1-" + arrMP.size() + ")");		
 		num = getAndValidateInput(s, "Participant num: ", "number");
@@ -233,15 +234,26 @@ public class MeetingView {
 		}
 	}
 	
-	public void printParticipantList(ArrayList<MeetingParticipant> arrMP) {
+	public void printParticipantList(ArrayList<MeetingParticipant> arrMP, boolean withResponse) {
 		if(arrMP.size()==0) {
 			System.out.println("\nThis meeting has no participant. Add one now\n");
 		} else {
-			for(int i=0;i<arrMP.size();i++) {
-				System.out.println((i+1) + ". " + arrMP.get(i).getEmail() + " " + boolImportantToString(arrMP.get(i).isImportant()));
+			if(withResponse) {
+				System.out.println("No\tResponse\tResponse Date\tEmail\t\t");
+				for(int i=0;i<arrMP.size();i++) {
+					System.out.print((i+1) + "\t");
+					System.out.print("PENDING\t\t");
+					System.out.print("--/--/----\t");
+					System.out.print(arrMP.get(i).getEmail() + "\t");
+					System.out.println(boolImportantToString(arrMP.get(i).isImportant()) + "\t");
+				}
+			} else {
+				for(int i=0;i<arrMP.size();i++) {
+					System.out.println((i+1) + ". " + arrMP.get(i).getEmail() + " " + boolImportantToString(arrMP.get(i).isImportant()));
+				}
 			}
 		}
-	}
+	}	
 	
 	public void cancelMeetingCreation(Scanner s) {		
 		System.out.println("\nMeeting creation has been canceled\nPress enter to continue\n");
@@ -335,54 +347,136 @@ public class MeetingView {
 	}
 	
 	public void displayCreatedMeeting(String email) {
-		Scanner s = new Scanner(System.in);
+		s = new Scanner(System.in);
+		int choice, num;
 		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
 		if(createdMeetingList.isEmpty()) {
 			System.out.println("You have not created any meeting yet.");
 			System.out.println("Press enter to continue");
 			s.nextLine();
 		} else {
-			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
-			for(int i=0;i<createdMeetingList.size();i++) {
-				System.out.print(i+1 + "\t");
-				System.out.print("M" + createdMeetingList.get(i).getId() + "\t\t");
-				System.out.print(getStrMeetingStatus(createdMeetingList.get(i).getMeetingStatus()) + "\t");
-				System.out.print(createdMeetingList.get(i).getCreatedDate() + "\t");
-				System.out.print(createdMeetingList.get(i).getScheduledDate() + "\t");
-				System.out.print(createdMeetingList.get(i).getTitle());
-				System.out.println();
-			}
-			System.out.println("--------------------------------");
-			System.out.println("You have created " + createdMeetingList.size() + " meeting");
-			System.out.println("Press enter to continue");
-			s.nextLine();
+			do {
+				System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+				for(int i=0;i<createdMeetingList.size();i++) {
+					System.out.print(i+1 + "\t");
+					System.out.print("M" + createdMeetingList.get(i).getId() + "\t\t");
+					System.out.print(getStrMeetingStatus(createdMeetingList.get(i).getMeetingStatus()) + "\t");
+					System.out.print(createdMeetingList.get(i).getCreatedDate() + "\t");
+					System.out.print(createdMeetingList.get(i).getScheduledDate() + "\t");
+					System.out.print(createdMeetingList.get(i).getTitle());
+					System.out.println();
+				}
+				System.out.println("--------------------------------");
+				System.out.println("You have created " + createdMeetingList.size() + " meeting\n");
+				
+				
+				System.out.println("Menu");
+				System.out.println("1. View Meeting Details");
+				System.out.println("2. Back");
+				System.out.print("Enter your choice: ");
+				choice = s.nextInt();
+				s.nextLine();
+				
+				switch(choice)  {
+					case 1:
+						System.out.print("Enter meeting number (1-"+createdMeetingList.size()+") : ");
+						num = s.nextInt();
+						s.nextLine();
+						
+						if(num<1 || num>createdMeetingList.size()) {
+							System.out.println("Invalid input");
+							System.out.println("Press enter to continue");
+							s.nextLine();
+						} else {
+							System.out.println();
+							viewCreatedMeetingDetails(createdMeetingList.get(num-1));
+							System.out.println("Press enter to continue");
+							s.nextLine();
+							
+						}
+						break;
+					case 2: break;
+					default:
+						System.out.println("Invalid input, please try again\n");
+						s.nextLine();
+						break;
+				}
+			} while(choice!=2);
 		}
 		
 	}
 	
+	public void viewMeetingByID(String meetingID) {
+		Meeting m = mc.getMeetingByID(meetingID);
+		viewCreatedMeetingDetails(m);
+	}
+	
+	public void viewCreatedMeetingDetails(Meeting m) {
+		System.out.println("MEETING DETAILS");
+		System.out.println("--------------------------------");
+		System.out.println("# Meeting ID\t\t\t: " + m.getId());
+		System.out.println("# Title\t\t\t\t: " + m.getTitle());
+		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
+		System.out.println("# Location\t\t\t: " + m.getLocation());
+		System.out.println("# Duration\t\t\t: " + m.getDuration());
+		System.out.println("# Proposed date range");
+		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
+		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
+		System.out.println("# Max response time");
+		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
+		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
+		System.out.println("---\nParticipant List:");
+		printParticipantList(m.getMeetingParticipant(), true);
+		System.out.println();
+	}
+	
 	public void viewMeetingScheduleByEmail(String email) {
-		Scanner s = new Scanner(System.in);
+		s = new Scanner(System.in);
+		int choice = 0, num;
 		List<Meeting> scheduledMeetingList = mc.getListOfScheduledMeetingByEmail(email);
 		if(scheduledMeetingList.isEmpty()) {
 			System.out.println("You have not listed in any scheduled meeting.");
 			System.out.println("Press enter to continue");
 			s.nextLine();
 		} else {
-			System.out.println("Schedule for " + email);
-			System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
-			for(int i=0;i<scheduledMeetingList.size();i++) {
-				System.out.print(i+1 + "\t");
-				System.out.print("M" + scheduledMeetingList.get(i).getId() + "\t\t");
-				System.out.print(getStrMeetingStatus(scheduledMeetingList.get(i).getMeetingStatus()) + "\t");
-				System.out.print(scheduledMeetingList.get(i).getCreatedDate() + "\t");
-				System.out.print(scheduledMeetingList.get(i).getScheduledDate() + "\t");
-				System.out.print(scheduledMeetingList.get(i).getTitle());
-				System.out.println();
-			}
-			System.out.println("--------------------------------");
-			System.out.println("You are listed as participant in " + scheduledMeetingList.size() + " meeting");
-			System.out.println("Press enter to continue");
-			s.nextLine();
+			do {
+				System.out.println("Schedule for " + email);
+				System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+				for(int i=0;i<scheduledMeetingList.size();i++) {
+					System.out.print(i+1 + "\t");
+					System.out.print("M" + scheduledMeetingList.get(i).getId() + "\t\t");
+					System.out.print(getStrMeetingStatus(scheduledMeetingList.get(i).getMeetingStatus()) + "\t");
+					System.out.print(scheduledMeetingList.get(i).getCreatedDate() + "\t");
+					System.out.print(scheduledMeetingList.get(i).getScheduledDate() + "\t");
+					System.out.print(scheduledMeetingList.get(i).getTitle());
+					System.out.println();
+				}
+				System.out.println("--------------------------------");
+				System.out.println("You are listed as participant in " + scheduledMeetingList.size() + " meeting\n");
+				
+				System.out.println("Menu");
+				System.out.println("1. View Meeting Details");
+				System.out.println("2. Back");
+				System.out.print("Enter your choice: ");
+				choice = s.nextInt();
+				
+				switch(choice)  {
+					case 1:
+						System.out.print("Enter meeting number (1-"+scheduledMeetingList.size()+") : ");
+						num = s.nextInt();
+						System.out.println();
+						viewCreatedMeetingDetails(scheduledMeetingList.get(num-1));
+						System.out.println("Press enter to continue\n\n");
+						s.nextLine();
+						break;
+					case 2: break;
+					default:
+						System.out.println("Invalid input, please try again\n");
+						s.nextLine();
+						s.nextLine();
+						break;
+				}
+			} while(choice!=2);
 		}
 	}
 	
