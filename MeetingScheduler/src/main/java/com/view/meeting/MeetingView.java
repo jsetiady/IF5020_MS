@@ -406,6 +406,11 @@ public class MeetingView {
 		
 	}
 	
+	public void viewMeetingByID(String meetingID) {
+		Meeting m = mc.getMeetingByID(meetingID);
+		viewCreatedMeetingDetails(m);
+	}
+	
 	public void viewCreatedMeetingDetails(Meeting m) {
 		System.out.println("MEETING DETAILS");
 		System.out.println("--------------------------------");

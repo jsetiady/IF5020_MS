@@ -16,6 +16,22 @@ public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
 	
+	public void showListUser() {
+		List<User> listUser = new ArrayList<User>();
+		listUser = uc.getAllUser();
+		
+		System.out.println("|===========================================|");
+		System.out.println("|        IF5021 MEETING SCHEDULER           |");
+		System.out.println("|===========================================|");
+		System.out.println("|LIST USER                                	|");
+		System.out.println("|===========================================|");
+		System.out.println("|First Name\t\t|LastName\t\t|Address\t\t|Phone\t\t|DOB\t\t|Sex\t|Email\t\t");
+		for (User usr: listUser) {
+			System.out.println("|"+usr.getFirstName()+"\t\t|"+usr.getLastName()+"\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
+		}
+		
+	}
+	
 	public void showListUser(List<User> listUser) {
 		listUser = uc.getAllUser();
 		
