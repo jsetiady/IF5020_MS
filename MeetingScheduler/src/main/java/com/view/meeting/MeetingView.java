@@ -111,7 +111,7 @@ public class MeetingView {
 	
 	public void createMeetingAddParticipantView() {
 		Scanner s = new Scanner(System.in);
-		ArrayList<MeetingParticipant> arrMP = new ArrayList<MeetingParticipant>();
+		List<MeetingParticipant> arrMP = new ArrayList<MeetingParticipant>();
 		String email, strImportant;
 		arrMP = mc.getParticipantList();
 		
@@ -136,7 +136,7 @@ public class MeetingView {
 	public void addMeetingParticipantView() {
 		int choice;
 		Scanner s = new Scanner(System.in);
-		ArrayList<MeetingParticipant> arrMP;
+		List<MeetingParticipant> arrMP;
 		do {
 			System.out.println("CREATE MEETING - Add Participant");
 			System.out.println("--------------------------------");
@@ -169,7 +169,7 @@ public class MeetingView {
 	
 	public void createMeetingEditParticipantView(Scanner s) {
 		String email, strImportant;
-		ArrayList<MeetingParticipant> arrMP;
+		List<MeetingParticipant> arrMP;
 		String num, confirm, selected;
 		int choice;
 		
@@ -234,7 +234,7 @@ public class MeetingView {
 		}
 	}
 	
-	public void printParticipantList(ArrayList<MeetingParticipant> arrMP, boolean withResponse) {
+	public void printParticipantList(List<MeetingParticipant> arrMP, boolean withResponse) {
 		s = new Scanner(System.in);
 		int choice, num;
 		if(arrMP.size()==0) {

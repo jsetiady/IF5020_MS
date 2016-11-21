@@ -115,7 +115,7 @@ public class NewInterfaceMain {
 			case "help" : showHelp(role); break;
 			case "exit" : break;
 			
-			default: System.out.println("Command does not exist"); break;
+			default: System.out.println("Unrecognized command option"); break;
 		}
 	}
 	
