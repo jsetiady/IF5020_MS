@@ -19,36 +19,39 @@ public class UserView {
 		listUser = uc.getAllUser();
 		int choice;
 		
-		System.out.println("|======================================================================================================================================|");
-		System.out.println("|                                                       IF5021 MEETING SCHEDULER                                                       |");
-		System.out.println("|======================================================================================================================================|");
-		System.out.println("|LIST USER-----------------------------------------------------------------------------------------------------------------------------|");
-		System.out.println("|======================================================================================================================================|");
-		System.out.println("|Full Name\t\t\t|Address\t\t|Phone\t\t\t|DOB\t\t\t|Sex\t\t|Email\t\t                                                                   |");
-		System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
-		for (User usr: listUser) {
-			System.out.println("|"+usr.getFirstName()+" "+usr.getLastName()+ "\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
-		}
-		System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
-		System.out.println("[1] Add User");
-		System.out.println("[2] Edit User");
-		System.out.println("[3] View Detail User");
-		System.out.println("[4] Back");
-		System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
+		do {
+			System.out.println("|======================================================================================================================================|");
+			System.out.println("|                                                       IF5021 MEETING SCHEDULER                                                       |");
+			System.out.println("|======================================================================================================================================|");
+			System.out.println("|LIST USER-----------------------------------------------------------------------------------------------------------------------------|");
+			System.out.println("|======================================================================================================================================|");
+			System.out.println("|Full Name\t\t\t|Address\t\t|Phone\t\t\t|DOB\t\t\t|Sex\t\t|Email\t\t                                                                   |");
+			System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
+			for (User usr: listUser) {
+				System.out.println("|"+usr.getFirstName()+" "+usr.getLastName()+ "\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
+			}
+			System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
+			//System.out.println("[1] Add User");
+			System.out.println("[1] Edit User");
+			System.out.println("[2] View Detail User");
+			System.out.println("[3] Back");
+			System.out.println("|--------------------------------------------------------------------------------------------------------------------------------------|");
+			
+			
+			System.out.print("Enter your choice: ");
+			
+			MenuView menuView = new MenuView();
+			choice = scan.nextInt();
+			
+			switch(choice) {
+				//case 1: createUser(); break;
+				case 1: editUser(); break;
+				case 2: System.out.println("View Detail User"); break;
+				case 3: menuView.menuHome(); break;
+				default: break;
+			}
+		} while (choice != 3);
 		
-		System.out.print("Enter your choice: ");
-		
-		MenuView menuView = new MenuView();
-		choice = scan.nextInt();
-		scan.nextLine();
-		
-		switch(choice) {
-			case 1: createUser(); break;
-			case 2: editUser(); break;
-			case 3: System.out.println("View Detail User"); break;
-			case 4: menuView.menuHome(); break;
-			default: break;
-		}
 		
 	}
 	
@@ -60,13 +63,29 @@ public class UserView {
 	}
 	
 	public void editUser() {
+		/*
+		 * 1. Minta input data user (Misalnya minta email yang akan diubah)
+		 * 2. Cari user menggunakan finduser menggunakan email yang mau diubah (controller)
+		 * 3. Jalankan method edit untuk menyimpan ke file json (controller)
+		 * */
+		System.out.println("Edit User");
+	}
+	
+	public void delete() {
+		/**
+		 * 1. Minta input email
+		 * 2. Jalankan method delete 
+		 * 3. (get List User dari json, looping, if (user:users), users.remove(user), simpan ke json
+		 * 
+		 */
+		System.out.println("Delete user");
 		
 	}
 	
 	public User createUser() 
 	{
 		User user = new User();
-		
+		scan.nextLine();
 		System.out.println("|===========================================|");
 		System.out.println("|        IF5021 MEETING SCHEDULER           |");
 		System.out.println("|===========================================|");
@@ -83,6 +102,7 @@ public class UserView {
 		System.out.print("|Password         :"); user.setPassword(scan.nextLine());
 		System.out.print("|Admin         	:"); user.setAdmin(scan.nextBoolean());
 		System.out.print("|Active         :"); user.setActive(scan.nextBoolean());
+		scan.nextLine();
 		System.out.println("--------------------------------------------|");
 		System.out.println("[1] Save");
 		System.out.println("[2] Back");
