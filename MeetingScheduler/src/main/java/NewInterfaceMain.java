@@ -18,6 +18,7 @@ public class NewInterfaceMain {
 				System.out.println("Administrator command");
 				System.out.println("---------------------");
 				System.out.println("list-user");
+				System.out.println("detail-user <email>");
 				System.out.println("add-user");
 				System.out.println("edit-user <email>");
 				System.out.println("del-user <email>");
@@ -71,6 +72,12 @@ public class NewInterfaceMain {
 			case "add-user":
 				if (checkCommandRole(1, role))
 					uv.createUser();
+				else
+					showErrorPrivilegeCommand();
+				break;
+			case "detail-user":
+				if (checkCommandRole(1, role))
+					uv.viewUserByEmail(cmd[1]);
 				else
 					showErrorPrivilegeCommand();
 				break;
