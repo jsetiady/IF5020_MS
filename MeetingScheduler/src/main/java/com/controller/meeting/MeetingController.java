@@ -330,11 +330,30 @@ public class MeetingController {
 	}
 	
 	public List<MeetingInvitation> getMeetingInvitationByEmail(String email) {
+		ObjectMapper mapper = new ObjectMapper();
 		List<MeetingInvitation> meetingInvitations = new ArrayList<MeetingInvitation>();
-		
-		//retrieve from json
-		
-		return meetingInvitations;
+		List<MeetingInvitation> meetingInvitationsFiltered = new ArrayList<MeetingInvitation>();
+		try {
+			// load from json, to object List<MeetingInvitation>
+			meetingInvitations = mapper.readValue(new File("resources/invitations.json"), new TypeReference<List<MeetingInvitation>>(){});
+			// for each new List<MeetingInvitation> add to old List<MeetingInvitation>
+			for(int i=0;i<meetingInvitations.size();i++) {
+				if(meetingInvitations.get(i).getMp().getEmail().equals(email)) {
+					meetingInvitationsFiltered.add(meetingInvitations.get(i));
+				}
+			}
+		} catch (JsonParseException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		return meetingInvitationsFiltered;
 	}
 	
 }

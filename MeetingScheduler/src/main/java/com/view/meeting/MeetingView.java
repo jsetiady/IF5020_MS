@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import com.controller.meeting.MeetingController;
 import com.model.meeting.Meeting;
+import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 
 /**
@@ -509,6 +510,34 @@ public class MeetingView {
 						break;
 				}
 			} while(choice!=2);
+		}
+	}
+	
+	public void viewMeetingInvitation(String email) {
+		s = new Scanner(System.in);
+		List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
+		if(invitationList.size()==0) {
+			 System.out.println("You have not invited in any meeting yet");
+			 s.nextLine();
+		} else {
+			System.out.println("No\tCreated Date\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
+			for(int i=0;i<invitationList.size();i++) {
+				System.out.print(i+1 + "\t");
+				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
+				System.out.print(invitationList.get(i).getMeetingID() + "\t\t");
+				System.out.print("Negotiating" + "\t");
+				System.out.print("jeje@gmail.com" + "\t");
+				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
+				System.out.println(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t");
+			}
+		}
+	}
+	
+	public String getStrImportant(boolean important) {
+		if(important) {
+			return "Important participant";
+		} else {
+			return "Ordinary participant";
 		}
 	}
 	

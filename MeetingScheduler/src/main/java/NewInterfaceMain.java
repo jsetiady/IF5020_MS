@@ -107,12 +107,18 @@ public class NewInterfaceMain {
 			case "cancel-meeting <meeting-id>" : break;
 			case "run scheduler <meeting-id>" : break;
 			
-			case "list-invitation" : break;
+			case "list-invitation" : 
+				if (checkCommandRole(3, role))
+					mv.viewMeetingInvitation(email);
+				else
+					showErrorPrivilegeCommand();
+				break;
 			case "detail-invitation <meeting-id>" : break;
 			case "accept-invitation <meeting-id>" : break;
 			case "reject-invitation <meeting-id>" : break;
 			
 			case "help" : showHelp(role); break;
+			case "logout" : break;
 			case "exit" : break;
 			
 			default: System.out.println("Unrecognized command option"); break;
