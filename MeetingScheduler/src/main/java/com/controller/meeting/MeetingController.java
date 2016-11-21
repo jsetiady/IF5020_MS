@@ -158,25 +158,6 @@ public class MeetingController {
 		return str;
 	}
 	
-	public Meeting getMeetingByID(String meetingID) {
-		Meeting m = null;
-		ObjectMapper mapper = new ObjectMapper();
-		//load file json
-		try {
-			m = mapper.readValue(new File("resources/meeting/M"+meetingID.substring(1)+".json"), Meeting.class);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return m;
-	}
-	
 	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {
 		ObjectMapper mapper = new ObjectMapper();
 		Meeting m = new Meeting();
