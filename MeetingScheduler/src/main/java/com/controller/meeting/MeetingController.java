@@ -197,18 +197,17 @@ public class MeetingController {
 		ObjectMapper mapper = new ObjectMapper();
 		Meeting m = new Meeting();
 		List<Meeting> createdMeetingList = new ArrayList<Meeting>();
+		List<Meeting> meetingList = new ArrayList<Meeting>();
 		
 		try {
-			//load meeting_id
-			List<Integer> listMeetingID = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
+			//load all meeting
+			meetingList = mapper.readValue(new File("resources/meetingdata.json"), new TypeReference<List<Meeting>>(){});
 			
 			//for each meeting id
-			for(int i=0;i<listMeetingID.size();i++) {
-				//load file json
-				m = mapper.readValue(new File("resources/meeting/M"+listMeetingID.get(i)+".json"), Meeting.class);
-				if(m.getMeetingInitiator().equals(initiator)) {
+			for(int i=0;i<meetingList.size();i++) {
+				if(meetingList.get(i).getMeetingInitiator().equals(initiator)) {
 					//add Meeting to createdMeetingList
-					createdMeetingList.add(m);
+					createdMeetingList.add(meetingList.get(i));
 				}
 			}
 			
