@@ -16,10 +16,34 @@ import com.model.user.User;
  *
  */
 public class UserController {
+
+
+	ArrayList<User> listUser= new ArrayList<User>();
+	/**
+	public User authenticateUser(String email, String password){
+		try {
+			Object obj = parser.parse(new FileReader("D:\\user.json"));
+			
+			JSONObject object = (JSONObject) obj;
+			
+			String name = (String) object.get("name");
+			System.out.println(email.equals(name));
+			
+		} catch (Exception e) {
+			// handle exception
+			System.out.println("Error");
+		}
+		//if (FOUND) then
+		//return User object
+		//else
+		//return null
+		
+		return null;
+	}
+	*/
 	
 
-	List<User> listUser= new ArrayList<User>();
-	public List<User> getAllUser() {
+	public ArrayList<User> getAllUser() {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
@@ -30,9 +54,24 @@ public class UserController {
 		return listUser;
 	}
 	
+
 	public void editUser() {
 		System.out.println("Edit User");
 	}
+
+	public User getUserByEmail(String email) {
+		List<User> listuser = new ArrayList<User>();
+		listuser = getAllUser();
+		User user = null;
+		for(int i=0;i<listuser.size();i++) {
+			if(listuser.get(i).getEmail().equals(email)) {
+				user = listuser.get(i);
+			}
+		}
+		return user;
+	}
+	
+
 	
 	public void save () {
 		ObjectMapper mapper = new ObjectMapper();
@@ -107,6 +146,7 @@ public class UserController {
 			}
 			
 		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 		
@@ -131,7 +171,10 @@ public class UserController {
 		}
 		
 		return usr;
+
 	}
 	
-	
 }
+	
+	
+

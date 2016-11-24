@@ -1,5 +1,6 @@
 package com.view.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +16,27 @@ public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
 	
+	public User login(String email, String password) {
+		return uc.checkLogin(email, password);
+	}
+	
+	public void showListUser() {
+		List<User> listUser = new ArrayList<User>();
+		listUser = uc.getAllUser();
+		
+		System.out.println("|===========================================|");
+		System.out.println("|        IF5021 MEETING SCHEDULER           |");
+		System.out.println("|===========================================|");
+		System.out.println("|LIST USER                                	|");
+		System.out.println("|===========================================|");
+		System.out.println("|First Name\t\t|LastName\t\t|Address\t\t|Phone\t\t|DOB\t\t|Sex\t|Email\t\t");
+		for (User usr: listUser) {
+			System.out.println("|"+usr.getFirstName()+"\t\t|"+usr.getLastName()+"\t\t|"+usr.getAddress()+"\t\t|"+usr.getPhone()+"\t\t|"+usr.getDob()+"\t\t|"+usr.getSex()+"\t\t|"+usr.getEmail());
+		}
+		
+	}
+	
+
 	public void showListUser(List<User> listUser) {
 		listUser = uc.getAllUser();
 		int choice;
@@ -55,11 +77,20 @@ public class UserView {
 		
 	}
 	
+	
+	public void viewUserByEmail(String email) {
+		viewDetailUser(uc.getUserByEmail(email));
+	}
+	
 	public void viewDetailUser (User user) {
-		System.out.println("First Name :" + user.getFirstName());
-		System.out.println("Last Name :" + user.getLastName());
-		System.out.println("Address :" + user.getAddress());
-		System.out.println("Phone :" + user.getPhone());
+		if(user==null) {
+			System.out.println("User not found");
+		} else {
+			System.out.println("First Name :" + user.getFirstName());
+			System.out.println("Last Name :" + user.getLastName());
+			System.out.println("Address :" + user.getAddress());
+			System.out.println("Phone :" + user.getPhone());
+		}
 	}
 	
 	public void editUser(String email) {
@@ -90,7 +121,6 @@ public class UserView {
 	public User createUser() 
 	{
 		User user = new User();
-		scan.nextLine();
 		System.out.println("|===========================================|");
 		System.out.println("|        IF5021 MEETING SCHEDULER           |");
 		System.out.println("|===========================================|");
