@@ -147,6 +147,7 @@ public class MeetingController {
 	
 	public void saveMeetingCreation() {
 		List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
+		List<Meeting> meeting;
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {
@@ -159,7 +160,15 @@ public class MeetingController {
 			
 			//save meetingDraft to json
 			System.out.println("Meeting id: M" + meetingDraft.getId());
-			mapper.writeValue(new File(meetingPath + "M" +  meetingDraft.getId() + ".json"), meetingDraft);
+			
+			//save meeting draft file
+			try {
+				meeting = mapper.readValue(new File("resources/meetingdata.json"), new TypeReference<List<Meeting>>(){});
+				meeting.add(meetingDraft);
+				mapper.writeValue(new File("resources/meetingdata.json"), meeting);
+			} catch(Exception e) {
+				System.out.println("Error in access file. Please check resources/meetingdata.json");
+			}
 			
 			//add new meeting id to json meeting_id
 			List<Integer> meetingIds = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
@@ -236,12 +245,15 @@ public class MeetingController {
 			m = mapper.readValue(new File("resources/meeting/M"+Integer.parseInt(meetingID.substring(1))+".json"), Meeting.class);
 		} catch (JsonParseException e) {
 			System.out.println("You don't have privilege to view this meeting");
+			m = null;
 			//e.printStackTrace();
 		} catch (JsonMappingException e) {
 			System.out.println("You don't have privilege to view this meeting");
+			m = null;
 			//e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("You don't have privilege to view this meeting");
+			m = null;
 			//e.printStackTrace();
 		}
 		return m;

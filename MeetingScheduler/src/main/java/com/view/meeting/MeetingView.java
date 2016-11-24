@@ -379,7 +379,7 @@ public class MeetingView {
 	
 	public void displayCreatedMeeting(String email) {
 		s = new Scanner(System.in);
-		int choice, num;
+		int choice = 0, num;
 		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
 		if(createdMeetingList.isEmpty()) {
 			System.out.println("You have not created any meeting yet.");
@@ -405,7 +405,14 @@ public class MeetingView {
 				System.out.println("1. View Meeting Details");
 				System.out.println("2. Back");
 				System.out.print("Enter your choice: ");
-				choice = s.nextInt();
+				try {
+					choice = s.nextInt();
+					
+				}
+				catch(Exception e) {
+					System.out.println("Input is not recognized");
+				}
+				
 				s.nextLine();
 				
 				switch(choice)  {
@@ -423,7 +430,6 @@ public class MeetingView {
 							viewCreatedMeetingDetails(createdMeetingList.get(num-1));
 							System.out.println("Press enter to continue");
 							s.nextLine();
-							
 						}
 						break;
 					case 2: break;
@@ -439,7 +445,11 @@ public class MeetingView {
 	
 	public void viewMeetingByID(String meetingID) {
 		Meeting m = mc.getMeetingByID(meetingID);
-		viewCreatedMeetingDetails(m);
+		if(m==null) {
+			System.out.println("You don't have privilege to view this meeting");
+		} else {
+			viewCreatedMeetingDetails(m);
+		}
 	}
 	
 	public void viewCreatedMeetingDetails(Meeting m) {
