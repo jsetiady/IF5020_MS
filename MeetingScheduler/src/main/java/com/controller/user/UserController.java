@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,43 +17,12 @@ import com.model.user.User;
  */
 public class UserController {
 
-	ArrayList<User> listUser= new ArrayList<User>();
-	/**
-	public User authenticateUser(String email, String password){
-		try {
-			Object obj = parser.parse(new FileReader("D:\\user.json"));
-			
-			JSONObject object = (JSONObject) obj;
-			
-			String name = (String) object.get("name");
-			System.out.println(email.equals(name));
-			
-		} catch (Exception e) {
-			// handle exception
-			System.out.println("Error");
-		}
-		//if (FOUND) then
-		//return User object
-		//else
-		//return null
-		
-		return null;
-	}
-	*/
-	
-	/**
-	
-	public void createUser(User user) {
-		
-	}
-	
-	public void save(User user) {
-		listUser.add(user);
-	}
-	
-	*/
 
-	public List<User> getAllUser() {
+	ArrayList<User> listUser= new ArrayList<User>();
+	
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+	public ArrayList<User> getAllUser() {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
@@ -64,6 +33,7 @@ public class UserController {
 		return listUser;
 	}
 	
+
 	public User getUserByEmail(String email) {
 		List<User> listuser = new ArrayList<User>();
 		listuser = getAllUser();
@@ -75,7 +45,7 @@ public class UserController {
 		}
 		return user;
 	}
-	
+
 	
 	public void save () {
 		ObjectMapper mapper = new ObjectMapper();
@@ -89,8 +59,26 @@ public class UserController {
 			//Convert object to Json String
 			 jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(listUser);
 			 
-			 //System.out.println(jsonString);
-			 
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void update (List<User> listUser) {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonString;
+		
+		try {
+			//Convert object to JSON string and save into file directory
+			mapper.writeValue(new File("D:\\user.json"), listUser);
+			
+			//Convert object to Json String
+			 jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(listUser);
 			 
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
@@ -100,6 +88,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public void createDummyUser() {
 		User user = new User();
@@ -131,7 +120,9 @@ public class UserController {
 		listUser.add(user2);
 	}
 	
+	
 	public void add(User user) {
+		listUser = getAllUser();
 		listUser.add(user);
 	}
 	
@@ -149,13 +140,79 @@ public class UserController {
 				} 			
 			}
 			
-			
 		} catch (Exception e) {
-			// handle exception
+
+			e.printStackTrace();
 		}
 		
 		return usr;
 	}
 	
+	public User findUserByEmail(String email) {
+		ObjectMapper mapper = new ObjectMapper();
+		User usr = null;
+		try {
+			// Convert JSON String from file into object
+			List<User> listUser = mapper.readValue(new File("D:\\user.json"), new TypeReference<List<User>>(){});
+			
+			for (User user: listUser) {
+				if (email.equals(user.getEmail())) {
+					usr = user;
+				} 			
+			}
+			
+		} catch (Exception e) {
+		e.printStackTrace();
+		}
+		
+		return usr;
+
+	}
+	
+	public void editUser(User userNew, String email) {
+		//1 load dara dari json
+		ObjectMapper mapper = new ObjectMapper();
+		User userOld;
+		try {
+			List<User> listUser = mapper.readValue(new File("D:\\user.json"), new TypeReference<List<User>>(){});
+			
+			for (int i=0; i<listUser.size(); i++) {
+				userOld = listUser.get(i);
+				if (userOld.getEmail().equals(email)) {
+					listUser.set(i, userNew);
+				}
+				/**
+				if (listUser.get(i).getEmail().equals(email)) {
+					
+				}
+				*/
+			}
+			update(listUser);
+		} catch (Exception e) {
+			System.out.println("Data tidak ditemukan...!");
+		}
+	}
+	
+	public void deleteUser(String email) {
+		ObjectMapper mapper = new ObjectMapper();
+		User user;
+		try {
+			List<User> listUser = mapper.readValue(new File("D:\\user.json"), new TypeReference<List<User>>(){});
+			
+			for (int i=0; i<listUser.size(); i++) {
+				user = listUser.get(i);
+				
+				if (user.getEmail().equals(email)) {
+					listUser.remove(i);
+				}
+			}
+			update(listUser);
+		} catch (Exception e) {
+			System.out.println("Data tidak dapat dihapus");
+		}
+	} 
 	
 }
+	
+	
+

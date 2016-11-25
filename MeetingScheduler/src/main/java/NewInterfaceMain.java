@@ -76,14 +76,26 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-user":
-				if (checkCommandRole(1, role))
+				if (checkCommandRole(1, role)) {
 					uv.viewUserByEmail(cmd[1]);
+				}
 				else
 					showErrorPrivilegeCommand();
 				break;
 				
-			case "edit-user": break;
-			case "del-user": break;
+			case "edit-user": 
+				if (checkCommandRole(1, role)) {
+					uv.editUser(cmd[1]);
+				} else 
+					showErrorPrivilegeCommand();
+				break;
+			case "del-user": 
+				if (checkCommandRole(1, role)) {
+					uv.deleteUser(cmd[1]);
+				} else {
+					showErrorPrivilegeCommand();
+				}
+				break;
 			
 			case "create-meeting" :
 				if (checkCommandRole(2, role))
@@ -119,7 +131,8 @@ public class NewInterfaceMain {
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
-			case "exit" : break;
+			case "exit" : System.exit(0);
+				break;
 			
 			default: System.out.println("Unrecognized command option"); break;
 		}
@@ -142,10 +155,13 @@ public class NewInterfaceMain {
 		int role;
 		boolean login = false;
 		
-		System.out.println("Welcome to Meeting Scheduler");
+		System.out.println("+-------------------------------------------+");
+		System.out.println("|LOGIN                                      |");
+		System.out.println("+-------------------------------------------+");
 		do {
-			System.out.print("Please enter your email\t\t: "); email = s.nextLine();
-			System.out.print("Please enter your password\t: "); password = s.nextLine();
+			System.out.print(" Email      : "); email = s.nextLine();
+			System.out.print(" Password   : "); password = s.nextLine();
+			System.out.println();
 			user = uv.login(email, password);
 			if(user!=null) {
 				login = true;

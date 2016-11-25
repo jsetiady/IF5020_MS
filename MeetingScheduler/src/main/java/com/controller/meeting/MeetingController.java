@@ -22,8 +22,6 @@ import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
 import com.utilities.JSONParser;
 
-import examples.Staff;
-
 /**
  * @author jessiesetiady
  *
