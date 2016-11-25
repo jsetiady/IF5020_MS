@@ -29,11 +29,13 @@ import examples.Staff;
  *
  */
 public class MeetingController {
-	private Meeting m, meetingDraft;
+	private Meeting meetingDraft;
+	
 	private JSONParser<Meeting> jParserMeeting = new JSONParser<Meeting>(Meeting.class);
 	private JSONParser<Integer> jParserInteger = new JSONParser<Integer>(Integer.class);
 	private JSONParser<MeetingInvitation> jParserInvitation = new JSONParser<MeetingInvitation>(MeetingInvitation.class);
 	private JSONParser<Integer> jParserMeetingID = new JSONParser<Integer>(Integer.class);
+	
 	private String fileMeetingData = "resources/meetingdata.json";
 	private String fileMeetingId = "resources/meeting_id.json";
 	private String fileMeetingInvitation = "resources/invitations.json";
@@ -132,14 +134,10 @@ public class MeetingController {
 		List<Meeting> meetingList = new ArrayList<Meeting>();
 		
 		meetingList = jParserMeeting.load(fileMeetingData);
-		System.out.println("sampe sini " + meetingList.size());
 		for(int i=0;i<meetingList.size();i++) {
 			if(meetingList.get(i).getMeetingInitiator().equals(initiator)) {
-				
-				//add Meeting to createdMeetingList
 				createdMeetingList.add(meetingList.get(i));
 			}
-			
 		}
 			
 		return createdMeetingList;
