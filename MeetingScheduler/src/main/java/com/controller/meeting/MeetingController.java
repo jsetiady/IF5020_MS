@@ -20,6 +20,7 @@ import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
+import com.utilities.JSONParser;
 
 import examples.Staff;
 
@@ -29,7 +30,14 @@ import examples.Staff;
  */
 public class MeetingController {
 	private Meeting m, meetingDraft;
-	private String meetingPath = "resources/meeting/";
+	private JSONParser<Meeting> jParserMeeting = new JSONParser<Meeting>();
+	private JSONParser<Integer> jParserInteger = new JSONParser<Integer>();
+	private JSONParser<MeetingInvitation> jParserInvitation = new JSONParser<MeetingInvitation>();
+	private JSONParser<Integer> jParserMeetingID = new JSONParser<Integer>();
+	private String fileMeetingData = "resources/meetingdata.json";
+	private String fileMeetingId = "resources/meeting_id.json";
+	private String fileMeetingInvitation = "resources/invitations.json";
+	private String fileLastMeetingID = "resources/lastid";
 	
 	public void createMeetingDraft(String title, String agenda, String location,
 			int duration, String proposedStartDate, String proposedEndDate,
@@ -44,21 +52,10 @@ public class MeetingController {
 	public int getNextMeetingID() {
 		int id = 0;
 		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			id =  mapper.readValue(new File("resources/lastid"), Integer.class);
-			id++;
-			mapper.writeValue(new File("resources/lastid"), id);
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}
+		id = jParserMeetingID.loadObj(fileLastMeetingID);
+		id++;
+		
+		jParserMeetingID.writeObj(id, fileLastMeetingID);
 		
 		return id;
 	}
@@ -87,6 +84,118 @@ public class MeetingController {
 		return false;
 	}
 	
+	
+	public String dateArithmetic(String strDate, int i) {
+		String dt = strDate;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Calendar c = Calendar.getInstance();
+		try {
+			c.setTime(sdf.parse(dt));
+		} catch (ParseException e) {
+			System.out.println("Error when parsing date");
+			e.printStackTrace();
+		}
+		c.add(Calendar.DATE, i);  // number of days to add
+		dt = sdf.format(c.getTime());  // dt is now the new date
+		return dt;
+	}
+	
+	 public int daysBetween(Date d1, Date d2){
+		 return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+	}
+	
+	public void saveMeetingCreation() {
+		List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
+		//generate time slot
+		meetingTimeSlots = generateMeetingTimeSlot(meetingDraft.getDuration(), meetingDraft.getProposedStartDate(), meetingDraft.getProposedEndDate());
+		
+		//add to meeting instance
+		meetingDraft.setMeetingTimeSlots(meetingTimeSlots);
+		
+		//save meetingDraft to json
+		System.out.println("Meeting id: M" + meetingDraft.getId());
+		
+		//save meeting draft file
+		jParserMeeting.append(fileMeetingData, meetingDraft);
+		
+		//add new meeting id to json meeting_id
+		jParserInteger.append(fileMeetingId, (Integer) meetingDraft.getId());
+		
+		//generate invitation
+		List<MeetingInvitation> mis = generateMeetingInvitation(meetingDraft.getId(), meetingDraft.getMeetingParticipant(), meetingDraft.getMeetingInitiator());
+		saveMeetingInvitation(mis);
+	}
+	
+	
+	public List<Meeting> getListOfCreatedMeeting(String initiator) {
+		ObjectMapper mapper = new ObjectMapper();
+		Meeting m = new Meeting();
+		List<Meeting> createdMeetingList = new ArrayList<Meeting>();
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		
+		meetingList = jParserMeeting.load(fileMeetingData);
+		for(int i=0;i<meetingList.size();i++) {
+			if(meetingList.get(i).getMeetingInitiator().equals(initiator)) {
+				
+				//add Meeting to createdMeetingList
+				createdMeetingList.add(meetingList.get(i));
+			}
+		}
+			
+		return createdMeetingList;
+	}
+	
+	public String getStrMeetingStatus(int meetingStatus) {
+		String str = "";
+		switch(meetingStatus) {
+			case '0': str = "NEGOTIATING"; break;
+			case '9': str = "CANCELED"; break;
+			case '1': str = "CONFIRMED"; break;
+			case '2': str = "RUNNING"; break;
+			case '3': str = "FINISHED"; break;
+		}
+		return str;
+	}
+	
+	public Meeting getMeetingByID(String meetingID) {
+		List<Meeting> meeting = new ArrayList<Meeting>();
+		
+		meeting = jParserMeeting.load(fileMeetingData);
+		
+		for(int i=0;i<meeting.size();i++) {
+			if(meeting.get(i).getId() == Integer.parseInt(meetingID.substring(1))) {
+				return meeting.get(i);
+			}
+		}
+		
+		return null;
+	}
+	
+	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		List<Meeting> scheduledMeetingList = new ArrayList<Meeting>();
+		List<MeetingParticipant> participantList = new ArrayList<MeetingParticipant>();
+		
+		meetingList = jParserMeeting.load(fileMeetingData);
+		
+		for(int i=0;i<meetingList.size();i++) {
+			if(meetingList.get(i).getMeetingStatus()==meetingList.get(i).SCHEDULED) {
+				participantList = meetingList.get(i).getMeetingParticipant();
+				
+				for(int j=0;j<participantList.size();j++) {
+					if(participantList.get(j).getEmail().equals(participant)) {
+						//add Meeting to scheduledMeetingList
+						scheduledMeetingList.add(meetingList.get(i));
+					}
+				}
+			}
+		}
+		return scheduledMeetingList;
+	}
+	
+	
+	
+	//invitation
 	
 	public List<MeetingTimeSlot> generateMeetingTimeSlot(int duration, String meetingStartDate, String meetingEndDate) {
 		String[] startTime = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"};
@@ -125,184 +234,7 @@ public class MeetingController {
 		}
 		return meetingTimeSlots;
 	}
-	
-	public String dateArithmetic(String strDate, int i) {
-		String dt = strDate;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Calendar c = Calendar.getInstance();
-		try {
-			c.setTime(sdf.parse(dt));
-		} catch (ParseException e) {
-			System.out.println("Error when parsing date");
-			e.printStackTrace();
-		}
-		c.add(Calendar.DATE, i);  // number of days to add
-		dt = sdf.format(c.getTime());  // dt is now the new date
-		return dt;
-	}
-	
-	 public int daysBetween(Date d1, Date d2){
-		 return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-	}
-	
-	public void saveMeetingCreation() {
-		List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
-		List<Meeting> meeting;
-		ObjectMapper mapper = new ObjectMapper();
 
-		try {
-			
-			//generate time slot
-			meetingTimeSlots = generateMeetingTimeSlot(meetingDraft.getDuration(), meetingDraft.getProposedStartDate(), meetingDraft.getProposedEndDate());
-			
-			//add to meeting instance
-			meetingDraft.setMeetingTimeSlots(meetingTimeSlots);
-			
-			//save meetingDraft to json
-			System.out.println("Meeting id: M" + meetingDraft.getId());
-			
-			//save meeting draft file
-			try {
-				meeting = mapper.readValue(new File("resources/meetingdata.json"), new TypeReference<List<Meeting>>(){});
-				meeting.add(meetingDraft);
-				mapper.writeValue(new File("resources/meetingdata.json"), meeting);
-			} catch(Exception e) {
-				System.out.println("Error in access file. Please check resources/meetingdata.json");
-			}
-			
-			//add new meeting id to json meeting_id
-			List<Integer> meetingIds = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
-			meetingIds.add(meetingDraft.getId());
-			mapper.writeValue(new File("resources/meeting_id.json"),  meetingIds);
-			
-			//generate invitation
-			List<MeetingInvitation> mis = generateMeetingInvitation(meetingDraft.getId(), meetingDraft.getMeetingParticipant(), meetingDraft.getMeetingInitiator());
-			saveMeetingInvitation(mis);
-			
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	public List<Meeting> getListOfCreatedMeeting(String initiator) {
-		ObjectMapper mapper = new ObjectMapper();
-		Meeting m = new Meeting();
-		List<Meeting> createdMeetingList = new ArrayList<Meeting>();
-		List<Meeting> meetingList = new ArrayList<Meeting>();
-		
-		try {
-			//load all meeting
-			meetingList = mapper.readValue(new File("resources/meetingdata.json"), new TypeReference<List<Meeting>>(){});
-			
-			//for each meeting id
-			for(int i=0;i<meetingList.size();i++) {
-				if(meetingList.get(i).getMeetingInitiator().equals(initiator)) {
-					//add Meeting to createdMeetingList
-					createdMeetingList.add(meetingList.get(i));
-				}
-			}
-			
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}	
-		return createdMeetingList;
-	}
-	
-	public String getStrMeetingStatus(int meetingStatus) {
-		String str = "";
-		switch(meetingStatus) {
-			case '0': str = "NEGOTIATING"; break;
-			case '9': str = "CANCELED"; break;
-			case '1': str = "CONFIRMED"; break;
-			case '2': str = "RUNNING"; break;
-			case '3': str = "FINISHED"; break;
-		}
-		return str;
-	}
-	
-	public Meeting getMeetingByID(String meetingID) {
-		Meeting m = null;
-		ObjectMapper mapper = new ObjectMapper();
-		//load file json
-		try {
-			m = mapper.readValue(new File("resources/meeting/M"+Integer.parseInt(meetingID.substring(1))+".json"), Meeting.class);
-		} catch (JsonParseException e) {
-			System.out.println("You don't have privilege to view this meeting");
-			m = null;
-			//e.printStackTrace();
-		} catch (JsonMappingException e) {
-			System.out.println("You don't have privilege to view this meeting");
-			m = null;
-			//e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("You don't have privilege to view this meeting");
-			m = null;
-			//e.printStackTrace();
-		}
-		return m;
-	}
-	
-	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {
-		ObjectMapper mapper = new ObjectMapper();
-		Meeting m = new Meeting();
-		List<Meeting> scheduledMeetingList = new ArrayList<Meeting>();
-		List<MeetingParticipant> participantList = new ArrayList<MeetingParticipant>();
-		
-		try {
-			//load meeting_id
-			List<Integer> listMeetingID = mapper.readValue(new File("resources/meeting_id.json"), new TypeReference<List<Integer>>(){});
-			
-			//for each meeting id
-			for(int i=0;i<listMeetingID.size();i++) {
-				//load file json
-				m = mapper.readValue(new File("resources/meeting/M"+listMeetingID.get(i)+".json"), Meeting.class);
-				if(m.getMeetingStatus()==m.SCHEDULED) {
-					participantList = m.getMeetingParticipant();
-					
-					for(int j=0;j<participantList.size();j++) {
-						if(participantList.get(j).getEmail().equals(participant)) {
-							//add Meeting to createdMeetingList
-							scheduledMeetingList.add(m);
-						}
-					}
-					
-				}
-				
-			}
-			
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}	
-		return scheduledMeetingList;
-	}
-	
-	
-	
-	//invitation
-	
 	public List<MeetingInvitation> generateMeetingInvitation(int meetingID, List<MeetingParticipant> mps, String initiator) {
 		List<MeetingInvitation> meetingInvitations = new ArrayList<MeetingInvitation>();
 		for(int i=0;i<mps.size();i++) {
@@ -313,55 +245,29 @@ public class MeetingController {
 		return meetingInvitations;
 	}
 	
+	
+	
 	public void saveMeetingInvitation(List<MeetingInvitation> mis) {
-		ObjectMapper mapper = new ObjectMapper();
-		List<MeetingInvitation> oldMeetingInvitationList = new ArrayList<MeetingInvitation>();
-		
-		try {
-			// load from json, to object List<MeetingInvitation>
-			oldMeetingInvitationList = mapper.readValue(new File("resources/invitations.json"), new TypeReference<List<MeetingInvitation>>(){});
-			// for each new List<MeetingInvitation> add to old List<MeetingInvitation>
-			for(int i=0;i<mis.size();i++) {
-				oldMeetingInvitationList.add(mis.get(i));
-			}
-			//save to json
-			mapper.writeValue(new File("resources/invitations.json"), oldMeetingInvitationList);
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
+		List<MeetingInvitation> meetingInvitation = new ArrayList<MeetingInvitation>();
+		meetingInvitation = jParserInvitation.load(fileMeetingInvitation);
+		for(int i=0;i<mis.size();i++) {
+			meetingInvitation.add(mis.get(i));
 		}
+		jParserInvitation.write(meetingInvitation, fileMeetingInvitation);
 		
 		System.out.println("Meeting invitation has been sent to participants");
 	}
 	
 	public List<MeetingInvitation> getMeetingInvitationByEmail(String email) {
-		ObjectMapper mapper = new ObjectMapper();
 		List<MeetingInvitation> meetingInvitations = new ArrayList<MeetingInvitation>();
 		List<MeetingInvitation> meetingInvitationsFiltered = new ArrayList<MeetingInvitation>();
-		try {
-			// load from json, to object List<MeetingInvitation>
-			meetingInvitations = mapper.readValue(new File("resources/invitations.json"), new TypeReference<List<MeetingInvitation>>(){});
-			// for each new List<MeetingInvitation> add to old List<MeetingInvitation>
-			for(int i=0;i<meetingInvitations.size();i++) {
-				if(meetingInvitations.get(i).getMp().getEmail().equals(email)) {
-					meetingInvitationsFiltered.add(meetingInvitations.get(i));
-				}
+		
+		//load meeting invitation
+		meetingInvitations = jParserInvitation.load(fileMeetingInvitation);
+		for(int i=0;i<meetingInvitations.size();i++) {
+			if(meetingInvitations.get(i).getMp().getEmail().equals(email)) {
+				meetingInvitationsFiltered.add(meetingInvitations.get(i));
 			}
-		} catch (JsonParseException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
 		}
 				
 		return meetingInvitationsFiltered;

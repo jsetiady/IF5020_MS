@@ -532,10 +532,15 @@ public class MeetingView {
 		} else {
 			System.out.println("No\tCreated Date\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
 			for(int i=0;i<invitationList.size();i++) {
+				
+				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());
+				
+				//TODO load meeting
+				
 				System.out.print(i+1 + "\t");
 				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
 				System.out.print(invitationList.get(i).getMeetingID() + "\t\t");
-				System.out.print("Negotiating" + "\t");
+				System.out.print(invitationList.get(i).getMeetingID() + "\t");
 				System.out.print("jeje@gmail.com" + "\t");
 				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
 				System.out.println(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t");
