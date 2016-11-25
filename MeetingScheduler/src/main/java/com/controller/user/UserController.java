@@ -193,6 +193,25 @@ public class UserController {
 		}
 	}
 	
+	public void deleteUser(String email) {
+		ObjectMapper mapper = new ObjectMapper();
+		User user;
+		try {
+			List<User> listUser = mapper.readValue(new File("D:\\user.json"), new TypeReference<List<User>>(){});
+			
+			for (int i=0; i<listUser.size(); i++) {
+				user = listUser.get(i);
+				
+				if (user.getEmail().equals(email)) {
+					listUser.remove(i);
+				}
+			}
+			update(listUser);
+		} catch (Exception e) {
+			System.out.println("Data tidak dapat dihapus");
+		}
+	} 
+	
 }
 	
 	

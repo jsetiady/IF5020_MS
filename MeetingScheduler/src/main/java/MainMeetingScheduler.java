@@ -44,7 +44,7 @@ public class MainMeetingScheduler {
 				}
 				break;
 			case 2:
-				userView.showListUser(controller.getAllUser());
+				//userView.showListUser(controller.getAllUser());
 				break;
 			case 3:
 				//userView.findUser();

@@ -21,8 +21,6 @@ import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
 
-import examples.Staff;
-
 /**
  * @author jessiesetiady
  *

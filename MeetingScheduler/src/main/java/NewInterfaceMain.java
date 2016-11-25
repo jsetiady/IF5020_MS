@@ -89,7 +89,13 @@ public class NewInterfaceMain {
 				} else 
 					showErrorPrivilegeCommand();
 				break;
-			case "del-user": break;
+			case "del-user": 
+				if (checkCommandRole(1, role)) {
+					uv.deleteUser(cmd[1]);
+				} else {
+					showErrorPrivilegeCommand();
+				}
+				break;
 			
 			case "create-meeting" :
 				if (checkCommandRole(2, role))
@@ -148,10 +154,13 @@ public class NewInterfaceMain {
 		int role;
 		boolean login = false;
 		
-		System.out.println("Welcome to Meeting Scheduler");
+		System.out.println("+-------------------------------------------+");
+		System.out.println("|LOGIN                                      |");
+		System.out.println("+-------------------------------------------+");
 		do {
-			System.out.print("Please enter your email\t\t: "); email = s.nextLine();
-			System.out.print("Please enter your password\t: "); password = s.nextLine();
+			System.out.print(" Email      : "); email = s.nextLine();
+			System.out.print(" Password   : "); password = s.nextLine();
+			System.out.println();
 			user = uv.login(email, password);
 			if(user!=null) {
 				login = true;
