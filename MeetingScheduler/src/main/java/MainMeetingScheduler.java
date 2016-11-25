@@ -19,8 +19,8 @@ public class MainMeetingScheduler {
 		MenuView menu = new MenuView();
 		UserView userView = new UserView();
 		UserController controller = new UserController();
-		//controller.createDummyUser();
-		//controller.save();
+		controller.createDummyUser();
+		controller.save();
 		
 		menu.menuLogin();
 		
@@ -31,7 +31,7 @@ public class MainMeetingScheduler {
 			case 1:
 				//@putra
 				//call menu for manage user
-				controller.add(userView.createUser());
+				//controller.add(userView.createUser());
 				int option;
 				option = scan.nextInt();
 				scan.nextLine();
@@ -47,7 +47,7 @@ public class MainMeetingScheduler {
 				userView.showListUser(controller.getAllUser());
 				break;
 			case 3:
-				userView.findUser();
+				//userView.findUser();
 				break;
 			case 4:
 				System.out.println("Thanks for using IF5021 Meeting Scheduler");

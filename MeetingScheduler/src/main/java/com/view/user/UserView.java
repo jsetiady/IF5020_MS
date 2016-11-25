@@ -86,24 +86,16 @@ public class UserView {
 		if(user==null) {
 			System.out.println("User not found");
 		} else {
-			System.out.println("First Name :" + user.getFirstName());
-			System.out.println("Last Name :" + user.getLastName());
-			System.out.println("Address :" + user.getAddress());
-			System.out.println("Phone :" + user.getPhone());
+			System.out.println(" First Name	\t:" + user.getFirstName());  
+			System.out.println(" Last Name 	\t:" + user.getLastName()); 
+			System.out.println(" Address	\t:" + user.getAddress()); 
+			System.out.println(" Phone	\t\t:" + user.getPhone());
+			System.out.println(" DOB	\t\t:" + user.getDob()); 
+			System.out.println(" Sex	\t\t:" + user.getSex()); 
+			System.out.println(" Email	\t\t:" + user.getEmail());
 		}
 	}
 	
-	public void editUser(String email) {
-		/*
-		 * 1. Minta input data user (Misalnya minta email yang akan diubah)
-		 * 2. Cari user menggunakan finduser menggunakan email yang mau diubah (controller)
-		 * 3. Jalankan method edit untuk menyimpan ke file json (controller)
-		 * */
-		email = scan.nextLine();
-
-		
-		System.out.println("Edit User");
-	}
 	
 	public void delete() {
 		String email;
@@ -118,7 +110,7 @@ public class UserView {
 		
 	}
 	
-	public User createUser() 
+	public void createUser() 
 	{
 		User user = new User();
 		System.out.println("|===========================================|");
@@ -139,17 +131,37 @@ public class UserView {
 		System.out.print("|Active         :"); user.setActive(scan.nextBoolean());
 		scan.nextLine();
 		System.out.println("--------------------------------------------|");
-		System.out.println("[1] Save");
-		System.out.println("[2] Back");
-		System.out.println("--------------------------------------------|");
 		
-		
-		return user;
-		
+		uc.add(user);
+		uc.save();
 	}
 	
-	public void findUser() {
-		String email;
+	public void editUser(String email) {
+		User user = new User();
+		System.out.println("|===========================================|");
+		System.out.println("|        IF5021 MEETING SCHEDULER           |");
+		System.out.println("|===========================================|");
+		System.out.println("|CREATE USER                                |");
+		System.out.println("|===========================================|");
+		System.out.print("|First Name       :"); user.setFirstName(scan.nextLine()); 
+		System.out.print("|Last Name        :"); user.setLastName(scan.nextLine());
+		System.out.print("|Address          :"); user.setAddress(scan.nextLine());
+		System.out.print("|Phone            :"); user.setPhone(scan.nextLine());
+		System.out.print("|DOB              :"); user.setDob(scan.nextLine());
+		System.out.print("|Sex              :"); user.setSex(scan.next(".").charAt(0));
+		scan.nextLine();
+		user.setEmail(email);
+		System.out.print("|Password         :"); user.setPassword(scan.nextLine());
+		System.out.print("|Admin         	:"); user.setAdmin(scan.nextBoolean());
+		System.out.print("|Active         	:"); user.setActive(scan.nextBoolean());
+		
+		uc.editUser(user, email);
+		
+	
+	}
+	
+	public void findUser(String email) {
+		//String email;
 		System.out.print("Masukkan email :");
 		
 		email = scan.nextLine();

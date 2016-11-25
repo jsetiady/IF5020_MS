@@ -76,13 +76,19 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-user":
-				if (checkCommandRole(1, role))
+				if (checkCommandRole(1, role)) {
 					uv.viewUserByEmail(cmd[1]);
+				}
 				else
 					showErrorPrivilegeCommand();
 				break;
 				
-			case "edit-user": break;
+			case "edit-user": 
+				if (checkCommandRole(1, role)) {
+					uv.editUser(cmd[1]);
+				} else 
+					showErrorPrivilegeCommand();
+				break;
 			case "del-user": break;
 			
 			case "create-meeting" :
