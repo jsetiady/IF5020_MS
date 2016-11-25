@@ -2,16 +2,15 @@ package com.utilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.model.meeting.MeetingInvitation;
+import com.model.meeting.Meeting;
 
 /**
  * @author jessiesetiady
@@ -20,16 +19,21 @@ import com.model.meeting.MeetingInvitation;
  */
 
 public class JSONParser<T> {
-	private static final Class T = null;
-	ObjectMapper mapper = new ObjectMapper();
 
+	ObjectMapper mapper = new ObjectMapper();
+	Class<T> clazz;
+	
+	public JSONParser(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 	
 	public List<T> load(String filename) {
 		List<T> objList = null;
 		try {
-			objList = mapper.readValue(new File(filename), new TypeReference<List<?>>(){});
+			JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+			objList = mapper.readValue(new File(filename), type);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Something is wrong: IOExp");
 		}
 		return objList;
 	}
@@ -37,9 +41,9 @@ public class JSONParser<T> {
 	public <T> T loadObj(String filename) {
 		T obj = null;
 		try {
-			obj = mapper.readValue(new File(filename), (Class<T>) obj);
+			obj = mapper.readValue(new File(filename), new TypeReference<T>(){});
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Something is wrong: IOExp");
 		}
 		return obj;
 	}
