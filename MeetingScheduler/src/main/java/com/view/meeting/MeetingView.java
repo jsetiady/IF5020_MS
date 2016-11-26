@@ -14,6 +14,7 @@ import com.controller.meeting.MeetingController;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
+import com.utilities.Validator;
 
 /**
  * @author jessiesetiady
@@ -23,6 +24,7 @@ public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
 	private Scanner s;
+	private Validator validator = new Validator();
 	
 	
 	public void createMeetingView(String meetingInitiatorID) {
@@ -39,13 +41,13 @@ public class MeetingView {
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
 		
-		title = getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
+		title = validator.getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
 		
-		agenda = getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
+		agenda = validator.getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
 		
-		location = getAndValidateInput(s, "# Location\t\t\t: ", "text");
+		location = validator.getAndValidateInput(s, "# Location\t\t\t: ", "text");
 		
-		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
+		duration = Integer.parseInt(validator.getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
 		
 		System.out.println("# Proposed date range");
 		
@@ -58,8 +60,8 @@ public class MeetingView {
 		}
 		
 		System.out.println("# Max response time");
-		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
-		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
+		strMaxResponseDate = validator.getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
+		strMaxResponseTime = validator.getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
 		
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
 
@@ -118,12 +120,12 @@ public class MeetingView {
 		
 		System.out.println("\n\nAdd Participant");
 		System.out.println("--------------------------------");
-		email = getAndValidateInput(s, "Email\t\t\t\t: ", "text");
+		email = validator.getAndValidateInput(s, "Email\t\t\t\t: ", "text");
 		if(mc.findMeetingParticipantByEmail(arrMP, email)) {
 			System.out.println(email + " already exist in Participant list");
 			s.nextLine();
 		} else {
-			strImportant = getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
+			strImportant = validator.getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
 			
 			//add to mc
 			mc.addMeetingParticipant(email, strImportantToBoolean(strImportant));
@@ -181,7 +183,7 @@ public class MeetingView {
 		printParticipantList(arrMP, false);
 		
 		System.out.println("\nEnter participant number that you want to edit (1-" + arrMP.size() + ")");		
-		num = getAndValidateInput(s, "Participant num: ", "number");
+		num = validator.getAndValidateInput(s, "Participant num: ", "number");
 		if(Integer.parseInt(num)<0 || Integer.parseInt(num)>arrMP.size()) {
 			System.out.println("The entered participant number is not valid\nPress Enter to continue\n");
 			s.nextLine();
@@ -198,7 +200,7 @@ public class MeetingView {
 			
 			switch(choice) {
 				case 1: 
-					confirm = getAndValidateInput(s, "Are you sure wants to remove "
+					confirm = validator.getAndValidateInput(s, "Are you sure wants to remove "
 							+ selected +
 							" from participant list (Y/N) ? ", "YN");
 					if(confirm.equals("Y")) {
@@ -312,46 +314,7 @@ public class MeetingView {
 		return isImportant ? "(important)" : "";
 	} 
 	
-	public String getAndValidateInput(Scanner s, String label, String type) {
-		int test;
-		String input, regex = ".", errorMsg = ".";
-		
-		if(type.equals("date")) { //format: dd/mm/yyyy
-			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
-			errorMsg = "Invalid date format. Please re-enter.";
-		}
-		else if(type.equals("duration")) { //positive integer between 1-8
-			regex = "^[1-9]+$";
-			errorMsg = "Please enter a value between 1-9";
-		}
-		else if(type.equals("time")) { //format: hh:mm
-			regex = "[0-9]{2}:[0-9]{2}";
-			errorMsg = "Invalid time format. Please re-enter.";
-		}
-		else if(type.equals("YN")) {
-			regex = "[NYny]{1}";
-			errorMsg = "Please enter either Y or N character";
-		}
-		else if(type.equals("text")) {
-			regex = "^(?!\\s*$).+";
-			errorMsg = "This field cannot be empty";
-		}
-		else if(type.equals("number")) {
-			regex = "[0-9]";
-			errorMsg = "Invalid time format. Please re-enter.";
-		}
-		
-		do {
-			test = 1;
-			System.out.print(label);
-			input = s.nextLine();
-			if (!input.matches(regex)) {
-				System.out.println(errorMsg);
-				test = 0;
-			}
-		} while (test == 0);
-		return input;
-	}
+	
 	
 	public String getAndValidateInput(Scanner s, String label, String type, Date lowerDate) {
 		int test;
@@ -360,7 +323,7 @@ public class MeetingView {
 		String input;
 			do {
 				test = 1;
-				input = getAndValidateInput(s, label, type);
+				input = validator.getAndValidateInput(s, label, type);
 				try {
 					if(lowerDate.after(format.parse(input))) {
 						test = 0;
@@ -530,7 +493,7 @@ public class MeetingView {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
 		} else {
-			System.out.println("No\tCreated Date\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
+			System.out.println("No\tInvitation Date\t\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
 			for(int i=0;i<invitationList.size();i++) {
 				
 				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());

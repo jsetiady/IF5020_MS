@@ -37,7 +37,7 @@ public class JSONParser<T> {
 		return objList;
 	}
 	
-	public <T> T loadObj(String filename) {
+	public T loadObj(String filename) {
 		T obj = null;
 		try {
 			obj = mapper.readValue(new File(filename), new TypeReference<T>(){});
