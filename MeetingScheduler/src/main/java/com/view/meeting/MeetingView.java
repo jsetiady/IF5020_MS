@@ -14,6 +14,7 @@ import com.controller.meeting.MeetingController;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
+import com.utilities.Validator;
 
 /**
  * @author jessiesetiady
@@ -23,6 +24,7 @@ public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
 	private Scanner s;
+	private Validator validator = new Validator();
 	
 	
 	public void createMeetingView(String meetingInitiatorID) {
@@ -31,43 +33,46 @@ public class MeetingView {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate, strMaxResponseTime, createdDate;
-		
-		int duration, input, choice;
+			 strEndDate = null, strMaxResponseDate = null, strMaxResponseTime = null, createdDate, proposedDateRange;
+		String ordParticipantList = "", impParticipantList = "";
+		int duration, input, choice, test;
 		boolean invalidInput;
 		
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
 		
-		title = getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
+		title = validator.getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
 		
-		agenda = getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
+		agenda = validator.getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
 		
-		location = getAndValidateInput(s, "# Location\t\t\t: ", "text");
+		location = validator.getAndValidateInput(s, "# Location\t\t\t: ", "text");
 		
-		duration = Integer.parseInt(getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
+		duration = Integer.parseInt(validator.getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
 		
-		System.out.println("# Proposed date range");
+		System.out.println("\n  Note: Please enter the proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
+		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range\t\t: ", "daterange");
+		strMaxResponseDate = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
+		System.out.println("\n  Note: Please enter participant list in format: <email>, <email>");
 		
-		//TODO @jeje Change lower and upper date
-		try {
-			strStartDate = getAndValidateInput(s, "    Start date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
-			strEndDate = getAndValidateInput(s, "    End date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("# Max response time");
-		strMaxResponseDate = getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
-		strMaxResponseTime = getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
+		do {
+			test = 1;
+			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
+			impParticipantList = validator.getAndValidateInput(s, "# Important participant\t\t: ", "participant");
+			
+			if(ordParticipantList.equals("") || impParticipantList.equals("")) {
+				test = 0;
+				System.out.println("  Err: You have to enter at least one participant. Add one now.");
+			}
+		} while(test == 0);
 		
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
 
+		//TODO: constructor for create meeting
 		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
 	
 		do {
 			System.out.println("\nConfirmation");
-			System.out.println("1. Next (add participant)");
+			System.out.println("1. Add more participant");
 			System.out.println("2. Cancel Meeting Creation");
 			System.out.print("Enter your choice: ");
 			choice = s.nextInt();
@@ -99,7 +104,7 @@ public class MeetingView {
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
 		System.out.println("# Location\t\t\t: " + m.getLocation());
 		System.out.println("# Duration\t\t\t: " + m.getDuration());
-		System.out.println("# Proposed date range");
+		System.out.println("# Proposed date range: ");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
 		System.out.println("# Max response time");
@@ -118,12 +123,12 @@ public class MeetingView {
 		
 		System.out.println("\n\nAdd Participant");
 		System.out.println("--------------------------------");
-		email = getAndValidateInput(s, "Email\t\t\t\t: ", "text");
+		email = validator.getAndValidateInput(s, "Email\t\t\t\t: ", "text");
 		if(mc.findMeetingParticipantByEmail(arrMP, email)) {
 			System.out.println(email + " already exist in Participant list");
 			s.nextLine();
 		} else {
-			strImportant = getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
+			strImportant = validator.getAndValidateInput(s, "Important participant (Y/N)\t: ", "YN");
 			
 			//add to mc
 			mc.addMeetingParticipant(email, strImportantToBoolean(strImportant));
@@ -181,7 +186,7 @@ public class MeetingView {
 		printParticipantList(arrMP, false);
 		
 		System.out.println("\nEnter participant number that you want to edit (1-" + arrMP.size() + ")");		
-		num = getAndValidateInput(s, "Participant num: ", "number");
+		num = validator.getAndValidateInput(s, "Participant num: ", "number");
 		if(Integer.parseInt(num)<0 || Integer.parseInt(num)>arrMP.size()) {
 			System.out.println("The entered participant number is not valid\nPress Enter to continue\n");
 			s.nextLine();
@@ -198,7 +203,7 @@ public class MeetingView {
 			
 			switch(choice) {
 				case 1: 
-					confirm = getAndValidateInput(s, "Are you sure wants to remove "
+					confirm = validator.getAndValidateInput(s, "Are you sure wants to remove "
 							+ selected +
 							" from participant list (Y/N) ? ", "YN");
 					if(confirm.equals("Y")) {
@@ -312,46 +317,7 @@ public class MeetingView {
 		return isImportant ? "(important)" : "";
 	} 
 	
-	public String getAndValidateInput(Scanner s, String label, String type) {
-		int test;
-		String input, regex = ".", errorMsg = ".";
-		
-		if(type.equals("date")) { //format: dd/mm/yyyy
-			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
-			errorMsg = "Invalid date format. Please re-enter.";
-		}
-		else if(type.equals("duration")) { //positive integer between 1-8
-			regex = "^[1-9]+$";
-			errorMsg = "Please enter a value between 1-9";
-		}
-		else if(type.equals("time")) { //format: hh:mm
-			regex = "[0-9]{2}:[0-9]{2}";
-			errorMsg = "Invalid time format. Please re-enter.";
-		}
-		else if(type.equals("YN")) {
-			regex = "[NYny]{1}";
-			errorMsg = "Please enter either Y or N character";
-		}
-		else if(type.equals("text")) {
-			regex = "^(?!\\s*$).+";
-			errorMsg = "This field cannot be empty";
-		}
-		else if(type.equals("number")) {
-			regex = "[0-9]";
-			errorMsg = "Invalid time format. Please re-enter.";
-		}
-		
-		do {
-			test = 1;
-			System.out.print(label);
-			input = s.nextLine();
-			if (!input.matches(regex)) {
-				System.out.println(errorMsg);
-				test = 0;
-			}
-		} while (test == 0);
-		return input;
-	}
+	
 	
 	public String getAndValidateInput(Scanner s, String label, String type, Date lowerDate) {
 		int test;
@@ -360,7 +326,7 @@ public class MeetingView {
 		String input;
 			do {
 				test = 1;
-				input = getAndValidateInput(s, label, type);
+				input = validator.getAndValidateInput(s, label, type);
 				try {
 					if(lowerDate.after(format.parse(input))) {
 						test = 0;
@@ -379,7 +345,7 @@ public class MeetingView {
 	
 	public void displayCreatedMeeting(String email) {
 		s = new Scanner(System.in);
-		int choice, num;
+		int choice = 0, num;
 		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
 		if(createdMeetingList.isEmpty()) {
 			System.out.println("You have not created any meeting yet.");
@@ -405,7 +371,14 @@ public class MeetingView {
 				System.out.println("1. View Meeting Details");
 				System.out.println("2. Back");
 				System.out.print("Enter your choice: ");
-				choice = s.nextInt();
+				try {
+					choice = s.nextInt();
+					
+				}
+				catch(Exception e) {
+					System.out.println("Input is not recognized");
+				}
+				
 				s.nextLine();
 				
 				switch(choice)  {
@@ -423,7 +396,6 @@ public class MeetingView {
 							viewCreatedMeetingDetails(createdMeetingList.get(num-1));
 							System.out.println("Press enter to continue");
 							s.nextLine();
-							
 						}
 						break;
 					case 2: break;
@@ -439,7 +411,11 @@ public class MeetingView {
 	
 	public void viewMeetingByID(String meetingID) {
 		Meeting m = mc.getMeetingByID(meetingID);
-		viewCreatedMeetingDetails(m);
+		if(m==null) {
+			System.out.println("You don't have privilege to view this meeting");
+		} else {
+			viewCreatedMeetingDetails(m);
+		}
 	}
 	
 	public void viewCreatedMeetingDetails(Meeting m) {
@@ -520,12 +496,17 @@ public class MeetingView {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
 		} else {
-			System.out.println("No\tCreated Date\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
+			System.out.println("No\tInvitation Date\t\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
 			for(int i=0;i<invitationList.size();i++) {
+				
+				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());
+				
+				//TODO load meeting
+				
 				System.out.print(i+1 + "\t");
 				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
 				System.out.print(invitationList.get(i).getMeetingID() + "\t\t");
-				System.out.print("Negotiating" + "\t");
+				System.out.print(invitationList.get(i).getMeetingID() + "\t");
 				System.out.print("jeje@gmail.com" + "\t");
 				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
 				System.out.println(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t");

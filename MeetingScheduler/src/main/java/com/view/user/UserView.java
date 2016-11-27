@@ -33,7 +33,7 @@ public class UserView {
 			System.out.printf(" %-20s %-15s %-20s %-15s %-12s %-4s %-15s",usr.getFirstName(), usr.getLastName(), usr.getAddress(), usr.getPhone(), usr.getDob(), usr.getSex(), usr.getEmail());
 			System.out.println();
 		}
-		
+		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
 	}
 	
 	
@@ -70,6 +70,7 @@ public class UserView {
 			}
 			System.out.println(" Admin        :" + auth);
 			System.out.println(" Active       :" + status);
+			System.out.println("+-------------------------------------------- +");
 		}
 	}
 	
@@ -100,6 +101,7 @@ public class UserView {
 		System.out.print("  is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
 		scan.nextLine();
 		System.out.print("  is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
+
 		scan.nextLine();
 		
 		if (status=='Y' || status=='y') {

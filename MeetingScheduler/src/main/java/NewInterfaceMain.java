@@ -131,7 +131,8 @@ public class NewInterfaceMain {
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
-			case "exit" : break;
+			case "exit" : System.exit(0);
+				break;
 			
 			default: System.out.println("Unrecognized command option"); break;
 		}
