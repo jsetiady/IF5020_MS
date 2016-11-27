@@ -228,7 +228,7 @@ public class MeetingController {
 		return str;
 	}
 	
-	public Meeting getMeetingByID(String meetingID) {
+	public static Meeting getMeetingByID(String meetingID) {
 		Meeting m = null;
 		ObjectMapper mapper = new ObjectMapper();
 		//load file json
