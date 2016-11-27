@@ -23,8 +23,8 @@ public class NewInterfaceMain {
 				System.out.println("edit-user <email>");
 				System.out.println("del-user <email>");
 				System.out.println();
-				break;
 			case 2:
+			case 3:
 				System.out.println("Initiator command");
 				System.out.println("---------------------");
 				System.out.println("create-meeting");
@@ -34,8 +34,6 @@ public class NewInterfaceMain {
 				System.out.println("cancel-meeting <meeting-id>");
 				System.out.println("run scheduler <meeting-id>");
 				System.out.println();
-			break;
-			case 3:
 				System.out.println("Participant command");
 				System.out.println("---------------------");
 				System.out.println("list-invitation");
