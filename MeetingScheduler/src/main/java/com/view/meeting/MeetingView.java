@@ -34,8 +34,8 @@ public class MeetingView {
 
 		String title, agenda, location, strStartDate = null, 
 			 strEndDate = null, strMaxResponseDate = null, strMaxResponseTime = null, createdDate, proposedDateRange;
-		
-		int duration, input, choice;
+		String ordParticipantList = "", impParticipantList = "";
+		int duration, input, choice, test;
 		boolean invalidInput;
 		
 		System.out.println("CREATE MEETING");
@@ -49,30 +49,30 @@ public class MeetingView {
 		
 		duration = Integer.parseInt(validator.getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
 		
-		System.out.println("\n  Note: Please enter proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
-		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range \t\t: ", "daterange");
+		System.out.println("\n  Note: Please enter the proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
+		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range\t\t: ", "daterange");
+		strMaxResponseDate = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
+		System.out.println("\n  Note: Please enter participant list in format: <email>, <email>");
 		
+		do {
+			test = 1;
+			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
+			impParticipantList = validator.getAndValidateInput(s, "# Important participant\t\t: ", "participant");
+			
+			if(ordParticipantList.equals("") || impParticipantList.equals("")) {
+				test = 0;
+				System.out.println("  Err: You have to enter at least one participant. Add one now.");
+			}
+		} while(test == 0);
 		
-		//TODO @jeje Change lower and upper date
-		/*try {
-			strStartDate = getAndValidateInput(s, "    Start date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
-			strEndDate = getAndValidateInput(s, "    End date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		*/
-		
-		/*System.out.println("# Max response time");
-		strMaxResponseDate = validator.getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
-		strMaxResponseTime = validator.getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
-		*/
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
 
+		//TODO: constructor for create meeting
 		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
 	
 		do {
 			System.out.println("\nConfirmation");
-			System.out.println("1. Next (add participant)");
+			System.out.println("1. Add more participant");
 			System.out.println("2. Cancel Meeting Creation");
 			System.out.print("Enter your choice: ");
 			choice = s.nextInt();

@@ -14,42 +14,45 @@ public class Validator {
 		int test;
 		String input, regex = ".", errorMsg = ".";
 		String[] daterange;
-		String errorMsgStartDate = "The proposed start date must between D+2 to >(D+2) ";
 		
 		
 		if(type.equals("date")) { //format: dd/mm/yyyy
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
-			errorMsg = "Invalid date format. Please re-enter.";
+			errorMsg = "  Err: Invalid date format. Please re-enter.";
 		}
 		else if(type.equals("duration")) { //positive integer between 1-8
 			regex = "^[1-9]+$";
-			errorMsg = "Please enter a value between 1-9";
+			errorMsg = "  Err: Please enter a value between 1-9";
 		}
 		else if(type.equals("time")) { //format: hh:mm
 			regex = "[0-9]{2}:[0-9]{2}";
-			errorMsg = "Invalid time format. Please re-enter.";
+			errorMsg = "  Err: Invalid time format. Please re-enter.";
 		}
 		else if(type.equals("YN")) {
 			regex = "[NYny]{1}";
-			errorMsg = "Please enter either Y or N character";
+			errorMsg = "  Err: Please enter either Y or N character";
 		}
 		else if(type.equals("text")) {
 			regex = "^(?!\\s*$).+";
-			errorMsg = "This field cannot be empty";
+			errorMsg = "  Err: This field cannot be empty";
 		}
 		else if(type.equals("number")) {
 			regex = "[0-9]";
-			errorMsg = "Invalid time format. Please re-enter.";
+			errorMsg = "  Err: Invalid time format. Please re-enter.";
 		}
 		else if(type.equals("email")) {
 			regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 		+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-			errorMsg = "Invalid email format, please re-enter";
+			errorMsg = "  Err: Invalid email format, please re-enter";
 		}
 		else if(type.equals("daterange")) {
 			//a.replaceAll("\\s+","");
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}\\s-\\s[0-9]{2}/[0-9]{2}/[0-9]{4}";
-			errorMsg = "  Invalid date range format, please re-enter. Format: dd/mm/yyyy - dd/mm/yyyy";
+			errorMsg = "  Err: Invalid date range format, please re-enter. Format: dd/mm/yyyy - dd/mm/yyyy";
+		}
+		else if(type.equals("participant")) {
+			regex = "";
+			errorMsg = "";
 		}
 		
 		do {
@@ -62,25 +65,59 @@ public class Validator {
 				test = 0;
 			} else {
 				if(type.equals("daterange")) {
-					daterange = input.split(" - ");
+					daterange = input.replaceAll("\\s","").split("-");
 					
 					if(isValidDate(daterange[0]) && isValidDate(daterange[1])) {
-						if(strToDate(daterange[0]).before(getSpecificDate("today", 1)) && isValidDate(daterange[0])){
-							System.out.println("Invalid start date"); //date[0] before today+2
+						if(strToDate(daterange[0]).before(getSpecificDate("today", 1))) {
+							System.out.println("  Err: Invalid start date"); //date[0] before today+2
 							test = 0;
 						}
-						if(strToDate(daterange[1]).before(strToDate(daterange[0])) && isValidDate(daterange[1])){
-							System.out.println("Invalid end date"); //date[0] before today+2
+						if(strToDate(daterange[1]).before(strToDate(daterange[0]))) {
+							System.out.println("  Err: Invalid end date"); //date[0] before today+2
 							test = 0;
 						}
 					} else {
-						System.out.println("  Invalid date value. Please re-enter");
+						System.out.println("  Err: Invalid date value. Please re-enter");
+						test = 0;
+					}
+				} else if(type.equals("date")) {
+					if(!isValidDate(input)) {
+						System.out.println("  Err: Invalid date value. Please re-enter");
 						test = 0;
 					}
 				}
 				
 			}
 		} while (test == 0);
+		return input;
+	}
+	
+	
+	public boolean isValidEmail(String strEmail) {
+		return true;
+	}
+	
+	public String getAndValidateInput(Scanner s, String label, String type, String dr) {
+		String input;
+		String[] daterange;
+		Date min, max, d;
+		int test;
+		
+		do {
+			test = 1;
+			input = getAndValidateInput(s, label, type);
+			d = strToDate(input);
+			
+			daterange = dr.replaceAll("\\s","").split("-");
+			min = strToDate(daterange[0]);
+			max = strToDate(daterange[1]);
+			
+			if(!(min.getTime() <= d.getTime() && d.getTime() <= max.getTime())) {
+				System.out.println("  Negotiation date must between the proposed date range. Please re-enter");
+				test = 0;
+			}
+		} while(test == 0);
+		
 		return input;
 	}
 	
@@ -112,7 +149,6 @@ public class Validator {
 	    Date startDate = null;
 	    try {
 	        startDate = df.parse(startDateString);
-	        String newDateString = df.format(startDate);
 	    } catch (ParseException e) {
 	    	System.out.println("Not a valid date");
 	        //e.printStackTrace();
