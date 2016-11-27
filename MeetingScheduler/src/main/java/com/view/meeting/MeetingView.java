@@ -33,7 +33,7 @@ public class MeetingView {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate, strMaxResponseTime, createdDate;
+			 strEndDate = null, strMaxResponseDate = null, strMaxResponseTime = null, createdDate, proposedDateRange;
 		
 		int duration, input, choice;
 		boolean invalidInput;
@@ -49,20 +49,23 @@ public class MeetingView {
 		
 		duration = Integer.parseInt(validator.getAndValidateInput(s, "# Duration (hours) (1-9)\t: ", "duration"));
 		
-		System.out.println("# Proposed date range");
+		System.out.println("\n  Note: Please enter proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
+		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range \t\t: ", "daterange");
+		
 		
 		//TODO @jeje Change lower and upper date
-		try {
+		/*try {
 			strStartDate = getAndValidateInput(s, "    Start date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
 			strEndDate = getAndValidateInput(s, "    End date (dd/mm/yyyy)\t: ", "date", format.parse("17/11/2016"));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		*/
 		
-		System.out.println("# Max response time");
+		/*System.out.println("# Max response time");
 		strMaxResponseDate = validator.getAndValidateInput(s, "    Date (dd/mm/yyyy)\t\t: ", "date");
 		strMaxResponseTime = validator.getAndValidateInput(s, "    Time (hh:mm)\t\t: ", "time");
-		
+		*/
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
 
 		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
@@ -101,7 +104,7 @@ public class MeetingView {
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
 		System.out.println("# Location\t\t\t: " + m.getLocation());
 		System.out.println("# Duration\t\t\t: " + m.getDuration());
-		System.out.println("# Proposed date range");
+		System.out.println("# Proposed date range: ");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
 		System.out.println("# Max response time");

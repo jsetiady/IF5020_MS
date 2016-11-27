@@ -1,5 +1,11 @@
 package com.utilities;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class Validator {
@@ -7,6 +13,9 @@ public class Validator {
 	public String getAndValidateInput(Scanner s, String label, String type) {
 		int test;
 		String input, regex = ".", errorMsg = ".";
+		String[] daterange;
+		String errorMsgStartDate = "The proposed start date must between D+2 to >(D+2) ";
+		
 		
 		if(type.equals("date")) { //format: dd/mm/yyyy
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
@@ -37,16 +46,103 @@ public class Validator {
 		+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 			errorMsg = "Invalid email format, please re-enter";
 		}
+		else if(type.equals("daterange")) {
+			//a.replaceAll("\\s+","");
+			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}\\s-\\s[0-9]{2}/[0-9]{2}/[0-9]{4}";
+			errorMsg = "  Invalid date range format, please re-enter. Format: dd/mm/yyyy - dd/mm/yyyy";
+		}
 		
 		do {
 			test = 1;
 			System.out.print(label);
 			input = s.nextLine();
+			
 			if (!input.matches(regex)) {
 				System.out.println(errorMsg);
 				test = 0;
+			} else {
+				if(type.equals("daterange")) {
+					daterange = input.split(" - ");
+					
+					if(isValidDate(daterange[0]) && isValidDate(daterange[1])) {
+						if(strToDate(daterange[0]).before(getSpecificDate("today", 1)) && isValidDate(daterange[0])){
+							System.out.println("Invalid start date"); //date[0] before today+2
+							test = 0;
+						}
+						if(strToDate(daterange[1]).before(strToDate(daterange[0])) && isValidDate(daterange[1])){
+							System.out.println("Invalid end date"); //date[0] before today+2
+							test = 0;
+						}
+					} else {
+						System.out.println("  Invalid date value. Please re-enter");
+						test = 0;
+					}
+				}
+				
 			}
 		} while (test == 0);
 		return input;
 	}
+	
+	public boolean isValidDate(String dateString)
+	{
+	    // Parse the date parts to integers
+	    String[] parts = dateString.split("/");
+	    int day = Integer.parseInt(parts[0]);
+	    int month = Integer.parseInt(parts[1]);
+	    int year = Integer.parseInt(parts[2]);
+
+	    // Check the ranges of month and year
+	    if(year < 2016 || year > 3000 || month == 0 || month > 12)
+	        return false;
+
+	    double[] monthLength = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	    
+	    // Adjust for leap years
+	    if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+	        monthLength[1] = 29;
+
+	    // Check the range of the day
+	    return day > 0 && day <= monthLength[month - 1];
+	   
+	}
+	
+	public Date strToDate(String startDateString) {
+	    DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); 
+	    Date startDate = null;
+	    try {
+	        startDate = df.parse(startDateString);
+	        String newDateString = df.format(startDate);
+	    } catch (ParseException e) {
+	    	System.out.println("Not a valid date");
+	        //e.printStackTrace();
+	    }
+	    return startDate;
+	}
+	
+	public String dateToString(Date date) {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String reportDate = df.format(date);
+		return reportDate;
+	}
+	
+	public Date getSpecificDate(String startDate, int c) {
+		Calendar calendar;
+		Date date = null;
+		if(startDate.equals("today")) {
+			calendar = Calendar.getInstance(); // starts with today's date and time
+			calendar.add(Calendar.DAY_OF_YEAR, c);  // advances day by c
+			date = calendar.getTime(); // gets modified time
+		} else {
+			date = strToDate(startDate);
+		    calendar = new GregorianCalendar();
+		    calendar.setTime(date);
+		    calendar.add(Calendar.DAY_OF_MONTH, c);
+		    date = calendar.getTime();
+		}
+		return date;
+	}
+	
 }
+
+
