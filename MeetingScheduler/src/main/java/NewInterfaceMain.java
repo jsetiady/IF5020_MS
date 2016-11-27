@@ -171,27 +171,13 @@ public class NewInterfaceMain {
 			
 			login = false;
 			do {
-				/*do {
-				System.out.print("Please select a role (1-3):\n1.administrator\n2.initiator\n3.participant\n> ");role = s.nextInt(); s.nextLine();
-					if(role<1 || role>3) {
-						System.out.println("## Role does not exist, please re-enter. ##");
-					}
-				} while(role<1 || role>3);
-				*/
-				
-				//if(role==1) {
 					if(user.isAdmin()) {
 						login = true;
 						role = 1;
 					} else {
-						//System.out.println("## You don't have Admin privilege. Please choose another role. ##");
 						login = true;
 						role = 2;
 					}
-				//} else {
-				//	login = true;
-				//}
-				
 				if(login) {
 					System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
 					System.out.println("Waiting for your command...\n");	
