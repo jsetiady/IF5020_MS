@@ -19,8 +19,8 @@ public class MainMeetingScheduler {
 		MenuView menu = new MenuView();
 		UserView userView = new UserView();
 		UserController controller = new UserController();
-		controller.createDummyUser();
-		controller.save();
+		//controller.createDummyUser();
+		//controller.save();
 		
 		menu.menuLogin();
 		
@@ -37,7 +37,7 @@ public class MainMeetingScheduler {
 				scan.nextLine();
 				if (option==1) {
 					//controller.add(userView.createUser());
-					controller.save();
+					//controller.save();
 					menu.menuHome();
 				} else if (option==2) {
 					menu.menuHome();

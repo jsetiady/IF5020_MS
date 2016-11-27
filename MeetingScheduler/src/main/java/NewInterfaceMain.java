@@ -14,7 +14,7 @@ public class NewInterfaceMain {
 	
 	public static void showHelp(int role) {
 		switch(role) {
-			case 1: 
+			case 1:
 				System.out.println("Administrator command");
 				System.out.println("---------------------");
 				System.out.println("list-user");

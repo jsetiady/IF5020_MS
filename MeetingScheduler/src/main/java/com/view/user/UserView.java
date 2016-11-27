@@ -24,9 +24,9 @@ public class UserView {
 		List<User> listUser = new ArrayList<User>();
 		listUser = uc.getAllUser();
 		
-		System.out.println("+===========================================================================================================+");
+		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
 		System.out.println("|LIST USER                                                                                                  |");
-		System.out.println("+===========================================================================================================+");
+		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
 		System.out.println("|First Name          |LastName       |Address             |Phone          |DOB       |  Sex |      Email    |");
 		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
 		for (User usr: listUser) {
@@ -85,11 +85,9 @@ public class UserView {
 		User user = new User();
 		char status, auth;
 		
-		System.out.println("|===========================================|");
-		System.out.println("|        IF5021 MEETING SCHEDULER           |");
-		System.out.println("|===========================================|");
+		System.out.println("+-------------------------------------------+");
 		System.out.println("|CREATE USER                                |");
-		System.out.println("|===========================================|");
+		System.out.println("+-------------------------------------------+");
 		System.out.print("  First Name       :"); user.setFirstName(scan.nextLine()); 
 		System.out.print("  Last Name        :"); user.setLastName(scan.nextLine());
 		System.out.print("  Address          :"); user.setAddress(scan.nextLine());
@@ -99,9 +97,9 @@ public class UserView {
 		scan.nextLine();
 		System.out.print("  Email            :"); user.setEmail(scan.nextLine());
 		System.out.print("  Password         :"); user.setPassword(scan.nextLine());
-		System.out.print("|is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
+		System.out.print("  is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
 		scan.nextLine();
-		System.out.print("|is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
+		System.out.print("  is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
 		scan.nextLine();
 		
 		if (status=='Y' || status=='y') {
@@ -124,23 +122,21 @@ public class UserView {
 	public void editUser(String email) {
 		User user = new User();
 		char status, auth;
-		System.out.println("|===========================================|");
-		System.out.println("|        IF5021 MEETING SCHEDULER           |");
-		System.out.println("|===========================================|");
+		System.out.println("+-------------------------------------------+");
 		System.out.println("|EDIT USER                                  |");
-		System.out.println("|===========================================|");
-		System.out.print("|First Name        :"); user.setFirstName(scan.nextLine()); 
-		System.out.print("|Last Name         :"); user.setLastName(scan.nextLine());
-		System.out.print("|Address           :"); user.setAddress(scan.nextLine());
-		System.out.print("|Phone             :"); user.setPhone(scan.nextLine());
-		System.out.print("|DOB               :"); user.setDob(scan.nextLine());
-		System.out.print("|Sex               :"); user.setSex(scan.next(".").charAt(0));
+		System.out.println("+-------------------------------------------+");
+		System.out.print("   First Name        :"); user.setFirstName(scan.nextLine()); 
+		System.out.print("   Last Name         :"); user.setLastName(scan.nextLine());
+		System.out.print("   Address           :"); user.setAddress(scan.nextLine());
+		System.out.print("   Phone             :"); user.setPhone(scan.nextLine());
+		System.out.print("   DOB               :"); user.setDob(scan.nextLine());
+		System.out.print("   Sex               :"); user.setSex(scan.next(".").charAt(0));
 		scan.nextLine();
 		user.setEmail(email);
-		System.out.print("|Password          :"); user.setPassword(scan.nextLine());
-		System.out.print("|is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
+		System.out.print("   Password          :"); user.setPassword(scan.nextLine());
+		System.out.print("   is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
 		scan.nextLine();
-		System.out.print("|is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
+		System.out.print("   is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
 		scan.nextLine();
 		
 		if (status=='Y' || status=='y') {
@@ -169,11 +165,9 @@ public class UserView {
 		
 		if(user != null ) {
 			
-			System.out.println("|===========================================|");
-			System.out.println("|        IF5021 MEETING SCHEDULER           |");
-			System.out.println("|===========================================|");
+			System.out.println("+-------------------------------------------+");
 			System.out.println("|VIEW DETAIL                                |");
-			System.out.println("|===========================================|");
+			System.out.println("+-------------------------------------------+");
 			System.out.println(" First Name	\t:" + user.getFirstName());  
 			System.out.println(" Last Name 	\t:" + user.getLastName()); 
 			System.out.println(" Address	\t:" + user.getAddress()); 
