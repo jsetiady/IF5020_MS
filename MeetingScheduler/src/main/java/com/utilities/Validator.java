@@ -51,8 +51,8 @@ public class Validator {
 			errorMsg = "  Err: Invalid date range format, please re-enter. Format: dd/mm/yyyy - dd/mm/yyyy";
 		}
 		else if(type.equals("participant")) {
-			regex = "";
-			errorMsg = "";
+			regex = "(^$|^.*@.*\\..*$)";
+			errorMsg = "dhsd";
 		}
 		
 		do {
@@ -94,7 +94,9 @@ public class Validator {
 	
 	
 	public boolean isValidEmail(String strEmail) {
-		return true;
+		String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+		+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		return strEmail.matches(regex);
 	}
 	
 	public String getAndValidateInput(Scanner s, String label, String type, String dr) {

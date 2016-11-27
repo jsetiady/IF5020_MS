@@ -40,12 +40,10 @@ public class MeetingController {
 	private String fileLastMeetingID = "resources/lastid";
 	
 	public void createMeetingDraft(String title, String agenda, String location,
-			int duration, String proposedStartDate, String proposedEndDate,
-			String maxReponseDate, String maxResponseTime, String meetingInitiator, String createdDate) {
+			int duration, String proposedDateRange, String negotiationDeadline, String meetingInitiator, String createdDate) {
 		
 		meetingDraft = new Meeting(getNextMeetingID(), title, agenda, location,
-				duration, proposedStartDate, proposedEndDate,
-				maxReponseDate, maxResponseTime, meetingInitiator, createdDate);
+				duration, proposedDateRange, negotiationDeadline, meetingInitiator, createdDate);
 		
 	}
 	
@@ -63,7 +61,9 @@ public class MeetingController {
 	public void addMeetingParticipant(String email, boolean isImportant) {
 		MeetingParticipant mp = new MeetingParticipant(email, isImportant);
 		List<MeetingParticipant> arrMP = meetingDraft.getMeetingParticipant();
-		arrMP.add(mp);
+		if(!findMeetingParticipantByEmail(arrMP, mp.getEmail())) {
+			arrMP.add(mp);
+		}
 		meetingDraft.setMeetingParticipant(arrMP);
 	}
 	

@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import com.controller.meeting.MeetingController;
+import com.controller.user.UserController;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
@@ -23,6 +24,7 @@ import com.utilities.Validator;
 public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
+	UserController uc = new UserController();
 	private Scanner s;
 	private Validator validator = new Validator();
 	
@@ -32,11 +34,9 @@ public class MeetingView {
 		Scanner s = new Scanner(System.in);
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
-		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate = null, strMaxResponseTime = null, createdDate, proposedDateRange;
+		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
 		String ordParticipantList = "", impParticipantList = "";
-		int duration, input, choice, test;
-		boolean invalidInput;
+		int duration, choice, test;
 		
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
@@ -51,54 +51,54 @@ public class MeetingView {
 		
 		System.out.println("\n  Note: Please enter the proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
 		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range\t\t: ", "daterange");
-		strMaxResponseDate = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
+		negotiationDeadline = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
 		System.out.println("\n  Note: Please enter participant list in format: <email>, <email>");
 		
 		do {
 			test = 1;
-			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
 			impParticipantList = validator.getAndValidateInput(s, "# Important participant\t\t: ", "participant");
+			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
 			
-			if(ordParticipantList.equals("") || impParticipantList.equals("")) {
+			if(ordParticipantList.equals("") && impParticipantList.equals("")) {
 				test = 0;
-				System.out.println("  Err: You have to enter at least one participant. Add one now.");
+				System.out.println("\n  Err: You have to enter at least one participant. Add one now.");
 			}
 		} while(test == 0);
 		
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
-
-		//TODO: constructor for create meeting
-		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
-	
-		do {
-			System.out.println("\nConfirmation");
-			System.out.println("1. Add more participant");
-			System.out.println("2. Cancel Meeting Creation");
-			System.out.print("Enter your choice: ");
-			choice = s.nextInt();
-			s.nextLine();
-			
-			switch(choice) {
-				case 1:
-					createMeetingAddParticipantView();
-					addMeetingParticipantView();
-					break;
-				case 2: 
-					System.out.println("\nMeeting creation has been canceled\nPress enter to continue");
-					s.nextLine();
-					break;
-				default:
-					System.out.println("\nInvalid input\nPlease choose between 1 and 2\nPress enter to continue");
-					s.nextLine();
-			}
-		} while(choice!=1 && choice!=2);
 		
+		//instantiate meeting
+		mc.createMeetingDraft(title, agenda, location, duration, proposedDateRange, negotiationDeadline, meetingInitiatorID, createdDate);
+		//meeting participant
+		addStrParticipantList(impParticipantList, true);
+		addStrParticipantList(ordParticipantList, false);
+		
+		createMeetingSummaryView(s);
+		addMeetingParticipantView();
+	}
+	
+	public void addStrParticipantList(String listParticipant, boolean isImportant) {
+		String[] participants;
+		participants = listParticipant.replaceAll("\\s","").split(",");
+		for(int i=0;i<participants.length;i++) {
+			if(!participants[i].equals("")) {
+				if(validator.isValidEmail(participants[i])) {
+					if(uc.getUserByEmail(participants[i])!=null) {
+						mc.addMeetingParticipant(participants[i], isImportant);
+					} else {
+						System.out.println("  Err: user with email : " + participants[i] + " is not exist");
+					}
+				} else {
+					System.out.println("  Err: " + participants[i] + " is not a valid email format");
+				}
+			}
+		}
 	}
 	
 	
 	public void createMeetingSummaryView(Scanner s) {
 		Meeting m = mc.getMeetingDraft();
-		System.out.println("CREATE MEETING - SUMMARY");
+		System.out.println("\nCREATE MEETING - SUMMARY");
 		System.out.println("--------------------------------");
 		System.out.println("# Title\t\t\t\t: " + m.getTitle());
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
@@ -107,12 +107,10 @@ public class MeetingView {
 		System.out.println("# Proposed date range: ");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
-		System.out.println("# Max response time");
-		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
-		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
+		System.out.println("# Negotiation Deadline\t\t: "  + m.getNegotiationDeadline() );
 		
-		System.out.println("Press enter to continue\n\n");
-		s.nextLine();
+		//System.out.println("Press enter to continue\n");
+		//s.nextLine();
 	}
 	
 	public void createMeetingAddParticipantView() {
@@ -144,8 +142,7 @@ public class MeetingView {
 		Scanner s = new Scanner(System.in);
 		List<MeetingParticipant> arrMP;
 		do {
-			System.out.println("CREATE MEETING - Add Participant");
-			System.out.println("--------------------------------");
+			System.out.println("\n--------------------------------");
 			System.out.println("Participant List");
 			arrMP = mc.getParticipantList();
 			printParticipantList(arrMP, false);
@@ -431,9 +428,7 @@ public class MeetingView {
 		System.out.println("# Proposed date range");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
-		System.out.println("# Max response time");
-		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
-		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
+		System.out.println("# Negotiation Deadline\t: " + m.getNegotiationDeadline());
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
 		System.out.println();
