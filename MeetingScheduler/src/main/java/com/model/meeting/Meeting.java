@@ -17,14 +17,15 @@ public class Meeting {
 	private int duration;
 	private String proposedDateRange;
 	private String negotiationDeadline;
-	private List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
-	private List<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
 	private int meetingStatus;
 	private String meetingInitiator;
 	private String createdDate;
 	private String scheduledDate;
 	private String proposedStartDate;
 	private String proposedEndDate;
+	private List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
+	private List<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
+	//private List<MeetingInvitation> meetingInvitation = new ArrayList<MeetingInvitation>();
 	
 	//meetingstatus
 	public int NEGOTIATING = 0;
@@ -170,5 +171,13 @@ public class Meeting {
 	public void setProposedEndDate(String proposedEndDate) {
 		this.proposedEndDate = proposedEndDate;
 	}
+	
+	/*public List<MeetingInvitation> getMeetingInvitation() {
+		return meetingInvitation;
+	}
+
+	public void setMeetingInvitation(List<MeetingInvitation> meetingInvitation) {
+		this.meetingInvitation = meetingInvitation;
+	}*/
 	
 }

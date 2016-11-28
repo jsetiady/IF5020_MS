@@ -70,8 +70,8 @@ public class MeetingView {
 		mc.createMeetingDraft(title, agenda, location, duration, proposedDateRange, negotiationDeadline, meetingInitiatorID, createdDate);
 		//meeting participant
 		System.out.println("\n# Confirmation:");
-		addStrParticipantList(impParticipantList, true);
-		addStrParticipantList(ordParticipantList, false);
+		addStrParticipantList("M"+mc.getMeetingDraft().getId(), impParticipantList, true);
+		addStrParticipantList("M"+mc.getMeetingDraft().getId(), ordParticipantList, false);
 		System.out.println("\n  Press enter to continue");
 		s.nextLine();
 		
@@ -79,7 +79,7 @@ public class MeetingView {
 		addMeetingParticipantView();
 	}
 	
-	public void addStrParticipantList(String listParticipant, boolean isImportant) {
+	public void addStrParticipantList(String meetingID, String listParticipant, boolean isImportant) {
 		String[] participants;
 		
 		participants = listParticipant.replaceAll("\\s","").split(",");
@@ -488,8 +488,11 @@ public class MeetingView {
 		}
 	}
 	
+
+	
 	public void viewMeetingInvitation(String email) {
-		List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
+		//List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
+		List<MeetingParticipant> invitationList= mc.getInvitationListByEmail(email);
 		if(invitationList.size()==0) {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
@@ -504,10 +507,25 @@ public class MeetingView {
 				System.out.print(m.getProposedDateRange() + "\t");
 				System.out.print(getStrMeetingStatus(m.getMeetingStatus()) + "\t");
 				System.out.print(m.getMeetingInitiator() + "\t");
-				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
-				System.out.print(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t\t");
+				System.out.print(getStrImportant(invitationList.get(i).isImportant()) + "\t");
+				System.out.print(getStrResponseStatus(invitationList.get(i).getResponse()) + "\t\t");
 				System.out.println(m.getNegotiationDeadline());
 			}
+			System.out.println();
+		}
+	}
+	
+	public void rejectInvitation(String meetingID, String email) {
+		String answer;
+		answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation for meeting id : " + meetingID + " (Y/N) ? ", "YN");
+		
+		if(answer.equals("Y")) {
+			if(mc.rejectInvitation(email, meetingID)) {
+				System.out.println("Your response: `reject` for meeting id: `"+ meetingID +"` has been recorded\n");
+			} else {
+				System.out.println("You are not eligible to response to this meeting, or\nThe meeting invitation is no longer able to be rejected\n");
+			}
+		} else {
 			System.out.println();
 		}
 	}

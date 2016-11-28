@@ -61,7 +61,7 @@ public class MeetingController {
 	}
 	
 	public void addMeetingParticipant(String email, boolean isImportant) {
-		MeetingParticipant mp = new MeetingParticipant(email, isImportant);
+		MeetingParticipant mp = new MeetingParticipant(meetingDraft.getId(), email, isImportant);
 		List<MeetingParticipant> arrMP = meetingDraft.getMeetingParticipant();
 		if(!findMeetingParticipantByEmail(arrMP, mp.getEmail())) {
 			arrMP.add(mp);
@@ -74,7 +74,7 @@ public class MeetingController {
 	}
 	
 	public Meeting getMeetingDraft() {
-		return meetingDraft;
+		return this.meetingDraft;
 	}
 	
 	public boolean findMeetingParticipantByEmail(List<MeetingParticipant> arrMP, String email) {
@@ -111,8 +111,13 @@ public class MeetingController {
 		//generate time slot
 		meetingTimeSlots = generateMeetingTimeSlot(meetingDraft.getDuration(), meetingDraft.getProposedStartDate(), meetingDraft.getProposedEndDate());
 		
+		//generate invitation
+		//List<MeetingInvitation> mis = generateMeetingInvitation(meetingDraft.getId(), meetingDraft.getMeetingParticipant(), meetingDraft.getMeetingInitiator());
+		//saveMeetingInvitation(mis);
+		
 		//add to meeting instance
 		meetingDraft.setMeetingTimeSlots(meetingTimeSlots);
+		//meetingDraft.setMeetingInvitation(mis);
 		
 		//save meetingDraft to json
 		System.out.println("Meeting id: M" + meetingDraft.getId());
@@ -122,10 +127,6 @@ public class MeetingController {
 		
 		//add new meeting id to json meeting_id
 		jParserInteger.append(fileMeetingId, (Integer) meetingDraft.getId());
-		
-		//generate invitation
-		List<MeetingInvitation> mis = generateMeetingInvitation(meetingDraft.getId(), meetingDraft.getMeetingParticipant(), meetingDraft.getMeetingInitiator());
-		saveMeetingInvitation(mis);
 	}
 	
 	
@@ -166,12 +167,47 @@ public class MeetingController {
 						return meeting.get(i);
 					}
 				}
-			} else {
-				System.out.println(Integer.parseInt(meetingID.substring(1)));
 			}
 		}
 		
 		return null;
+	}
+	
+	
+	public List<MeetingParticipant> getInvitationListByEmail(String email) {
+		List<Meeting> m = new ArrayList<Meeting>();
+		List<MeetingParticipant> mp = new ArrayList<MeetingParticipant>();
+		List<MeetingParticipant> invitation = new ArrayList<MeetingParticipant>();
+		m = jParserMeeting.load(fileMeetingData);
+		for(int i=0;i<m.size();i++) {
+			mp = m.get(i).getMeetingParticipant();
+			for(int j=0;j<mp.size();j++) {
+				if(mp.get(j).getEmail().equals(email)) {
+					invitation.add(mp.get(j));
+				}
+			}
+		}
+		return invitation;
+	}
+	
+	
+	public boolean rejectInvitation(String meetingID, String email) {
+		//yang harus di update klo reject
+		// meeting participant --> response = reject
+		
+		
+		/*List<MeetingInvitation> m = new MeetingInvitation();
+		MeetingParticipant mp = new MeetingParticipant();
+		m = getMeetingInvitationByID(meetingID, email);
+		mp = m.getMp();
+		for(int i=0;i<mp.size();i++) {
+			if(mp.get(i).getEmail().equals(email)) {
+				
+			}
+		}
+		*/
+		return true;
+		
 	}
 	
 	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {
