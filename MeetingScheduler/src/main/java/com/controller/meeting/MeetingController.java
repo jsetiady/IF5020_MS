@@ -191,11 +191,36 @@ public class MeetingController {
 	}
 	
 	
+	public List<Meeting> getAllMeeting() {
+		List<Meeting> mlist = new ArrayList<Meeting>();
+		mlist = jParserMeeting.load(fileMeetingData);
+		return mlist;
+	}
+	
+	
 	public boolean rejectInvitation(String meetingID, String email) {
 		//yang harus di update klo reject
 		// meeting participant --> response = reject
 		
+		List<Meeting> mlist = getAllMeeting();
+		List<MeetingParticipant> mp = new ArrayList<MeetingParticipant>();
+		Meeting m;
+		for(int i=0;i<mlist.size();i++) {
+			m = mlist.get(i);
+			if(m.getId() == Integer.parseInt(meetingID.substring(1))) {
+				mp = m.getMeetingParticipant();
+				for(int j=0;j<mp.size();j++) {
+					if(mp.get(j).getEmail().equals(email)) {
+						mp.get(j).setResponseDate("28/11/2016 12:00");
+						mp.get(j).setResponse(mp.get(j).REJECT);
+					}
+				}
+				mlist.set(i, m);
+			}
+		}
 		
+		//write to JSON
+		jParserMeeting.write(mlist, fileMeetingData);
 		
 		return true;
 		

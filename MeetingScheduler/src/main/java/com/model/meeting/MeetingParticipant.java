@@ -11,9 +11,9 @@ import java.util.Date;
 public class MeetingParticipant {
 	
 	//constant
-	static int PENDING = -1;
-	static int ACCEPT = 1;
-	static int REJECT = 0;
+	public static int PENDING = -1;
+	public static int ACCEPT = 1;
+	public static int REJECT = 0;
 	
 	//variable
 	private int meetingID;

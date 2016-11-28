@@ -531,11 +531,11 @@ public class MeetingView {
 	
 	public void rejectInvitation(String meetingID, String email) {
 		String answer;
-		answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation for meeting id : " + meetingID + " (Y/N) ? ", "YN");
+		answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation \nfor meeting id : " + meetingID + " (Y/N) ? ", "YN");
 		
 		if(answer.equals("Y")) {
-			if(mc.rejectInvitation(email, meetingID)) {
-				System.out.println("Your response: `reject` for meeting id: `"+ meetingID +"` has been recorded\n");
+			if(mc.rejectInvitation(meetingID, email)) {
+				System.out.println("Your response: `REJECT` for meeting id: `"+ meetingID +"` has been recorded\n");
 			} else {
 				System.out.println("You are not eligible to response to this meeting, or\nThe meeting invitation is no longer able to be rejected\n");
 			}

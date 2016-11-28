@@ -133,9 +133,10 @@ public class NewInterfaceMain {
 			case "reject-invitation" : 
 				if (checkCommandRole(2, role)) {
 					try {
-						mv.rejectInvitation(email, cmd[1]);
+						mv.rejectInvitation(cmd[1], email);
 					} catch(Exception e) {
 						System.out.println("Invalid command. Format: reject-invitation <meeting-id>");
+						e.printStackTrace();
 					}
 				}
 				else

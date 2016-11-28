@@ -86,7 +86,6 @@ public class JSONParser<T> {
 	   } catch (IOException e) {
 			System.out.println("Error: IO Exception");
 	   }
-	   
    }
 
 }
