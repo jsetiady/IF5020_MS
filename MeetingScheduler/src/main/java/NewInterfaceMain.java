@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 import com.model.user.User;
 import com.view.meeting.MeetingView;
+import com.view.user.ParticipantView;
 import com.view.user.UserView;
 
 /**
@@ -11,6 +12,7 @@ import com.view.user.UserView;
 public class NewInterfaceMain {
 	
 	private static boolean exit = false;
+	private static Scanner s;
 	
 	public static void showHelp(int role) {
 		switch(role) {
@@ -60,8 +62,9 @@ public class NewInterfaceMain {
 	public static void processMenu(String command, String email, int role) {
 		MeetingView mv = new MeetingView();
 		UserView uv = new UserView();
+		ParticipantView pv = new ParticipantView();//tambahan by Siti_R
+		
 		String[] cmd = command.split(" ");
-		boolean test;
 		switch(cmd[0]) {
 			case "list-user":
 				if (checkCommandRole(1, role))
@@ -106,16 +109,47 @@ public class NewInterfaceMain {
 			case "edit-meeting <meeting-id>" : break;
 			case "cancel-meeting <meeting-id>" : break;
 			case "run scheduler <meeting-id>" : break;
-			
+			// Edit by : Siti_Rozani
 			case "list-invitation" : 
-				if (checkCommandRole(3, role))
+				/*if (checkCommandRole(3, role))
 					mv.viewMeetingInvitation(email);
 				else
+					showErrorPrivilegeCommand();*/
+				if (checkCommandRole(3, role))
+				{
+					pv.listInvitation();
+				} else
+				{
 					showErrorPrivilegeCommand();
+				}
 				break;
-			case "detail-invitation <meeting-id>" : break;
-			case "accept-invitation <meeting-id>" : break;
-			case "reject-invitation <meeting-id>" : break;
+			case "detail-invitation" : 
+				if (checkCommandRole(3, role))
+				{
+					pv.detailInvitation(cmd[1]);
+				} else
+				{
+					showErrorPrivilegeCommand();
+				}
+				break;
+			case "accept-invitation" : 
+				if (checkCommandRole(3, role))
+				{
+					pv.acceptInvitation(cmd[1]);
+				} else
+				{
+					showErrorPrivilegeCommand();
+				}
+				break;
+			case "reject-invitation" : 
+				if (checkCommandRole(3, role))
+				{
+					pv.rejectInvitation(cmd[1]);
+				} else
+				{
+					showErrorPrivilegeCommand();
+				}
+				break;
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
@@ -135,7 +169,7 @@ public class NewInterfaceMain {
 	}
 	
 	public static void main(String args[]) {
-		Scanner s = new Scanner(System.in);
+		s = new Scanner(System.in);
 		UserView uv = new UserView();
 		User user;
 		String email, password, command;
@@ -179,7 +213,8 @@ public class NewInterfaceMain {
 			}
 		} while(!login);
 		do {
-			System.out.print("> "); command = s.nextLine();
+			System.out.print("> "); 
+			command = s.nextLine();
 			processMenu(command, email, role);
 		} while(!command.equals("exit"));
 	}
