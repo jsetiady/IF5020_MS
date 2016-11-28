@@ -40,6 +40,46 @@ public class MeetingTimeSlot {
 	public String getEndTime() {
 		return this.endTime;
 	}
+
+	public ArrayList<String> getOrdinaryParticipants() {
+		return ordinaryParticipants;
+	}
+
+	public void setOrdinaryParticipants(ArrayList<String> ordinaryParticipants) {
+		this.ordinaryParticipants = ordinaryParticipants;
+	}
+
+	public ArrayList<String> getImportantParticipants() {
+		return importantParticipants;
+	}
+
+	public void setImportantParticipants(ArrayList<String> importantParticipants) {
+		this.importantParticipants = importantParticipants;
+	}
+
+	public int getNumOrdinaryParticipant() {
+		return numOrdinaryParticipant;
+	}
+
+	public void setNumOrdinaryParticipant(int numOrdinaryParticipant) {
+		this.numOrdinaryParticipant = numOrdinaryParticipant;
+	}
+
+	public int getNumImportantParticipant() {
+		return numImportantParticipant;
+	}
+
+	public void setNumImportantParticipant(int numImportantParticipant) {
+		this.numImportantParticipant = numImportantParticipant;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
 	
 	
 }

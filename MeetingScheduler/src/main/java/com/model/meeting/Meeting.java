@@ -15,16 +15,17 @@ public class Meeting {
 	private String agenda;
 	private String location;
 	private int duration;
-	private String proposedStartDate;
-	private String proposedEndDate;
-	private String maxResponseDate;
-	private String maxResponseTime;
-	private List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
-	private List<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
+	private String proposedDateRange;
+	private String negotiationDeadline;
 	private int meetingStatus;
 	private String meetingInitiator;
 	private String createdDate;
 	private String scheduledDate;
+	private String proposedStartDate;
+	private String proposedEndDate;
+	private List<MeetingTimeSlot> meetingTimeSlots = new ArrayList<MeetingTimeSlot>();
+	private List<MeetingParticipant> meetingParticipant = new ArrayList<MeetingParticipant>();
+	//private List<MeetingInvitation> meetingInvitation = new ArrayList<MeetingInvitation>();
 	
 	//meetingstatus
 	public int NEGOTIATING = 0;
@@ -33,20 +34,16 @@ public class Meeting {
 	public int RUNNING = 2;
 	public int FINISH = 3;
 	
-	//constructor
 	public Meeting(int id, String title, String agenda, String location,
-			int duration, String proposedStartDate, String proposedEndDate,
-			String maxResponseDate, String maxResponseTime, String meetingInitiator, String createdDate) {
+			int duration, String proposedDateRange, String negotiationDeadline, String meetingInitiator, String createdDate) {
 		
 		this.id = id; //id generated in Meeting Controller
 		this.title = title;
 		this.agenda = agenda;
 		this.location = location;
 		this.duration = duration;
-		this.proposedStartDate = proposedStartDate;
-		this.proposedEndDate = proposedEndDate;
-		this.maxResponseDate = maxResponseDate;
-		this.maxResponseTime = maxResponseTime;
+		this.proposedDateRange = proposedDateRange;
+		this.negotiationDeadline = negotiationDeadline;
 		this.meetingInitiator = meetingInitiator;
 		this.meetingStatus = 0;
 		this.createdDate = createdDate;
@@ -95,40 +92,24 @@ public class Meeting {
 		this.duration = duration;
 	}
 
-	public String getProposedStartDate() {
-		return proposedStartDate;
-	}
-
-	public void setProposedStartDate(String proposedStartDate) {
-		this.proposedStartDate = proposedStartDate;
-	}
-
-	public String getProposedEndDate() {
-		return proposedEndDate;
-	}
-
-	public void setProposedEndDate(String proposedEndDate) {
-		this.proposedEndDate = proposedEndDate;
-	}
-
-	public String getMaxResponseDate() {
-		return maxResponseDate;
-	}
-
-	public void setMaxResponseDate(String maxResponseDate) {
-		this.maxResponseDate = maxResponseDate;
-	}
-	
-	public String getMaxResponseTime() {
-		return maxResponseTime;
-	}
-
-	public void setMaxResponseTime(String maxResponseTime) {
-		this.maxResponseTime = maxResponseTime;
-	}
-
 	public List<MeetingTimeSlot> getMeetingTimeSlots() {
 		return meetingTimeSlots;
+	}
+
+	public String getProposedDateRange() {
+		return proposedDateRange;
+	}
+
+	public void setProposedDateRange(String proposedDateRange) {
+		this.proposedDateRange = proposedDateRange;
+	}
+
+	public String getNegotiationDeadline() {
+		return negotiationDeadline;
+	}
+
+	public void setNegotiationDeadline(String negotiationDeadline) {
+		this.negotiationDeadline = negotiationDeadline;
 	}
 
 	public void setMeetingTimeSlots(List<MeetingTimeSlot> meetingTimeSlots2) {
@@ -175,32 +156,28 @@ public class Meeting {
 		this.scheduledDate = scheduledDate;
 	}
 	
-	
-	
-	// begin setter & getter
-	
-	
-	
-	/*
-	public void runScheduler() {
-		Meeting m;
-		
-		//generate slots
-		//jumlah slot pada satu hari ada 10 (10 jam)
-		//slot = 10/durasi 
-		
-		int total_days = Days.daysBetween(m.getStartDate(), m.getEndDate()).getDays(); // get total days between date range
-		
-		date = m.getStartDate();
-		while(date.before(m.getEndDate())) {
-			for(int i=0;i<slots.size();i++) { //slots.size() = 10
-				
-			}
-			Date next_date = new Date(date.getTime() + (1000 * 60 * 60 * 24));
-			date = next_date;
-		}
-		
+	public String getProposedStartDate() {
+		return this.proposedDateRange.split(" - ")[0];
 	}
-	*/
+	
+	public String getProposedEndDate() {
+		return this.proposedDateRange.split(" - ")[1];
+	}
+	
+	public void setProposedStartDate(String proposedStartDate) {
+		this.proposedStartDate = proposedStartDate;
+	}
+	
+	public void setProposedEndDate(String proposedEndDate) {
+		this.proposedEndDate = proposedEndDate;
+	}
+	
+	/*public List<MeetingInvitation> getMeetingInvitation() {
+		return meetingInvitation;
+	}
+
+	public void setMeetingInvitation(List<MeetingInvitation> meetingInvitation) {
+		this.meetingInvitation = meetingInvitation;
+	}*/
 	
 }

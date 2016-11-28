@@ -11,9 +11,11 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import com.controller.meeting.MeetingController;
+import com.controller.user.UserController;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
+import com.model.meeting.MeetingTimeSlot;
 import com.utilities.Validator;
 
 /**
@@ -23,20 +25,18 @@ import com.utilities.Validator;
 public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
-	private Scanner s;
+	UserController uc = new UserController();
+	private Scanner s = new Scanner(System.in);
 	private Validator validator = new Validator();
 	
 	
 	public void createMeetingView(String meetingInitiatorID) {
 		//variables
-		Scanner s = new Scanner(System.in);
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
-		String title, agenda, location, strStartDate = null, 
-			 strEndDate = null, strMaxResponseDate = null, strMaxResponseTime = null, createdDate, proposedDateRange;
+		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
 		String ordParticipantList = "", impParticipantList = "";
-		int duration, input, choice, test;
-		boolean invalidInput;
+		int duration, choice, test;
 		
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
@@ -51,54 +51,66 @@ public class MeetingView {
 		
 		System.out.println("\n  Note: Please enter the proposed date range in format: dd/mm/yyyy - dd/mm/yyyy");
 		proposedDateRange = validator.getAndValidateInput(s, "# Proposed date range\t\t: ", "daterange");
-		strMaxResponseDate = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
+		negotiationDeadline = validator.getAndValidateInput(s, "# Negotiation deadline\t\t: ", "date", proposedDateRange);
 		System.out.println("\n  Note: Please enter participant list in format: <email>, <email>");
 		
 		do {
 			test = 1;
-			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
 			impParticipantList = validator.getAndValidateInput(s, "# Important participant\t\t: ", "participant");
+			ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
 			
-			if(ordParticipantList.equals("") || impParticipantList.equals("")) {
+			if(ordParticipantList.equals("") && impParticipantList.equals("")) {
 				test = 0;
-				System.out.println("  Err: You have to enter at least one participant. Add one now.");
+				System.out.println("\n  Err: You have to enter at least one participant. Add one now.");
 			}
 		} while(test == 0);
 		
 		createdDate = new SimpleDateFormat("dd/mm/yyyy").format(Calendar.getInstance().getTime());
-
-		//TODO: constructor for create meeting
-		mc.createMeetingDraft(title, agenda, location, duration, strStartDate, strEndDate, strMaxResponseDate, strMaxResponseTime, meetingInitiatorID, createdDate);
-	
-		do {
-			System.out.println("\nConfirmation");
-			System.out.println("1. Add more participant");
-			System.out.println("2. Cancel Meeting Creation");
-			System.out.print("Enter your choice: ");
-			choice = s.nextInt();
-			s.nextLine();
-			
-			switch(choice) {
-				case 1:
-					createMeetingAddParticipantView();
-					addMeetingParticipantView();
-					break;
-				case 2: 
-					System.out.println("\nMeeting creation has been canceled\nPress enter to continue");
-					s.nextLine();
-					break;
-				default:
-					System.out.println("\nInvalid input\nPlease choose between 1 and 2\nPress enter to continue");
-					s.nextLine();
-			}
-		} while(choice!=1 && choice!=2);
 		
+		//instantiate meeting
+		mc.createMeetingDraft(title, agenda, location, duration, proposedDateRange, negotiationDeadline, meetingInitiatorID, createdDate);
+		//meeting participant
+		System.out.println("\n# Confirmation:");
+		addStrParticipantList("M"+mc.getMeetingDraft().getId(), impParticipantList, true);
+		addStrParticipantList("M"+mc.getMeetingDraft().getId(), ordParticipantList, false);
+		System.out.println("\n  Press enter to continue");
+		s.nextLine();
+		
+		createMeetingSummaryView(s);
+		addMeetingParticipantView();
+	}
+	
+	public void addStrParticipantList(String meetingID, String listParticipant, boolean isImportant) {
+		String[] participants;
+		
+		participants = listParticipant.replaceAll("\\s","").split(",");
+		int k = 0;
+		for(int i=0;i<participants.length;i++) {
+			if(!participants[i].equals("")) {
+				if(validator.isValidEmail(participants[i])) {
+					if(uc.getUserByEmail(participants[i])!=null) {
+						mc.addMeetingParticipant(participants[i], isImportant);
+						k++;
+					} else {
+						System.out.println("  Err: user with email : " + participants[i] + " is not exist");
+					}
+				} else {
+					System.out.println("  Err: " + participants[i] + " is not a valid email format");
+				}
+			}
+		}
+		
+		if(isImportant) {
+			System.out.println("  " + k + " important participant added\n");
+		} else {
+			System.out.println("  " + k + " ordinary participant added\n");
+		}
 	}
 	
 	
 	public void createMeetingSummaryView(Scanner s) {
 		Meeting m = mc.getMeetingDraft();
-		System.out.println("CREATE MEETING - SUMMARY");
+		System.out.println("\nCREATE MEETING - SUMMARY");
 		System.out.println("--------------------------------");
 		System.out.println("# Title\t\t\t\t: " + m.getTitle());
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
@@ -107,16 +119,11 @@ public class MeetingView {
 		System.out.println("# Proposed date range: ");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
-		System.out.println("# Max response time");
-		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
-		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
+		System.out.println("# Negotiation Deadline\t\t: "  + m.getNegotiationDeadline() );
 		
-		System.out.println("Press enter to continue\n\n");
-		s.nextLine();
 	}
 	
 	public void createMeetingAddParticipantView() {
-		Scanner s = new Scanner(System.in);
 		List<MeetingParticipant> arrMP = new ArrayList<MeetingParticipant>();
 		String email, strImportant;
 		arrMP = mc.getParticipantList();
@@ -141,18 +148,16 @@ public class MeetingView {
 	
 	public void addMeetingParticipantView() {
 		int choice;
-		Scanner s = new Scanner(System.in);
 		List<MeetingParticipant> arrMP;
 		do {
-			System.out.println("CREATE MEETING - Add Participant");
-			System.out.println("--------------------------------");
+			System.out.println("\n--------------------------------");
 			System.out.println("Participant List");
 			arrMP = mc.getParticipantList();
 			printParticipantList(arrMP, false);
 			
 			System.out.println("\n");
 			System.out.println("Menu");
-			System.out.println("1. Add meeting participant");
+			System.out.println("1. Add more meeting participant");
 			System.out.println("2. Edit meeting participant");
 			System.out.println("3. Show meeting information");
 			System.out.println("4. Save meeting");
@@ -241,7 +246,6 @@ public class MeetingView {
 	}
 	
 	public void printParticipantList(List<MeetingParticipant> arrMP, boolean withResponse) {
-		s = new Scanner(System.in);
 		int choice, num;
 		if(arrMP.size()==0) {
 			System.out.println("\nThis meeting has no participant. Add one now\n");
@@ -344,7 +348,6 @@ public class MeetingView {
 	}
 	
 	public void displayCreatedMeeting(String email) {
-		s = new Scanner(System.in);
 		int choice = 0, num;
 		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
 		if(createdMeetingList.isEmpty()) {
@@ -431,16 +434,13 @@ public class MeetingView {
 		System.out.println("# Proposed date range");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
-		System.out.println("# Max response time");
-		System.out.println("    Date (dd/mm/yyyy)\t\t: " + m.getMaxResponseDate());
-		System.out.println("    Time (hh:mm)\t\t: " + m.getMaxResponseDate());	
+		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
 		System.out.println();
 	}
 	
 	public void viewMeetingScheduleByEmail(String email) {
-		s = new Scanner(System.in);
 		int choice = 0, num;
 		List<Meeting> scheduledMeetingList = mc.getListOfScheduledMeetingByEmail(email);
 		if(scheduledMeetingList.isEmpty()) {
@@ -489,29 +489,169 @@ public class MeetingView {
 		}
 	}
 	
+
+	
 	public void viewMeetingInvitation(String email) {
-		s = new Scanner(System.in);
-		List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
+		//List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
+		List<MeetingParticipant> invitationList= mc.getInvitationListByEmail(email);
 		if(invitationList.size()==0) {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
 		} else {
-			System.out.println("No\tInvitation Date\t\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
+			System.out.println("No\tInvitation Date\t\tMeeting ID\tTitle\t\tProposed Date Range\tMeeting Status\tInitiator\tYour Status\t\tYour Response\tNegotiation Deadline");
 			for(int i=0;i<invitationList.size();i++) {
-				
-				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());
-				
-				//TODO load meeting
+				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());	
 				
 				System.out.print(i+1 + "\t");
 				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
-				System.out.print(invitationList.get(i).getMeetingID() + "\t\t");
-				System.out.print(invitationList.get(i).getMeetingID() + "\t");
-				System.out.print("jeje@gmail.com" + "\t");
-				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
-				System.out.println(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t");
+				System.out.print("M" + invitationList.get(i).getMeetingID() + "\t\t");
+				System.out.print(prettyPrint(m.getTitle(),15) + "\t");
+				System.out.print(m.getProposedDateRange() + "\t");
+				System.out.print(getStrMeetingStatus(m.getMeetingStatus()) + "\t");
+				System.out.print(m.getMeetingInitiator() + "\t");
+				System.out.print(getStrImportant(invitationList.get(i).isImportant()) + "\t");
+				System.out.print(getStrResponseStatus(invitationList.get(i).getResponse()) + "\t\t");
+				System.out.println(m.getNegotiationDeadline());
+			}
+			System.out.println();
+		}
+	}
+	
+	public String prettyPrint(String text, int length) {
+		int x;
+		if(text.length()<length) {
+			x = length - text.length();
+			for(int i=0;i<x;i++) {
+				text = text + " ";
+			}
+		} else {
+			text = text.substring(0, length);
+		}
+		return text;
+	}
+	
+	public void rejectInvitation(String meetingID, String email) {
+		Meeting m;
+		String answer;
+		MeetingParticipant mp;
+		List<MeetingTimeSlot> mts;
+		m = mc.getMeetingByID(meetingID);
+		if(mc.isParticipant(m, email)) {
+			mp = mc.getParticipantInfo(m, email);
+			System.out.println("You are " + getStrImportant(mp.isImportant()) + " for this meeting.");
+			answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation \nfor meeting id : " + meetingID + " (Y/N) ? ", "YN");
+			
+			if(answer.equals("Y")) {
+				if(mc.rejectInvitation(meetingID, email)) {
+					System.out.println("Your response: `REJECT` for meeting id: `"+ meetingID +"` has been recorded\n");
+				} else {
+					System.out.println("You are not eligible to response to this meeting, or\nThe meeting invitation is no longer able to be rejected\n");
+				}
+			} else {
+				System.out.println();
 			}
 		}
+	}
+	
+	public String timeslotInvitationAvailability(boolean status) {
+		if(status) {
+			return "Available";
+		} else {
+			return "Not Available";
+		}
+	}
+	
+	public void acceptInvitation(String meetingID, String email) {
+		Meeting m;
+		String answer;
+		MeetingParticipant mp;
+		List<MeetingTimeSlot> mts;
+		int number = 0;
+		
+		//check the eligibility 
+		m = mc.getMeetingByID(meetingID);
+		
+		if(mc.isParticipant(m, email)) {
+			//confirmation for accept
+			mp = mc.getParticipantInfo(m, email);
+			System.out.println("You are " + getStrImportant(mp.isImportant()) + " for this meeting.");
+			answer = validator.getAndValidateInput(s,"Are you sure wants to accept meeting ID: " + meetingID + " (Y/N) ? ", "YN");
+			
+			
+			System.out.println("\nYour response is ACCEPT. Please add availability time.");
+			//get timeslot
+			do {
+				mts = m.getMeetingTimeSlots();
+				System.out.println("\nNo\tTime Slot\tStart\tEnd\tDuration\tYour Availability Status");
+				//show timeslot
+				for(int i=0;i<mts.size();i++) {
+					System.out.print(i+1 + "\t");
+					System.out.print(mts.get(i).getDate() + "\t");
+					System.out.print(mts.get(i).getStartTime() + "\t");
+					System.out.print(mts.get(i).getEndTime() + "\t");
+					System.out.print(m.getDuration() + " hours  \t");
+					System.out.println(timeslotInvitationAvailability(mc.checkAvailabilityTimeSlotOfParticipant(mts.get(i), email)));
+				}
+				
+				//menu add / remove timeslot
+				System.out.println("Menu");
+				System.out.println("1. Add available slot");
+				System.out.println("2. Remove slot availability");
+				System.out.println("3. Save response");
+				System.out.print("Your choice: ");
+				answer = s.nextLine();
+				
+				switch(answer) {
+					case "1": 
+						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
+						try {
+							number = s.nextInt();
+						} catch(Exception e) {
+							System.out.print("Invalid input, please try again.");
+						}
+						
+						if(number<1 && number>mts.size()) {
+							System.out.print("Invalid time slot number.");
+							s.nextLine();
+						} else {
+							//if important
+							if(mp.isImportant()) {
+								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
+								List<String> im =  mts.get(number-1).getImportantParticipants();
+								im.add(email);
+								//mts.get(number-1).set
+								//TODO
+							} else {
+								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+							}
+						}
+						
+						break;
+					case "2":
+						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
+						//remove
+						break;
+					case "3": 
+						//mp.setResponse(mp.ACCEPT);
+						//m.setMeetingParticipant(mp);
+						
+						//new participant response
+						//new timeslot
+						//replace in object meeting
+						//replace in array meeting
+						
+						System.out.println("Your response has been recorded.");
+						System.out.println("You may change your timeslot availability before the negotiation deadline.");
+						System.out.println("");
+						break;
+					default: 
+						System.out.println("Please enter menu option between 1-3");
+						s.nextLine();
+						break;
+				}
+			} while(answer !="3");
+		}
+		
 	}
 	
 	public String getStrImportant(boolean important) {
