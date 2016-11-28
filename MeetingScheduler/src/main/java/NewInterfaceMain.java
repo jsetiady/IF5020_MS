@@ -128,7 +128,17 @@ public class NewInterfaceMain {
 				else
 					showErrorPrivilegeCommand();
 				break;
-			case "detail-invitation <meeting-id>" : break;
+			case "detail-invitation" :
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.detailInvitation(cmd[1], email);
+					} catch(ArrayIndexOutOfBoundsException e) {
+						System.out.println("Invalid command. Format: detail-invitation <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			case "accept-invitation" :
 				if (checkCommandRole(2, role)) {
 					try {

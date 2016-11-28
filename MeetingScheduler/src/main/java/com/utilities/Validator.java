@@ -112,6 +112,13 @@ public class Validator {
 		return strEmail.matches(regex);
 	}
 	
+	public String getCurrentTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		return dateFormat.format(date);
+
+	}
+	
 	public String getAndValidateInput(Scanner s, String label, String type, String dr) {
 		String input;
 		String[] daterange;

@@ -252,7 +252,7 @@ public class MeetingView {
 		} else {
 			if(withResponse) {
 				//TODO @jeje get meetingParticipant instance
-				System.out.println("No\tResponse\tResponse Date\tEmail\t\t");
+				System.out.println("No\tResponse\tResponse Date\t\tEmail\t\t");
 				for(int i=0;i<arrMP.size();i++) {
 					System.out.print((i+1) + "\t");
 					System.out.print(getStrResponseStatus(arrMP.get(i).getResponse()) + "\t\t");
@@ -427,6 +427,7 @@ public class MeetingView {
 		System.out.println("# Meeting ID\t\t\t: M" + m.getId());
 		System.out.println("# Initiator\t\t\t: " + m.getMeetingInitiator());
 		System.out.println("# Status\t\t\t: " + getStrMeetingStatus(m.getMeetingStatus()));
+		System.out.println("# Scheduled date\t\t: " + m.getScheduledDate());
 		System.out.println("---\n# Title\t\t\t\t: " + m.getTitle());
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
 		System.out.println("# Location\t\t\t: " + m.getLocation());
@@ -437,6 +438,23 @@ public class MeetingView {
 		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
+		System.out.println();
+	}
+	
+	public void viewMeetingInfo(Meeting m) {
+		System.out.println("MEETING DETAILS");
+		System.out.println("--------------------------------");
+		System.out.println("# Meeting ID\t\t\t: M" + m.getId());
+		System.out.println("# Initiator\t\t\t: " + m.getMeetingInitiator());
+		System.out.println("# Status\t\t\t: " + getStrMeetingStatus(m.getMeetingStatus()));
+		System.out.println("---\n# Title\t\t\t\t: " + m.getTitle());
+		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
+		System.out.println("# Location\t\t\t: " + m.getLocation());
+		System.out.println("# Duration\t\t\t: " + m.getDuration());
+		System.out.println("# Proposed date range");
+		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
+		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
+		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println();
 	}
 	
@@ -582,7 +600,7 @@ public class MeetingView {
 			//get timeslot
 			do {
 				mts = m.getMeetingTimeSlots();
-				System.out.println("\nNo\tTime Slot\tStart\tEnd\tDuration\tYour Availability Status");
+				System.out.println("\nNo\tDate\t\tStart\tEnd\tDuration\tYour Availability Status");
 				//show timeslot
 				for(int i=0;i<mts.size();i++) {
 					System.out.print(i+1 + "\t");
@@ -668,6 +686,7 @@ public class MeetingView {
 						for(int i=0;i<arrMP.size();i++) {
 							if(arrMP.get(i).getEmail().equals(email)) {
 								arrMP.get(i).setResponse(arrMP.get(i).ACCEPT);
+								arrMP.get(i).setResponseDate(validator.getCurrentTime());
 							}
 						}
 						m.setMeetingParticipant(arrMP);
@@ -698,6 +717,42 @@ public class MeetingView {
 			} while(!(answer.equals("3")));
 		}
 		
+	}
+	
+	public void detailInvitation(String meetingID, String email) {
+		//check eligibility
+		List<Meeting> arrMeeting = mc.getAllMeeting();
+		boolean found = false;
+		for(int i=0;i<arrMeeting.size();i++) {
+			if(arrMeeting.get(i).getId()==Integer.parseInt(meetingID.substring(1))) {
+				if(mc.isParticipant(arrMeeting.get(i), email)) {
+					found = true;
+					viewMeetingInfo(arrMeeting.get(i));
+					
+					//participant response
+					MeetingParticipant mp = mc.getParticipantInfo(arrMeeting.get(i), email);
+					System.out.println("----\nYour response");
+					System.out.println("# Participant status\t: " + getStrImportant(mp.isImportant()));
+					System.out.println("# Response\t\t: " + getStrResponseStatus(mp.getResponse()));
+					System.out.println("# Response date\t\t: " + mp.getResponseDate());
+					System.out.println("# Time slot detail");
+					List<MeetingTimeSlot> mts = arrMeeting.get(i).getMeetingTimeSlots();
+					System.out.println("\nNo\tDate\t\tStart\tEnd\tYour Availability Status");
+					//show timeslot
+					for(int j=0;j<mts.size();j++) {
+						System.out.print(j+1 + "\t");
+						System.out.print(mts.get(j).getDate() + "\t");
+						System.out.print(mts.get(j).getStartTime() + "\t");
+						System.out.print(mts.get(j).getEndTime() + "\t");
+						System.out.println(timeslotInvitationAvailability(mc.checkAvailabilityTimeSlotOfParticipant(mts.get(j), email)));
+					}
+				}
+			}
+		}
+		
+		if(!found) {
+			System.out.println("You are not eligible to view this meeting / invitation");
+		}
 	}
 	
 	public String getStrImportant(boolean important) {

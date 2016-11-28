@@ -234,6 +234,7 @@ public class MeetingController {
 	public boolean rejectInvitation(String meetingID, String email) {
 		// things that should be updated
 		// meeting participant --> response = reject
+		//timeslot di reset
 		
 		List<Meeting> mlist = getAllMeeting();
 		List<MeetingParticipant> mp = new ArrayList<MeetingParticipant>();
@@ -244,7 +245,7 @@ public class MeetingController {
 				mp = m.getMeetingParticipant();
 				for(int j=0;j<mp.size();j++) {
 					if(mp.get(j).getEmail().equals(email)) {
-						mp.get(j).setResponseDate("28/11/2016 12:00");
+						mp.get(j).setResponseDate(validator.getCurrentTime());
 						mp.get(j).setResponse(mp.get(j).REJECT);
 					}
 				}
