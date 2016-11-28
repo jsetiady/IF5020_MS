@@ -119,8 +119,28 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "edit-meeting <meeting-id>" : break;
-			case "cancel-meeting <meeting-id>" : break;
-			case "run scheduler <meeting-id>" : break;
+			case "cancel-meeting" : 
+				if(checkCommandRole(2, role)) {
+					try {
+						mv.cancelMeeting(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: cancel-meeting <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
+			case "run-scheduler" : 
+				if(checkCommandRole(2, role)) {
+					try {
+						mv.runScheduler(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: run-meeting <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			
 			case "list-invitation" : 
 				if (checkCommandRole(3, role))
@@ -128,21 +148,30 @@ public class NewInterfaceMain {
 				else
 					showErrorPrivilegeCommand();
 				break;
-			case "detail-invitation <meeting-id>" : break;
+			case "detail-invitation" :
+				if (checkCommandRole(3, role)) {
+					try {
+						mv.detailInvitation(cmd[1], email);
+					} catch(ArrayIndexOutOfBoundsException e) {
+						System.out.println("Invalid command. Format: detail-invitation <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			case "accept-invitation" :
-				if (checkCommandRole(2, role)) {
+				if (checkCommandRole(3, role)) {
 					try {
 						mv.acceptInvitation(cmd[1], email);
-					} catch(Exception e) {
+					} catch(ArrayIndexOutOfBoundsException e) {
 						System.out.println("Invalid command. Format: accept-invitation <meeting-id>");
-						e.printStackTrace();
 					}
 				}
 				else
 					showErrorPrivilegeCommand();
 				break;
 			case "reject-invitation" : 
-				if (checkCommandRole(2, role)) {
+				if (checkCommandRole(3, role)) {
 					try {
 						mv.rejectInvitation(cmd[1], email);
 					} catch(Exception e) {
@@ -155,8 +184,8 @@ public class NewInterfaceMain {
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
-			case "exit" : System.exit(0);
-				break;
+			case "exit" : System.exit(0); break;
+			case "" :  break;
 			
 			default: System.out.println("Unrecognized command option"); break;
 		}
