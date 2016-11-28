@@ -433,7 +433,7 @@ public class MeetingView {
 		System.out.println("# Proposed date range");
 		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
-		System.out.println("# Negotiation Deadline\t: " + m.getNegotiationDeadline());
+		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
 		System.out.println();

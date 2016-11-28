@@ -108,8 +108,13 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-meeting" :
-				if (checkCommandRole(2, role))
-					mv.viewMeetingByID(cmd[1]);
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.viewMeetingByID(cmd[1]);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: detail-meeting <meeting-id>");
+					}
+				}
 				else
 					showErrorPrivilegeCommand();
 				break;

@@ -38,7 +38,7 @@ public class Validator {
 		}
 		else if(type.equals("number")) {
 			regex = "[0-9]";
-			errorMsg = "  Err: Invalid time format. Please re-enter.";
+			errorMsg = "  Err: Invalid number format. Please re-enter.";
 		}
 		else if(type.equals("email")) {
 			regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -92,6 +92,11 @@ public class Validator {
 		return input;
 	}
 	
+	
+	public boolean isValidNumber(String number) {
+		String regex = "^[0-9]*";
+		return number.matches(regex);
+	}
 	
 	public boolean isValidEmail(String strEmail) {
 		String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"

@@ -21,6 +21,7 @@ import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
 import com.utilities.JSONParser;
+import com.utilities.Validator;
 
 /**
  * @author jessiesetiady
@@ -28,6 +29,7 @@ import com.utilities.JSONParser;
  */
 public class MeetingController {
 	private Meeting meetingDraft;
+	private Validator validator = new Validator();
 	
 	private JSONParser<Meeting> jParserMeeting = new JSONParser<Meeting>(Meeting.class);
 	private JSONParser<Integer> jParserInteger = new JSONParser<Integer>(Integer.class);
@@ -156,11 +158,16 @@ public class MeetingController {
 	public Meeting getMeetingByID(String meetingID) {
 		List<Meeting> meeting = new ArrayList<Meeting>();
 		
-		meeting = jParserMeeting.load(fileMeetingData);
-		
-		for(int i=0;i<meeting.size();i++) {
-			if(meeting.get(i).getId() == Integer.parseInt(meetingID.substring(1))) {
-				return meeting.get(i);
+		if(meetingID.substring(1)!=null) {
+			if(validator.isValidNumber(meetingID.substring(1))) {
+				meeting = jParserMeeting.load(fileMeetingData);
+				for(int i=0;i<meeting.size();i++) {
+					if(meeting.get(i).getId() == Integer.parseInt(meetingID.substring(1))) {
+						return meeting.get(i);
+					}
+				}
+			} else {
+				System.out.println(Integer.parseInt(meetingID.substring(1)));
 			}
 		}
 		
