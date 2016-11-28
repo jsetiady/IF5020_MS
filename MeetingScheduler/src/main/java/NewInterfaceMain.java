@@ -23,8 +23,8 @@ public class NewInterfaceMain {
 				System.out.println("edit-user <email>");
 				System.out.println("del-user <email>");
 				System.out.println();
-				break;
 			case 2:
+			case 3:
 				System.out.println("Initiator command");
 				System.out.println("---------------------");
 				System.out.println("create-meeting");
@@ -34,8 +34,6 @@ public class NewInterfaceMain {
 				System.out.println("cancel-meeting <meeting-id>");
 				System.out.println("run scheduler <meeting-id>");
 				System.out.println();
-			break;
-			case 3:
 				System.out.println("Participant command");
 				System.out.println("---------------------");
 				System.out.println("list-invitation");
@@ -47,7 +45,7 @@ public class NewInterfaceMain {
 	}
 	
 	public static boolean checkCommandRole(int expectedRole, int actualRole) {
-		if(expectedRole == actualRole) {
+		if(actualRole <=  expectedRole) {
 			return true;
 		}
 		return false;
@@ -110,8 +108,13 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-meeting" :
-				if (checkCommandRole(2, role))
-					mv.viewMeetingByID(cmd[1]);
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.viewMeetingByID(cmd[1]);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: detail-meeting <meeting-id>");
+					}
+				}
 				else
 					showErrorPrivilegeCommand();
 				break;
@@ -126,8 +129,29 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-invitation <meeting-id>" : break;
-			case "accept-invitation <meeting-id>" : break;
-			case "reject-invitation <meeting-id>" : break;
+			case "accept-invitation" :
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.acceptInvitation(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: accept-invitation <meeting-id>");
+						e.printStackTrace();
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
+			case "reject-invitation" : 
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.rejectInvitation(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: reject-invitation <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
@@ -141,7 +165,7 @@ public class NewInterfaceMain {
 	public static String roleToString(int role) {
 		switch(role) {
 			case 1: return "Administrator";
-			case 2: return "Meeting initiator";
+			case 2: return "Meeting initiator or participant";
 			case 3: return "Meeting participant";
 		}
 		return "";
@@ -155,48 +179,40 @@ public class NewInterfaceMain {
 		int role;
 		boolean login = false;
 		
-		System.out.println("+-------------------------------------------+");
-		System.out.println("|LOGIN                                      |");
-		System.out.println("+-------------------------------------------+");
 		do {
-			System.out.print(" Email      : "); email = s.nextLine();
-			System.out.print(" Password   : "); password = s.nextLine();
-			System.out.println();
-			user = uv.login(email, password);
-			if(user!=null) {
-				login = true;
-			} else {
-				System.out.println("## wrong email or password ##");
-			}
-		} while(!login);
-		
-		login = false;
-		do {
+			System.out.println("\n+-------------------------------------------+");
+			System.out.println("|LOGIN                                      |");
+			System.out.println("+-------------------------------------------+");
 			do {
-			System.out.print("Please select a role (1-3):\n1.administrator\n2.initiator\n3.participant\n> ");role = s.nextInt(); s.nextLine();
-				if(role<1 || role>3) {
-					System.out.println("## Role does not exist, please re-enter. ##");
-				}
-			} while(role<1 || role>3);
-			
-			if(role==1) {
-				if(user.isAdmin()) {
+				System.out.print(" Email      : "); email = s.nextLine();
+				System.out.print(" Password   : "); password = s.nextLine();
+				System.out.println();
+				user = uv.login(email, password);
+				if(user!=null) {
 					login = true;
 				} else {
-					System.out.println("## You don't have Admin privilege. Please choose another role. ##");
+					System.out.println("## wrong email or password ##");
 				}
-			} else {
-				login = true;
-			}
+			} while(!login);
 			
-			if(login) {
-				System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
-				System.out.println("Waiting for your command...\n");	
-			}
-		} while(!login);
-		do {
-			System.out.print("> "); command = s.nextLine();
-			processMenu(command, email, role);
+			login = false;
+			do {
+					if(user.isAdmin()) {
+						login = true;
+						role = 1;
+					} else {
+						login = true;
+						role = 2;
+					}
+				if(login) {
+					System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
+					System.out.println("Waiting for your command...\n");	
+				}
+			} while(!login);
+			do {
+				System.out.print("> "); command = s.nextLine();
+				processMenu(command, email, role);
+			} while(!command.equals("logout"));
 		} while(!command.equals("exit"));
 	}
 	

@@ -1,5 +1,7 @@
 package com.model.meeting;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -9,27 +11,43 @@ import java.util.Date;
 public class MeetingParticipant {
 	
 	//constant
-	static int PENDING = -1;
-	static int ACCEPT = 1;
-	static int REJECT = 0;
+	public static int PENDING = -1;
+	public static int ACCEPT = 1;
+	public static int REJECT = 0;
 	
 	//variable
+	private int meetingID;
 	private String email = "";
 	private boolean isImportant = false;
 	private int response = PENDING;
 	private String responseDate = "";
+	private String invitationDate;
+	private String invitationMsg;
 	
-	public MeetingParticipant(String email, boolean isImportant) {
+	public MeetingParticipant(int meetingID, String email, boolean isImportant) {
 		this.email = email;
 		this.isImportant = isImportant;
 		this.responseDate = "--/--/----";
+		this.meetingID = meetingID;
 		response = PENDING;
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date date = new Date();
+		this.invitationDate = dateFormat.format(date);
+		this.invitationMsg = "";
 	}
 	
 	public MeetingParticipant() {}
 	
-	public MeetingParticipant(String email) {
-		this(email, false);
+	public MeetingParticipant(int meetingID, String email) {
+		this(meetingID, email, false);
+	}
+	
+	public void setMeetingID(int meetingID) {
+		this.meetingID = meetingID;
+	}
+
+	public int getMeetingID() {
+		return meetingID;
 	}
 
 	public void setEmail(String email) {
@@ -62,6 +80,22 @@ public class MeetingParticipant {
 
 	public void setResponseDate(String responseDate) {
 		this.responseDate = responseDate;
+	}
+
+	public String getInvitationDate() {
+		return invitationDate;
+	}
+
+	public void setInvitationDate(String invitationDate) {
+		this.invitationDate = invitationDate;
+	}
+
+	public String getInvitationMsg() {
+		return invitationMsg;
+	}
+
+	public void setInvitationMsg(String invitationMsg) {
+		this.invitationMsg = invitationMsg;
 	}
 	
 	

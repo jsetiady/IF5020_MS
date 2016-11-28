@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+/**
+ * @author jessiesetiady
+ *
+ */
 public class Validator {
 	
 	public String getAndValidateInput(Scanner s, String label, String type) {
@@ -17,6 +21,10 @@ public class Validator {
 		
 		
 		if(type.equals("date")) { //format: dd/mm/yyyy
+			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
+			errorMsg = "  Err: Invalid date format. Please re-enter.";
+		}
+		else if(type.equals("dob")) { //format: dd/mm/yyyy
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
 			errorMsg = "  Err: Invalid date format. Please re-enter.";
 		}
@@ -38,7 +46,7 @@ public class Validator {
 		}
 		else if(type.equals("number")) {
 			regex = "[0-9]";
-			errorMsg = "  Err: Invalid time format. Please re-enter.";
+			errorMsg = "  Err: Invalid number format. Please re-enter.";
 		}
 		else if(type.equals("email")) {
 			regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -51,8 +59,8 @@ public class Validator {
 			errorMsg = "  Err: Invalid date range format, please re-enter. Format: dd/mm/yyyy - dd/mm/yyyy";
 		}
 		else if(type.equals("participant")) {
-			regex = "";
-			errorMsg = "";
+			regex = "(^$|^.*@.*\\..*$)";
+			errorMsg = "  Err: Invalid participant list format";
 		}
 		
 		do {
@@ -93,8 +101,15 @@ public class Validator {
 	}
 	
 	
+	public boolean isValidNumber(String number) {
+		String regex = "^[0-9]*";
+		return number.matches(regex);
+	}
+	
 	public boolean isValidEmail(String strEmail) {
-		return true;
+		String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+		+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		return strEmail.matches(regex);
 	}
 	
 	public String getAndValidateInput(Scanner s, String label, String type, String dr) {
