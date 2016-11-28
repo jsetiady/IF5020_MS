@@ -494,21 +494,21 @@ public class MeetingView {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
 		} else {
-			System.out.println("No\tInvitation Date\t\tMeeting ID\tMeeting Status\tInitiator\tYour Status\t\tYour Response");
+			System.out.println("No\tInvitation Date\t\tMeeting ID\tProposed Date Range\tMeeting Status\tInitiator\tYour Status\t\tYour Response\tNegotiation Deadline");
 			for(int i=0;i<invitationList.size();i++) {
-				
-				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());
-				
-				//TODO load meeting
+				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());	
 				
 				System.out.print(i+1 + "\t");
 				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
-				System.out.print(invitationList.get(i).getMeetingID() + "\t\t");
-				System.out.print(invitationList.get(i).getMeetingID() + "\t");
-				System.out.print("jeje@gmail.com" + "\t");
+				System.out.print("M" + invitationList.get(i).getMeetingID() + "\t\t");
+				System.out.print(m.getProposedDateRange() + "\t");
+				System.out.print(getStrMeetingStatus(m.getMeetingStatus()) + "\t");
+				System.out.print(m.getMeetingInitiator() + "\t");
 				System.out.print(getStrImportant(invitationList.get(i).getMp().isImportant()) + "\t");
-				System.out.println(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t");
+				System.out.print(getStrResponseStatus(invitationList.get(i).getMp().getResponse()) + "\t\t");
+				System.out.println(m.getNegotiationDeadline());
 			}
+			System.out.println();
 		}
 	}
 	

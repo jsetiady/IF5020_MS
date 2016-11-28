@@ -130,7 +130,17 @@ public class NewInterfaceMain {
 				break;
 			case "detail-invitation <meeting-id>" : break;
 			case "accept-invitation <meeting-id>" : break;
-			case "reject-invitation <meeting-id>" : break;
+			case "reject-invitation <meeting-id>" : 
+				if (checkCommandRole(2, role)) {
+					try {
+						//mv.rejectInvitation(cmd[1]);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: reject-invitation <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;

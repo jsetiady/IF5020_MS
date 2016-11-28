@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+/**
+ * @author jessiesetiady
+ *
+ */
 public class Validator {
 	
 	public String getAndValidateInput(Scanner s, String label, String type) {
