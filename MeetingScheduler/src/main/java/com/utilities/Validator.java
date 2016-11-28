@@ -178,6 +178,18 @@ public class Validator {
 	    return startDate;
 	}
 	
+	public Date strToDateTime(String startDateString) {
+	    DateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
+	    Date startDate = null;
+	    try {
+	        startDate = df.parse(startDateString);
+	    } catch (ParseException e) {
+	    	System.out.println("Not a valid date");
+	        //e.printStackTrace();
+	    }
+	    return startDate;
+	}
+	
 	public String dateToString(Date date) {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String reportDate = df.format(date);

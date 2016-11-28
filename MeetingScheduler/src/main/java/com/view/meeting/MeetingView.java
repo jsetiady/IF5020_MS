@@ -32,7 +32,7 @@ public class MeetingView {
 	
 	public void createMeetingView(String meetingInitiatorID) {
 		//variables
-		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
 		String ordParticipantList = "", impParticipantList = "";
@@ -736,6 +736,49 @@ public class MeetingView {
 		} else {
 			System.out.println("You are not eligible to view this meeting");
 		}
+	}
+	
+	public void runScheduler(String meetingID, String email) {
+		Meeting m = mc.getMeetingByID(meetingID);
+		if(m==null) { //check meeting id exist
+			System.out.println("You are not eligible to run-scheduler on this meeting");
+		} else {
+			if(!m.getMeetingInitiator().equals(email)) { //check initiator
+				System.out.println("You are not eligible to view this meeting");
+			} else {
+				if( m.getMeetingStatus() == m.CANCELED || //check meeting status
+					m.getMeetingStatus() == m.FINISH ||
+					m.getMeetingStatus() == m.RUNNING) {
+					System.out.println("You are not able to run-scheduler on canceled / running / finish meeting");
+				} else {
+					//check is all participant already responded
+					List<MeetingParticipant> mp = m.getMeetingParticipant();
+					int k = 0;
+					for(int i=0;i<mp.size();i++) {
+						if(mp.get(i).getResponse()!=mp.get(i).PENDING) {
+							k++;
+						}
+					}
+					if(k==mp.size()) { //all participant already respond
+						//calculate & get schedule
+						
+					} else { //some participant have not give respond
+						if(validator.strToDate(validator.getCurrentTime()).before(validator.strToDate(m.getNegotiationDeadline())) ){
+							//check if pass negotiation deadline
+							System.out.println("You are not able to run-scheduler before the negotiation \ndeadline / before all participant responded");
+						} else {
+							
+							//calculate & get schedule
+							
+						}
+					}
+					
+				}
+				
+				
+			}
+		}
+		
 	}
 	
 	public void detailInvitation(String meetingID, String email) {

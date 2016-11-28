@@ -130,7 +130,17 @@ public class NewInterfaceMain {
 				else
 					showErrorPrivilegeCommand();
 				break;
-			case "run scheduler <meeting-id>" : break;
+			case "run-scheduler" : 
+				if(checkCommandRole(2, role)) {
+					try {
+						mv.runScheduler(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: run-meeting <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			
 			case "list-invitation" : 
 				if (checkCommandRole(3, role))
@@ -174,8 +184,8 @@ public class NewInterfaceMain {
 			
 			case "help" : showHelp(role); break;
 			case "logout" : break;
-			case "exit" : System.exit(0);
-				break;
+			case "exit" : System.exit(0); break;
+			case "" :  break;
 			
 			default: System.out.println("Unrecognized command option"); break;
 		}
