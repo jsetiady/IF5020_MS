@@ -1,3 +1,4 @@
+import java.io.Console;
 import java.util.Scanner;
 
 import com.model.user.User;
@@ -215,47 +216,87 @@ public class NewInterfaceMain {
 	
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
+		Console console = System.console();
 		UserView uv = new UserView();
 		User user;
 		String email, password, command;
 		int role;
 		boolean login = false;
 		
-		do {
-			System.out.println("\n+-------------------------------------------+");
-			System.out.println("|LOGIN                                      |");
-			System.out.println("+-------------------------------------------+");
+		
+		if (console==null) {
 			do {
-				System.out.print(" Email      : "); email = s.nextLine();
-				System.out.print(" Password   : "); password = s.nextLine();
-				System.out.println();
-				user = uv.login(email, password);
-				if(user!=null) {
-					login = true;
-				} else {
-					System.out.println("## wrong email or password ##");
-				}
-			} while(!login);
-			
-			login = false;
-			do {
-					if(user.isAdmin()) {
+				System.out.println("\n+-------------------------------------------+");
+				System.out.println("|LOGIN                                      |");
+				System.out.println("+-------------------------------------------+");
+				do {
+					System.out.print(" Email      : "); email = s.nextLine();
+					System.out.print(" Password   : "); password = s.nextLine();
+					System.out.println();
+					user = uv.login(email, password);
+					if(user!=null) {
 						login = true;
-						role = 1;
 					} else {
-						login = true;
-						role = 2;
+						System.out.println("## wrong email or password ##");
 					}
-				if(login) {
-					System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
-					System.out.println("Waiting for your command...\n");	
-				}
-			} while(!login);
+				} while(!login);
+				
+				login = false;
+				do {
+						if(user.isAdmin()) {
+							login = true;
+							role = 1;
+						} else {
+							login = true;
+							role = 2;
+						}
+					if(login) {
+						System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
+						System.out.println("Waiting for your command...\n");	
+					}
+				} while(!login);
+				do {
+					System.out.print("> "); command = s.nextLine();
+					processMenu(command, email, role);
+				} while(!command.equals("logout"));
+			} while(!command.equals("exit"));
+		} else {
 			do {
-				System.out.print("> "); command = s.nextLine();
-				processMenu(command, email, role);
-			} while(!command.equals("logout"));
-		} while(!command.equals("exit"));
+				System.out.println("\n+-------------------------------------------+");
+				System.out.println("|LOGIN                                      |");
+				System.out.println("+-------------------------------------------+");
+				do {
+					System.out.print(" Email      : "); email = s.nextLine();
+					char[] passwordArray = console.readPassword(" Password   : ");
+					System.out.println();
+					user = uv.login(email, new String(passwordArray));
+					if(user!=null) {
+						login = true;
+					} else {
+						System.out.println("## wrong email or password ##");
+					}
+				} while(!login);
+				
+				login = false;
+				do {
+						if(user.isAdmin()) {
+							login = true;
+							role = 1;
+						} else {
+							login = true;
+							role = 2;
+						}
+					if(login) {
+						System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
+						System.out.println("Waiting for your command...\n");	
+					}
+				} while(!login);
+				do {
+					System.out.print("> "); command = s.nextLine();
+					processMenu(command, email, role);
+				} while(!command.equals("logout"));
+			} while(!command.equals("exit"));
+		}
 	}
 	
 }
