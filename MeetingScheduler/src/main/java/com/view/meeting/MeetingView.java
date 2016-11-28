@@ -497,13 +497,14 @@ public class MeetingView {
 			 System.out.println("You have not invited in any meeting yet");
 			 s.nextLine();
 		} else {
-			System.out.println("No\tInvitation Date\t\tMeeting ID\tProposed Date Range\tMeeting Status\tInitiator\tYour Status\t\tYour Response\tNegotiation Deadline");
+			System.out.println("No\tInvitation Date\t\tMeeting ID\tTitle\t\tProposed Date Range\tMeeting Status\tInitiator\tYour Status\t\tYour Response\tNegotiation Deadline");
 			for(int i=0;i<invitationList.size();i++) {
 				Meeting m = mc.getMeetingByID("M" + invitationList.get(i).getMeetingID());	
 				
 				System.out.print(i+1 + "\t");
 				System.out.print(invitationList.get(i).getInvitationDate() + "\t");
 				System.out.print("M" + invitationList.get(i).getMeetingID() + "\t\t");
+				System.out.print(prettyPrint(m.getTitle(),15) + "\t");
 				System.out.print(m.getProposedDateRange() + "\t");
 				System.out.print(getStrMeetingStatus(m.getMeetingStatus()) + "\t");
 				System.out.print(m.getMeetingInitiator() + "\t");
@@ -513,6 +514,19 @@ public class MeetingView {
 			}
 			System.out.println();
 		}
+	}
+	
+	public String prettyPrint(String text, int length) {
+		int x;
+		if(text.length()<length) {
+			x = length - text.length();
+			for(int i=0;i<x;i++) {
+				text = text + " ";
+			}
+		} else {
+			text = text.substring(0, length);
+		}
+		return text;
 	}
 	
 	public void rejectInvitation(String meetingID, String email) {

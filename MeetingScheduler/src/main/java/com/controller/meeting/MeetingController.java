@@ -196,16 +196,7 @@ public class MeetingController {
 		// meeting participant --> response = reject
 		
 		
-		/*List<MeetingInvitation> m = new MeetingInvitation();
-		MeetingParticipant mp = new MeetingParticipant();
-		m = getMeetingInvitationByID(meetingID, email);
-		mp = m.getMp();
-		for(int i=0;i<mp.size();i++) {
-			if(mp.get(i).getEmail().equals(email)) {
-				
-			}
-		}
-		*/
+		
 		return true;
 		
 	}
