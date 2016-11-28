@@ -23,6 +23,8 @@ public class Meeting {
 	private String meetingInitiator;
 	private String createdDate;
 	private String scheduledDate;
+	private String proposedStartDate;
+	private String proposedEndDate;
 	
 	//meetingstatus
 	public int NEGOTIATING = 0;
@@ -159,6 +161,14 @@ public class Meeting {
 	
 	public String getProposedEndDate() {
 		return this.proposedDateRange.split(" - ")[1];
+	}
+	
+	public void setProposedStartDate(String proposedStartDate) {
+		this.proposedStartDate = proposedStartDate;
+	}
+	
+	public void setProposedEndDate(String proposedEndDate) {
+		this.proposedEndDate = proposedEndDate;
 	}
 	
 }

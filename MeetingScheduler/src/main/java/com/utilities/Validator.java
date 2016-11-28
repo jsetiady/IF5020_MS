@@ -52,7 +52,7 @@ public class Validator {
 		}
 		else if(type.equals("participant")) {
 			regex = "(^$|^.*@.*\\..*$)";
-			errorMsg = "dhsd";
+			errorMsg = "  Err: Invalid participant list format";
 		}
 		
 		do {

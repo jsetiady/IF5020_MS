@@ -216,14 +216,14 @@ public class MeetingController {
 		
 		numOfTimeSlot = days * numOfTimeSlotPerDay;
 		
-		System.out.println("<" + numOfTimeSlot + "> time slot for this meeting has been generated");
+		System.out.println("\n Result: ");
+		System.out.println(numOfTimeSlot + " time slot for this meeting has been generated");
 		
 		start = meetingStartDate;
 		for(int i=0; i<days; i++) {
 			int j = 0;
 			while(j<numOfTimeSlotPerDay) {
 				meetingTimeSlots.add(new MeetingTimeSlot(start, startTime[j], endTime[j+duration-1]));
-				//System.out.println(start + " " + startTime[j] + " " + endTime[j+duration-1]);
 				j++;
 			}
 			start = dateArithmetic(start, 1);

@@ -33,6 +33,7 @@ public class JSONParser<T> {
 			objList = mapper.readValue(new File(filename), type);
 		} catch (IOException e) {
 			System.out.println("Something is wrong: IOExp");
+			e.printStackTrace();
 		}
 		return objList;
 	}

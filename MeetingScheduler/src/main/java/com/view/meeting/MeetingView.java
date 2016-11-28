@@ -25,13 +25,12 @@ public class MeetingView {
 	
 	MeetingController mc = new MeetingController();
 	UserController uc = new UserController();
-	private Scanner s;
+	private Scanner s = new Scanner(System.in);
 	private Validator validator = new Validator();
 	
 	
 	public void createMeetingView(String meetingInitiatorID) {
 		//variables
-		Scanner s = new Scanner(System.in);
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
@@ -70,8 +69,11 @@ public class MeetingView {
 		//instantiate meeting
 		mc.createMeetingDraft(title, agenda, location, duration, proposedDateRange, negotiationDeadline, meetingInitiatorID, createdDate);
 		//meeting participant
+		System.out.println("\n# Confirmation:");
 		addStrParticipantList(impParticipantList, true);
 		addStrParticipantList(ordParticipantList, false);
+		System.out.println("\n  Press enter to continue");
+		s.nextLine();
 		
 		createMeetingSummaryView(s);
 		addMeetingParticipantView();
@@ -79,12 +81,15 @@ public class MeetingView {
 	
 	public void addStrParticipantList(String listParticipant, boolean isImportant) {
 		String[] participants;
+		
 		participants = listParticipant.replaceAll("\\s","").split(",");
+		int k = 0;
 		for(int i=0;i<participants.length;i++) {
 			if(!participants[i].equals("")) {
 				if(validator.isValidEmail(participants[i])) {
 					if(uc.getUserByEmail(participants[i])!=null) {
 						mc.addMeetingParticipant(participants[i], isImportant);
+						k++;
 					} else {
 						System.out.println("  Err: user with email : " + participants[i] + " is not exist");
 					}
@@ -92,6 +97,12 @@ public class MeetingView {
 					System.out.println("  Err: " + participants[i] + " is not a valid email format");
 				}
 			}
+		}
+		
+		if(isImportant) {
+			System.out.println("  " + k + " important participant added\n");
+		} else {
+			System.out.println("  " + k + " ordinary participant added\n");
 		}
 	}
 	
@@ -109,12 +120,9 @@ public class MeetingView {
 		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
 		System.out.println("# Negotiation Deadline\t\t: "  + m.getNegotiationDeadline() );
 		
-		//System.out.println("Press enter to continue\n");
-		//s.nextLine();
 	}
 	
 	public void createMeetingAddParticipantView() {
-		Scanner s = new Scanner(System.in);
 		List<MeetingParticipant> arrMP = new ArrayList<MeetingParticipant>();
 		String email, strImportant;
 		arrMP = mc.getParticipantList();
@@ -139,7 +147,6 @@ public class MeetingView {
 	
 	public void addMeetingParticipantView() {
 		int choice;
-		Scanner s = new Scanner(System.in);
 		List<MeetingParticipant> arrMP;
 		do {
 			System.out.println("\n--------------------------------");
@@ -149,7 +156,7 @@ public class MeetingView {
 			
 			System.out.println("\n");
 			System.out.println("Menu");
-			System.out.println("1. Add meeting participant");
+			System.out.println("1. Add more meeting participant");
 			System.out.println("2. Edit meeting participant");
 			System.out.println("3. Show meeting information");
 			System.out.println("4. Save meeting");
@@ -238,7 +245,6 @@ public class MeetingView {
 	}
 	
 	public void printParticipantList(List<MeetingParticipant> arrMP, boolean withResponse) {
-		s = new Scanner(System.in);
 		int choice, num;
 		if(arrMP.size()==0) {
 			System.out.println("\nThis meeting has no participant. Add one now\n");
@@ -341,7 +347,6 @@ public class MeetingView {
 	}
 	
 	public void displayCreatedMeeting(String email) {
-		s = new Scanner(System.in);
 		int choice = 0, num;
 		List<Meeting> createdMeetingList = mc.getListOfCreatedMeeting(email);
 		if(createdMeetingList.isEmpty()) {
@@ -435,7 +440,6 @@ public class MeetingView {
 	}
 	
 	public void viewMeetingScheduleByEmail(String email) {
-		s = new Scanner(System.in);
 		int choice = 0, num;
 		List<Meeting> scheduledMeetingList = mc.getListOfScheduledMeetingByEmail(email);
 		if(scheduledMeetingList.isEmpty()) {
@@ -485,7 +489,6 @@ public class MeetingView {
 	}
 	
 	public void viewMeetingInvitation(String email) {
-		s = new Scanner(System.in);
 		List<MeetingInvitation> invitationList= mc.getMeetingInvitationByEmail(email);
 		if(invitationList.size()==0) {
 			 System.out.println("You have not invited in any meeting yet");
