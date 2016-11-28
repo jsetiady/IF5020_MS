@@ -1,8 +1,4 @@
 package com.controller.meeting;
-
-import java.io.File;
-
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,12 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
@@ -111,13 +101,8 @@ public class MeetingController {
 		//generate time slot
 		meetingTimeSlots = generateMeetingTimeSlot(meetingDraft.getDuration(), meetingDraft.getProposedStartDate(), meetingDraft.getProposedEndDate());
 		
-		//generate invitation
-		//List<MeetingInvitation> mis = generateMeetingInvitation(meetingDraft.getId(), meetingDraft.getMeetingParticipant(), meetingDraft.getMeetingInitiator());
-		//saveMeetingInvitation(mis);
-		
 		//add to meeting instance
 		meetingDraft.setMeetingTimeSlots(meetingTimeSlots);
-		//meetingDraft.setMeetingInvitation(mis);
 		
 		//save meetingDraft to json
 		System.out.println("Meeting id: M" + meetingDraft.getId());
@@ -197,9 +182,53 @@ public class MeetingController {
 		return mlist;
 	}
 	
+	public boolean isParticipant(Meeting m, String email) {
+		if(getParticipantInfo(m,email)==null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public MeetingParticipant getParticipantInfo(Meeting m, String email) {
+		List<MeetingParticipant> mp = m.getMeetingParticipant();
+		for(int i=0;i<mp.size();i++) {
+			if(mp.get(i).getEmail().equals(email)) {
+				return mp.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public boolean checkAvailabilityTimeSlotOfParticipant(MeetingTimeSlot mts, String email) {
+		//TODO
+		List<String> mpImp = new ArrayList<String>();
+		List<String> mpOrd = new ArrayList<String>();
+		mpImp = mts.getImportantParticipants();
+		mpOrd = mts.getOrdinaryParticipants();
+		
+		if(mpImp!=null) {
+			for(int i=0;i<mpImp.size();i++) {
+				if(mpImp.get(i).equals(email)) {
+					return true;
+				}
+			}
+		}
+		
+		if(mpOrd!=null) {
+			for(int i=0;i<mpOrd.size();i++) {
+				if(mpOrd.get(i).equals(email)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;		
+	}
+	
 	
 	public boolean rejectInvitation(String meetingID, String email) {
-		//yang harus di update klo reject
+		// things that should be updated
 		// meeting participant --> response = reject
 		
 		List<Meeting> mlist = getAllMeeting();
@@ -223,7 +252,6 @@ public class MeetingController {
 		jParserMeeting.write(mlist, fileMeetingData);
 		
 		return true;
-		
 	}
 	
 	public List<Meeting> getListOfScheduledMeetingByEmail(String participant) {

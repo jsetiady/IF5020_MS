@@ -129,14 +129,24 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-invitation <meeting-id>" : break;
-			case "accept-invitation <meeting-id>" : break;
+			case "accept-invitation" :
+				if (checkCommandRole(2, role)) {
+					try {
+						mv.acceptInvitation(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: accept-invitation <meeting-id>");
+						e.printStackTrace();
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			case "reject-invitation" : 
 				if (checkCommandRole(2, role)) {
 					try {
 						mv.rejectInvitation(cmd[1], email);
 					} catch(Exception e) {
 						System.out.println("Invalid command. Format: reject-invitation <meeting-id>");
-						e.printStackTrace();
 					}
 				}
 				else

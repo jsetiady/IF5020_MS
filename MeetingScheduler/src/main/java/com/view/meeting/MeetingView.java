@@ -15,6 +15,7 @@ import com.controller.user.UserController;
 import com.model.meeting.Meeting;
 import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
+import com.model.meeting.MeetingTimeSlot;
 import com.utilities.Validator;
 
 /**
@@ -530,18 +531,127 @@ public class MeetingView {
 	}
 	
 	public void rejectInvitation(String meetingID, String email) {
+		Meeting m;
 		String answer;
-		answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation \nfor meeting id : " + meetingID + " (Y/N) ? ", "YN");
-		
-		if(answer.equals("Y")) {
-			if(mc.rejectInvitation(meetingID, email)) {
-				System.out.println("Your response: `REJECT` for meeting id: `"+ meetingID +"` has been recorded\n");
+		MeetingParticipant mp;
+		List<MeetingTimeSlot> mts;
+		m = mc.getMeetingByID(meetingID);
+		if(mc.isParticipant(m, email)) {
+			mp = mc.getParticipantInfo(m, email);
+			System.out.println("You are " + getStrImportant(mp.isImportant()) + " for this meeting.");
+			answer = validator.getAndValidateInput(s, "Are you sure wants to reject the invitation \nfor meeting id : " + meetingID + " (Y/N) ? ", "YN");
+			
+			if(answer.equals("Y")) {
+				if(mc.rejectInvitation(meetingID, email)) {
+					System.out.println("Your response: `REJECT` for meeting id: `"+ meetingID +"` has been recorded\n");
+				} else {
+					System.out.println("You are not eligible to response to this meeting, or\nThe meeting invitation is no longer able to be rejected\n");
+				}
 			} else {
-				System.out.println("You are not eligible to response to this meeting, or\nThe meeting invitation is no longer able to be rejected\n");
+				System.out.println();
 			}
-		} else {
-			System.out.println();
 		}
+	}
+	
+	public String timeslotInvitationAvailability(boolean status) {
+		if(status) {
+			return "Available";
+		} else {
+			return "Not Available";
+		}
+	}
+	
+	public void acceptInvitation(String meetingID, String email) {
+		Meeting m;
+		String answer;
+		MeetingParticipant mp;
+		List<MeetingTimeSlot> mts;
+		int number = 0;
+		
+		//check the eligibility 
+		m = mc.getMeetingByID(meetingID);
+		
+		if(mc.isParticipant(m, email)) {
+			//confirmation for accept
+			mp = mc.getParticipantInfo(m, email);
+			System.out.println("You are " + getStrImportant(mp.isImportant()) + " for this meeting.");
+			answer = validator.getAndValidateInput(s,"Are you sure wants to accept meeting ID: " + meetingID + " (Y/N) ? ", "YN");
+			
+			
+			System.out.println("\nYour response is ACCEPT. Please add availability time.");
+			//get timeslot
+			do {
+				mts = m.getMeetingTimeSlots();
+				System.out.println("\nNo\tTime Slot\tStart\tEnd\tDuration\tYour Availability Status");
+				//show timeslot
+				for(int i=0;i<mts.size();i++) {
+					System.out.print(i+1 + "\t");
+					System.out.print(mts.get(i).getDate() + "\t");
+					System.out.print(mts.get(i).getStartTime() + "\t");
+					System.out.print(mts.get(i).getEndTime() + "\t");
+					System.out.print(m.getDuration() + " hours  \t");
+					System.out.println(timeslotInvitationAvailability(mc.checkAvailabilityTimeSlotOfParticipant(mts.get(i), email)));
+				}
+				
+				//menu add / remove timeslot
+				System.out.println("Menu");
+				System.out.println("1. Add available slot");
+				System.out.println("2. Remove slot availability");
+				System.out.println("3. Save response");
+				System.out.print("Your choice: ");
+				answer = s.nextLine();
+				
+				switch(answer) {
+					case "1": 
+						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
+						try {
+							number = s.nextInt();
+						} catch(Exception e) {
+							System.out.print("Invalid input, please try again.");
+						}
+						
+						if(number<1 && number>mts.size()) {
+							System.out.print("Invalid time slot number.");
+							s.nextLine();
+						} else {
+							//if important
+							if(mp.isImportant()) {
+								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
+								List<String> im =  mts.get(number-1).getImportantParticipants();
+								im.add(email);
+								//mts.get(number-1).set
+								//TODO
+							} else {
+								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+							}
+						}
+						
+						break;
+					case "2":
+						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
+						//remove
+						break;
+					case "3": 
+						//mp.setResponse(mp.ACCEPT);
+						//m.setMeetingParticipant(mp);
+						
+						//new participant response
+						//new timeslot
+						//replace in object meeting
+						//replace in array meeting
+						
+						System.out.println("Your response has been recorded.");
+						System.out.println("You may change your timeslot availability before the negotiation deadline.");
+						System.out.println("");
+						break;
+					default: 
+						System.out.println("Please enter menu option between 1-3");
+						s.nextLine();
+						break;
+				}
+			} while(answer !="3");
+		}
+		
 	}
 	
 	public String getStrImportant(boolean important) {

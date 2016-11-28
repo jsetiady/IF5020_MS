@@ -24,6 +24,10 @@ public class Validator {
 			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
 			errorMsg = "  Err: Invalid date format. Please re-enter.";
 		}
+		else if(type.equals("dob")) { //format: dd/mm/yyyy
+			regex = "[0-9]{2}/[0-9]{2}/[0-9]{4}";
+			errorMsg = "  Err: Invalid date format. Please re-enter.";
+		}
 		else if(type.equals("duration")) { //positive integer between 1-8
 			regex = "^[1-9]+$";
 			errorMsg = "  Err: Please enter a value between 1-9";
