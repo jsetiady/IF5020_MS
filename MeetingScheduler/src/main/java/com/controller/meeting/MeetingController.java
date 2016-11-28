@@ -204,6 +204,24 @@ public class MeetingController {
 		return null;
 	}
 	
+	public void cancelMeeting(Meeting m) {
+		m.setMeetingStatus(m.CANCELED);
+		List<Meeting> arrMeeting = getAllMeeting();
+		for(int i=0;i<arrMeeting.size();i++) {
+			if(arrMeeting.get(i).getId()==m.getId()) {
+				if(arrMeeting.get(i).getMeetingStatus()==arrMeeting.get(i).FINISH ||
+					arrMeeting.get(i).getMeetingStatus()==arrMeeting.get(i).RUNNING) {
+						System.out.println("The meeting is no longer able to be canceled (status: Running / Finish");
+					} else {
+						arrMeeting.set(i, m);
+						jParserMeeting.write(arrMeeting, fileMeetingData);
+						
+						System.out.println("The meeting successfully canceled");
+					}
+			}
+		}
+	}
+	
 	public boolean checkAvailabilityTimeSlotOfParticipant(MeetingTimeSlot mts, String email) {
 		//TODO
 		List<String> mpImp = new ArrayList<String>();

@@ -119,7 +119,17 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "edit-meeting <meeting-id>" : break;
-			case "cancel-meeting <meeting-id>" : break;
+			case "cancel-meeting" : 
+				if(checkCommandRole(2, role)) {
+					try {
+						mv.cancelMeeting(cmd[1], email);
+					} catch(Exception e) {
+						System.out.println("Invalid command. Format: cancel-meeting <meeting-id>");
+					}
+				}
+				else
+					showErrorPrivilegeCommand();
+				break;
 			case "run scheduler <meeting-id>" : break;
 			
 			case "list-invitation" : 
@@ -129,7 +139,7 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "detail-invitation" :
-				if (checkCommandRole(2, role)) {
+				if (checkCommandRole(3, role)) {
 					try {
 						mv.detailInvitation(cmd[1], email);
 					} catch(ArrayIndexOutOfBoundsException e) {
@@ -140,7 +150,7 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "accept-invitation" :
-				if (checkCommandRole(2, role)) {
+				if (checkCommandRole(3, role)) {
 					try {
 						mv.acceptInvitation(cmd[1], email);
 					} catch(ArrayIndexOutOfBoundsException e) {
@@ -151,7 +161,7 @@ public class NewInterfaceMain {
 					showErrorPrivilegeCommand();
 				break;
 			case "reject-invitation" : 
-				if (checkCommandRole(2, role)) {
+				if (checkCommandRole(3, role)) {
 					try {
 						mv.rejectInvitation(cmd[1], email);
 					} catch(Exception e) {

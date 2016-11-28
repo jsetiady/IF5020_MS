@@ -719,6 +719,25 @@ public class MeetingView {
 		
 	}
 	
+	public void cancelMeeting(String meetingID, String email) {
+		//check eligibility
+		Meeting m = mc.getMeetingByID(meetingID);
+		String answer = "";
+		if(m.getMeetingInitiator().equals(email)) {
+			answer = validator.getAndValidateInput(s, "Are you sure wants to cancel meeting id: "+ meetingID + " (Y/N) ? ", "YN");
+			switch(answer) {
+				case "Y" : 
+					mc.cancelMeeting(m);
+					break;
+				case "N" : 
+					System.out.println("Cancelling the cancel-meeting");
+					break;
+			}
+		} else {
+			System.out.println("You are not eligible to view this meeting");
+		}
+	}
+	
 	public void detailInvitation(String meetingID, String email) {
 		//check eligibility
 		List<Meeting> arrMeeting = mc.getAllMeeting();
