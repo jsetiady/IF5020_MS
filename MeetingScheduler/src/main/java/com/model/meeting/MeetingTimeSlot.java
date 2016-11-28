@@ -15,8 +15,8 @@ public class MeetingTimeSlot {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.date = date;
-		//numOrdinaryParticipant = numOrdinaryParticipant; //expected yang harus hadir
-		//numImportantParticipant = numImportantParticipant; //expected yang harus hadir
+		numOrdinaryParticipant = 0;
+		numImportantParticipant = 0;
 		
 		ordinaryParticipants = new ArrayList<String>();
 		importantParticipants = new ArrayList<String>();

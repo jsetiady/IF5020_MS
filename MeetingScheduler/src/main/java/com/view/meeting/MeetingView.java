@@ -609,36 +609,82 @@ public class MeetingView {
 						} catch(Exception e) {
 							System.out.print("Invalid input, please try again.");
 						}
+						s.nextLine();
 						
 						if(number<1 && number>mts.size()) {
 							System.out.print("Invalid time slot number.");
 							s.nextLine();
 						} else {
-							//if important
-							if(mp.isImportant()) {
+							if(mp.isImportant()) { //if important
 								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
-								List<String> im =  mts.get(number-1).getImportantParticipants();
+								
+								ArrayList<String> im = mts.get(number-1).getImportantParticipants();
 								im.add(email);
-								//mts.get(number-1).set
-								//TODO
+								mts.get(number-1).setImportantParticipants(im);
+								im = mts.get(number-1).getImportantParticipants();
 							} else {
 								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getOrdinaryParticipants();
+								im.add(email);
+								mts.get(number-1).setOrdinaryParticipants(im);
+								im = mts.get(number-1).getOrdinaryParticipants();
 							}
 						}
-						
 						break;
 					case "2":
 						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
-						//remove
+						try {
+							number = s.nextInt();
+						} catch(Exception e) {
+							System.out.print("Invalid input, please try again.");
+						}
+						s.nextLine();
+						
+						if(number<1 && number>mts.size()) {
+							System.out.print("Invalid time slot number.");
+							s.nextLine();
+						} else {
+							if(mp.isImportant()) { //if important
+								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getImportantParticipants();
+								im.remove(email);
+								mts.get(number-1).setImportantParticipants(im);
+								im = mts.get(number-1).getImportantParticipants();
+							} else {
+								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getOrdinaryParticipants();
+								im.remove(email);
+								mts.get(number-1).setOrdinaryParticipants(im);
+								im = mts.get(number-1).getOrdinaryParticipants();
+							}
+						}
 						break;
 					case "3": 
-						//mp.setResponse(mp.ACCEPT);
-						//m.setMeetingParticipant(mp);
+						//set response
+						List<MeetingParticipant> arrMP = m.getMeetingParticipant();
+						for(int i=0;i<arrMP.size();i++) {
+							if(arrMP.get(i).getEmail().equals(email)) {
+								arrMP.get(i).setResponse(arrMP.get(i).ACCEPT);
+							}
+						}
+						m.setMeetingParticipant(arrMP);
 						
-						//new participant response
-						//new timeslot
-						//replace in object meeting
-						//replace in array meeting
+						//set timeslot
+						m.setMeetingTimeSlots(mts);
+						
+						//update meeting in arrMeeting
+						List<Meeting> arrMeeting = mc.getAllMeeting();
+						for(int i=0;i<arrMeeting.size();i++) {
+							if(arrMeeting.get(i).getId()==Integer.parseInt(meetingID.substring(1))) {
+								arrMeeting.set(i, m);
+							}
+						}
+						
+						//save to json
+						mc.updateMeetingData(arrMeeting);
 						
 						System.out.println("Your response has been recorded.");
 						System.out.println("You may change your timeslot availability before the negotiation deadline.");
@@ -649,7 +695,7 @@ public class MeetingView {
 						s.nextLine();
 						break;
 				}
-			} while(answer !="3");
+			} while(!(answer.equals("3")));
 		}
 		
 	}

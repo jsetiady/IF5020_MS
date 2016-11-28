@@ -133,9 +133,8 @@ public class NewInterfaceMain {
 				if (checkCommandRole(2, role)) {
 					try {
 						mv.acceptInvitation(cmd[1], email);
-					} catch(Exception e) {
+					} catch(ArrayIndexOutOfBoundsException e) {
 						System.out.println("Invalid command. Format: accept-invitation <meeting-id>");
-						e.printStackTrace();
 					}
 				}
 				else

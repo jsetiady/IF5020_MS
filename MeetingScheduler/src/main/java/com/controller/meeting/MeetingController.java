@@ -182,6 +182,10 @@ public class MeetingController {
 		return mlist;
 	}
 	
+	public void updateMeetingData(List<Meeting> arrMeeting) {
+		jParserMeeting.write(arrMeeting, fileMeetingData);
+	}
+	
 	public boolean isParticipant(Meeting m, String email) {
 		if(getParticipantInfo(m,email)==null) {
 			return false;
