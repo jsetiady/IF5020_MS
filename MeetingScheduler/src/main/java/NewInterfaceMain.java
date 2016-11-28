@@ -75,7 +75,11 @@ public class NewInterfaceMain {
 				break;
 			case "detail-user":
 				if (checkCommandRole(1, role)) {
-					uv.viewUserByEmail(cmd[1]);
+					try {
+						uv.viewUserByEmail(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
 				}
 				else
 					showErrorPrivilegeCommand();
@@ -83,13 +87,22 @@ public class NewInterfaceMain {
 				
 			case "edit-user": 
 				if (checkCommandRole(1, role)) {
-					uv.editUser(cmd[1]);
+					try {
+						uv.editUser(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
+					
 				} else 
 					showErrorPrivilegeCommand();
 				break;
 			case "del-user": 
 				if (checkCommandRole(1, role)) {
-					uv.deleteUser(cmd[1]);
+					try {
+						uv.deleteUser(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
 				} else {
 					showErrorPrivilegeCommand();
 				}

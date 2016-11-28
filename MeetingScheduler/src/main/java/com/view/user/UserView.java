@@ -22,20 +22,36 @@ public class UserView {
 		return uc.checkLogin(email, password);
 	}
 	
+	public boolean convertStringToBool(String x) {
+		if (x.equals("Y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public char convertStringToChar(String x) {
+		if (x.equals("M")) {
+			return 'M';
+		} else {
+			return 'F';
+		}
+	}
+	
 	public void showListUser() {
 		List<User> listUser = new ArrayList<User>();
 		listUser = uc.getAllUser();
 		
-		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
-		System.out.println("|LIST USER                                                                                                  |");
-		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
-		System.out.println("|First Name          |LastName       |Address             |Phone          |DOB       |  Sex |      Email    |");
-		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
+		System.out.println("+------------------------------------------------------------------------------------------------------------------------------+");
+		System.out.println("|LIST USER                                                                                                                     |");
+		System.out.println("+------------------------------------------------------------------------------------------------------------------------------+");
+		System.out.println("|First Name          |LastName       |Address             |Phone          |DOB       |  Sex |      Email    |is Active|is Admin|");
+		System.out.println("+------------------------------------------------------------------------------------------------------------------------------+");
 		for (User usr: listUser) {
-			System.out.printf(" %-20s %-15s %-20s %-15s %-12s %-4s %-15s",usr.getFirstName(), usr.getLastName(), usr.getAddress(), usr.getPhone(), usr.getDob(), usr.getSex(), usr.getEmail());
+			System.out.printf(" %-20s %-15s %-20s %-15s %-12s %-4s %-18s %-8s %-4s",usr.getFirstName(), usr.getLastName(), usr.getAddress(), usr.getPhone(), usr.getDob(), usr.getSex(), usr.getEmail(), usr.isActive(), usr.isAdmin());
 			System.out.println();
 		}
-		System.out.println("+-----------------------------------------------------------------------------------------------------------+");
+		System.out.println("+------------------------------------------------------------------------------------------------------------------------------+");
 	}
 	
 	
@@ -78,140 +94,104 @@ public class UserView {
 	
 	
 	public void deleteUser(String email) {
-		
-		uc.deleteUser(email);
+		String choice;
+		if (uc.findUserByEmail(email)!=null) {
+			
+			choice = val.getAndValidateInput(scan, "Are you sure to delete this user ? [Y/N]", "YN");
+			
+			if (choice.equals("Y")) {
+				uc.deleteUser(email);
+				System.out.println("Data has been deleted succesfully...");
+			} else {
+				System.out.println("Delete user has been canceled");
+			}
+			
+		} else {
+			System.out.println("Email doesn't exist...!");
+		}
 		
 	}
 	
 	public void createUser() 
 	{
 		User user = new User();
-		char status, auth;
-		String email, dob;
+		String firstName, lastName, address, phone, dob, sex, email, password, isActive, isAdmin;
 		
 		System.out.println("+-------------------------------------------+");
 		System.out.println("|CREATE USER                                |");
 		System.out.println("+-------------------------------------------+");
-		System.out.print("  Email            :"); email = scan.nextLine();
-		user.setEmail(email);
-		System.out.print("  First Name       :"); user.setFirstName(scan.nextLine()); 
-		System.out.print("  Last Name        :"); user.setLastName(scan.nextLine());
-		System.out.print("  Address          :"); user.setAddress(scan.nextLine());
-		System.out.print("  Phone            :"); user.setPhone(scan.nextLine());
-		//System.out.print("  DOB              :"); user.setDob(scan.nextLine());
-		dob = val.getAndValidateInput(scan, "  DOB              :", "date");
-		user.setDob(dob);
-		System.out.print("  Sex              :"); user.setSex(scan.next(".").charAt(0));
-		scan.nextLine();
-		System.out.print("  Password         :"); user.setPassword(scan.nextLine());
-		System.out.print("  is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
-		scan.nextLine();
-		System.out.print("  is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
-
-		scan.nextLine();
-		
-		if (status=='Y' || status=='y') {
-			user.setActive(true);
-		} else {
-			user.setActive(false);
-		}
-		
-		if (auth=='Y' || auth=='y') {
-			user.setAdmin(true);
-		} else {
-			user.setAdmin(false);
-		}
-		
+		email = val.getAndValidateInput(scan, "  Email             :", "email");
 		if (uc.findUserByEmail(email)==null) {
+			
+			firstName = val.getAndValidateInput(scan, "  First Name        :", "text");
+			lastName = val.getAndValidateInput(scan, "  Last Name         :", "text");
+			address = val.getAndValidateInput(scan, "  Address           :", "text");
+			phone = val.getAndValidateInput(scan, "  Phone             :", "text");
+			dob = val.getAndValidateInput(scan, "  DOB [dd/mm/yyy]   :", "dob");
+			sex = val.getAndValidateInput(scan, "  Sex [M/F]         :", "MF");
+			isActive = val.getAndValidateInput(scan, "  is Active ? [Y/N] :", "YN");
+			isAdmin = val.getAndValidateInput(scan, "  is Admin ? [Y/N]  :", "YN");
+			password = val.getAndValidateInput(scan, "  Password          :", "text");
+			
+			user.setEmail(email);
+			user.setPassword(password);
+			user.setFirstName(firstName);
+			user.setLastName(lastName);
+			user.setAddress(address);
+			user.setPhone(phone);
+			user.setDob(dob);
+			user.setSex(convertStringToChar(sex));
+			user.setActive(convertStringToBool(isActive));
+			user.setAdmin(convertStringToBool(isAdmin));
+			
+			
 			uc.add(user);
 			uc.save();
+			System.out.println();
+			System.out.println("  Data has been saved succesfully...");
+			
 		} else {
-			System.out.println("User already exist, please use another email!");
+			System.out.println("Email already exist, please use another email!");
 		}
 	}
 	
 	public void editUser(String email) {
 		User user = new User();
-		char status, auth;
-		System.out.println("+-------------------------------------------+");
-		System.out.println("|EDIT USER                                  |");
-		System.out.println("+-------------------------------------------+");
-		System.out.print("   First Name        :"); user.setFirstName(scan.nextLine()); 
-		System.out.print("   Last Name         :"); user.setLastName(scan.nextLine());
-		System.out.print("   Address           :"); user.setAddress(scan.nextLine());
-		System.out.print("   Phone             :"); user.setPhone(scan.nextLine());
-		System.out.print("   DOB               :"); user.setDob(scan.nextLine());
-		System.out.print("   Sex               :"); user.setSex(scan.next(".").charAt(0));
-		scan.nextLine();
-		user.setEmail(email);
-		System.out.print("   Password          :"); user.setPassword(scan.nextLine());
-		System.out.print("   is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
-		scan.nextLine();
-		System.out.print("   is Admin ? [Y/N]  :"); auth = scan.next(".").charAt(0);
-		scan.nextLine();
+		String firstName, lastName, address, phone, dob, sex, password, isActive, isAdmin;
 		
-		if (status=='Y' || status=='y') {
-			user.setActive(true);
-		} else {
-			user.setActive(false);
-		}
 		
-		if (auth=='Y' || auth=='y') {
-			user.setAdmin(true);
-		} else {
-			user.setAdmin(false);
-		}
-		
-		uc.editUser(user, email);
-	
-	}
-	
-	public void findUser(String email) {
-		//String email;
-		System.out.print("Masukkan email :");
-		
-		email = scan.nextLine();
-		
-		User user = uc.findUserByEmail(email);
-		
-		if(user != null ) {
-			
+		if (uc.findUserByEmail(email)!=null) {
 			System.out.println("+-------------------------------------------+");
-			System.out.println("|VIEW DETAIL                                |");
+			System.out.println("|EDIT USER                                  |");
 			System.out.println("+-------------------------------------------+");
-			System.out.println(" First Name	\t:" + user.getFirstName());  
-			System.out.println(" Last Name 	\t:" + user.getLastName()); 
-			System.out.println(" Address	\t:" + user.getAddress()); 
-			System.out.println(" Phone	\t\t:" + user.getPhone());
-			System.out.println(" DOB	\t\t:" + user.getDob()); 
-			System.out.println(" Sex	\t\t:" + user.getSex()); 
-			System.out.println(" Email	\t\t:" + user.getEmail());
-			String status;
-			if (user.isActive()==true) {
-				status = "Active";
-			} else {
-				status = "Non-Active";
-			}
-			System.out.println(" Status	\t\t:" + status);
-			System.out.println("--------------------------------------------");
-			System.out.println("[B/b] Back");
-			System.out.println("--------------------------------------------");
+			firstName = val.getAndValidateInput(scan, "  First Name        :", "text");
+			lastName = val.getAndValidateInput(scan, "  Last Name         :", "text");
+			address = val.getAndValidateInput(scan, "  Address           :", "text");
+			phone = val.getAndValidateInput(scan, "  Phone             :", "text");
+			dob = val.getAndValidateInput(scan, "  DOB [dd/mm/yyy]   :", "dob");
+			sex = val.getAndValidateInput(scan, "  Sex [M/F]         :", "MF");
+			isActive = val.getAndValidateInput(scan, "  is Active ? [Y/N] :", "YN");
+			isAdmin = val.getAndValidateInput(scan, "  is Admin ? [Y/N]  :", "YN");
+			password = val.getAndValidateInput(scan, "  Password          :", "text");
 			
-			char back;
-			MenuView menuView = new MenuView();
+			user.setEmail(email);
+			user.setPassword(password);
+			user.setFirstName(firstName);
+			user.setLastName(lastName);
+			user.setAddress(address);
+			user.setPhone(phone);
+			user.setDob(dob);
+			user.setSex(convertStringToChar(sex));
+			user.setActive(convertStringToBool(isActive));
+			user.setAdmin(convertStringToBool(isAdmin));
 			
-			back = scan.next(".").charAt(0);
-			
-			if (back=='B' || back=='b') {
-				menuView.menuHome();
-			} else {
-				System.out.println("Unknown character...!");
-			}
-			
+			uc.editUser(user, email);
+			System.out.println("  Data has been updated succesfully...");
 			
 		} else {
-			System.out.println("Data not found!!");
+			System.out.println("Email doesn't exist...!");
 		}
+	
 	}
 		
 	public void displayLogin() {
