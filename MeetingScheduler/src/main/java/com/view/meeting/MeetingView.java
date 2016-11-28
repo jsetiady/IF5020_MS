@@ -32,7 +32,7 @@ public class MeetingView {
 	
 	public void createMeetingView(String meetingInitiatorID) {
 		//variables
-		DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
 		String ordParticipantList = "", impParticipantList = "";
@@ -252,7 +252,7 @@ public class MeetingView {
 		} else {
 			if(withResponse) {
 				//TODO @jeje get meetingParticipant instance
-				System.out.println("No\tResponse\tResponse Date\tEmail\t\t");
+				System.out.println("No\tResponse\tResponse Date\t\tEmail\t\t");
 				for(int i=0;i<arrMP.size();i++) {
 					System.out.print((i+1) + "\t");
 					System.out.print(getStrResponseStatus(arrMP.get(i).getResponse()) + "\t\t");
@@ -427,6 +427,7 @@ public class MeetingView {
 		System.out.println("# Meeting ID\t\t\t: M" + m.getId());
 		System.out.println("# Initiator\t\t\t: " + m.getMeetingInitiator());
 		System.out.println("# Status\t\t\t: " + getStrMeetingStatus(m.getMeetingStatus()));
+		System.out.println("# Scheduled date\t\t: " + m.getScheduledDate());
 		System.out.println("---\n# Title\t\t\t\t: " + m.getTitle());
 		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
 		System.out.println("# Location\t\t\t: " + m.getLocation());
@@ -437,6 +438,23 @@ public class MeetingView {
 		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println("---\nParticipant List:");
 		printParticipantList(m.getMeetingParticipant(), true);
+		System.out.println();
+	}
+	
+	public void viewMeetingInfo(Meeting m) {
+		System.out.println("MEETING DETAILS");
+		System.out.println("--------------------------------");
+		System.out.println("# Meeting ID\t\t\t: M" + m.getId());
+		System.out.println("# Initiator\t\t\t: " + m.getMeetingInitiator());
+		System.out.println("# Status\t\t\t: " + getStrMeetingStatus(m.getMeetingStatus()));
+		System.out.println("---\n# Title\t\t\t\t: " + m.getTitle());
+		System.out.println("# Agenda\t\t\t: " + m.getAgenda());
+		System.out.println("# Location\t\t\t: " + m.getLocation());
+		System.out.println("# Duration\t\t\t: " + m.getDuration());
+		System.out.println("# Proposed date range");
+		System.out.println("    Start date (dd/mm/yyyy)\t: " + m.getProposedStartDate());
+		System.out.println("    End date (dd/mm/yyyy)\t: " + m.getProposedEndDate());
+		System.out.println("# Negotiation Deadline\t\t: " + m.getNegotiationDeadline());
 		System.out.println();
 	}
 	
@@ -582,7 +600,7 @@ public class MeetingView {
 			//get timeslot
 			do {
 				mts = m.getMeetingTimeSlots();
-				System.out.println("\nNo\tTime Slot\tStart\tEnd\tDuration\tYour Availability Status");
+				System.out.println("\nNo\tDate\t\tStart\tEnd\tDuration\tYour Availability Status");
 				//show timeslot
 				for(int i=0;i<mts.size();i++) {
 					System.out.print(i+1 + "\t");
@@ -609,36 +627,83 @@ public class MeetingView {
 						} catch(Exception e) {
 							System.out.print("Invalid input, please try again.");
 						}
+						s.nextLine();
 						
 						if(number<1 && number>mts.size()) {
 							System.out.print("Invalid time slot number.");
 							s.nextLine();
 						} else {
-							//if important
-							if(mp.isImportant()) {
+							if(mp.isImportant()) { //if important
 								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
-								List<String> im =  mts.get(number-1).getImportantParticipants();
+								
+								ArrayList<String> im = mts.get(number-1).getImportantParticipants();
 								im.add(email);
-								//mts.get(number-1).set
-								//TODO
+								mts.get(number-1).setImportantParticipants(im);
+								im = mts.get(number-1).getImportantParticipants();
 							} else {
 								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getOrdinaryParticipants();
+								im.add(email);
+								mts.get(number-1).setOrdinaryParticipants(im);
+								im = mts.get(number-1).getOrdinaryParticipants();
 							}
 						}
-						
 						break;
 					case "2":
 						System.out.print("Enter time slot number (1-" + mts.size() + ") : ");
-						//remove
+						try {
+							number = s.nextInt();
+						} catch(Exception e) {
+							System.out.print("Invalid input, please try again.");
+						}
+						s.nextLine();
+						
+						if(number<1 && number>mts.size()) {
+							System.out.print("Invalid time slot number.");
+							s.nextLine();
+						} else {
+							if(mp.isImportant()) { //if important
+								mts.get(number-1).setNumImportantParticipant(mts.get(number-1).getNumImportantParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getImportantParticipants();
+								im.remove(email);
+								mts.get(number-1).setImportantParticipants(im);
+								im = mts.get(number-1).getImportantParticipants();
+							} else {
+								mts.get(number-1).setNumOrdinaryParticipant(mts.get(number-1).getNumOrdinaryParticipant()+1);
+								
+								ArrayList<String> im = mts.get(number-1).getOrdinaryParticipants();
+								im.remove(email);
+								mts.get(number-1).setOrdinaryParticipants(im);
+								im = mts.get(number-1).getOrdinaryParticipants();
+							}
+						}
 						break;
 					case "3": 
-						//mp.setResponse(mp.ACCEPT);
-						//m.setMeetingParticipant(mp);
+						//set response
+						List<MeetingParticipant> arrMP = m.getMeetingParticipant();
+						for(int i=0;i<arrMP.size();i++) {
+							if(arrMP.get(i).getEmail().equals(email)) {
+								arrMP.get(i).setResponse(arrMP.get(i).ACCEPT);
+								arrMP.get(i).setResponseDate(validator.getCurrentTime());
+							}
+						}
+						m.setMeetingParticipant(arrMP);
 						
-						//new participant response
-						//new timeslot
-						//replace in object meeting
-						//replace in array meeting
+						//set timeslot
+						m.setMeetingTimeSlots(mts);
+						
+						//update meeting in arrMeeting
+						List<Meeting> arrMeeting = mc.getAllMeeting();
+						for(int i=0;i<arrMeeting.size();i++) {
+							if(arrMeeting.get(i).getId()==Integer.parseInt(meetingID.substring(1))) {
+								arrMeeting.set(i, m);
+							}
+						}
+						
+						//save to json
+						mc.updateMeetingData(arrMeeting);
 						
 						System.out.println("Your response has been recorded.");
 						System.out.println("You may change your timeslot availability before the negotiation deadline.");
@@ -649,9 +714,107 @@ public class MeetingView {
 						s.nextLine();
 						break;
 				}
-			} while(answer !="3");
+			} while(!(answer.equals("3")));
 		}
 		
+	}
+	
+	public void cancelMeeting(String meetingID, String email) {
+		//check eligibility
+		Meeting m = mc.getMeetingByID(meetingID);
+		String answer = "";
+		if(m.getMeetingInitiator().equals(email)) {
+			answer = validator.getAndValidateInput(s, "Are you sure wants to cancel meeting id: "+ meetingID + " (Y/N) ? ", "YN");
+			switch(answer) {
+				case "Y" : 
+					mc.cancelMeeting(m);
+					break;
+				case "N" : 
+					System.out.println("Cancelling the cancel-meeting");
+					break;
+			}
+		} else {
+			System.out.println("You are not eligible to view this meeting");
+		}
+	}
+	
+	public void runScheduler(String meetingID, String email) {
+		Meeting m = mc.getMeetingByID(meetingID);
+		if(m==null) { //check meeting id exist
+			System.out.println("You are not eligible to run-scheduler on this meeting");
+		} else {
+			if(!m.getMeetingInitiator().equals(email)) { //check initiator
+				System.out.println("You are not eligible to view this meeting");
+			} else {
+				if( m.getMeetingStatus() == m.CANCELED || //check meeting status
+					m.getMeetingStatus() == m.FINISH ||
+					m.getMeetingStatus() == m.RUNNING) {
+					System.out.println("You are not able to run-scheduler on canceled / running / finish meeting");
+				} else {
+					//check is all participant already responded
+					List<MeetingParticipant> mp = m.getMeetingParticipant();
+					int k = 0;
+					for(int i=0;i<mp.size();i++) {
+						if(mp.get(i).getResponse()!=mp.get(i).PENDING) {
+							k++;
+						}
+					}
+					if(k==mp.size()) { //all participant already respond
+						//calculate & get schedule
+						
+					} else { //some participant have not give respond
+						if(validator.strToDate(validator.getCurrentTime()).before(validator.strToDate(m.getNegotiationDeadline())) ){
+							//check if pass negotiation deadline
+							System.out.println("You are not able to run-scheduler before the negotiation \ndeadline / before all participant responded");
+						} else {
+							
+							//calculate & get schedule
+							
+						}
+					}
+					
+				}
+				
+				
+			}
+		}
+		
+	}
+	
+	public void detailInvitation(String meetingID, String email) {
+		//check eligibility
+		List<Meeting> arrMeeting = mc.getAllMeeting();
+		boolean found = false;
+		for(int i=0;i<arrMeeting.size();i++) {
+			if(arrMeeting.get(i).getId()==Integer.parseInt(meetingID.substring(1))) {
+				if(mc.isParticipant(arrMeeting.get(i), email)) {
+					found = true;
+					viewMeetingInfo(arrMeeting.get(i));
+					
+					//participant response
+					MeetingParticipant mp = mc.getParticipantInfo(arrMeeting.get(i), email);
+					System.out.println("----\nYour response");
+					System.out.println("# Participant status\t: " + getStrImportant(mp.isImportant()));
+					System.out.println("# Response\t\t: " + getStrResponseStatus(mp.getResponse()));
+					System.out.println("# Response date\t\t: " + mp.getResponseDate());
+					System.out.println("# Time slot detail");
+					List<MeetingTimeSlot> mts = arrMeeting.get(i).getMeetingTimeSlots();
+					System.out.println("\nNo\tDate\t\tStart\tEnd\tYour Availability Status");
+					//show timeslot
+					for(int j=0;j<mts.size();j++) {
+						System.out.print(j+1 + "\t");
+						System.out.print(mts.get(j).getDate() + "\t");
+						System.out.print(mts.get(j).getStartTime() + "\t");
+						System.out.print(mts.get(j).getEndTime() + "\t");
+						System.out.println(timeslotInvitationAvailability(mc.checkAvailabilityTimeSlotOfParticipant(mts.get(j), email)));
+					}
+				}
+			}
+		}
+		
+		if(!found) {
+			System.out.println("You are not eligible to view this meeting / invitation");
+		}
 	}
 	
 	public String getStrImportant(boolean important) {

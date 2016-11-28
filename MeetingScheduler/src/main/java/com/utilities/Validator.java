@@ -116,6 +116,13 @@ public class Validator {
 		return strEmail.matches(regex);
 	}
 	
+	public String getCurrentTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		return dateFormat.format(date);
+
+	}
+	
 	public String getAndValidateInput(Scanner s, String label, String type, String dr) {
 		String input;
 		String[] daterange;
@@ -165,6 +172,18 @@ public class Validator {
 	
 	public Date strToDate(String startDateString) {
 	    DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); 
+	    Date startDate = null;
+	    try {
+	        startDate = df.parse(startDateString);
+	    } catch (ParseException e) {
+	    	System.out.println("Not a valid date");
+	        //e.printStackTrace();
+	    }
+	    return startDate;
+	}
+	
+	public Date strToDateTime(String startDateString) {
+	    DateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
 	    Date startDate = null;
 	    try {
 	        startDate = df.parse(startDateString);

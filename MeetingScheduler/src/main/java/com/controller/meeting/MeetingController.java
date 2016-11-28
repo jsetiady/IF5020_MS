@@ -182,6 +182,10 @@ public class MeetingController {
 		return mlist;
 	}
 	
+	public void updateMeetingData(List<Meeting> arrMeeting) {
+		jParserMeeting.write(arrMeeting, fileMeetingData);
+	}
+	
 	public boolean isParticipant(Meeting m, String email) {
 		if(getParticipantInfo(m,email)==null) {
 			return false;
@@ -198,6 +202,24 @@ public class MeetingController {
 			}
 		}
 		return null;
+	}
+	
+	public void cancelMeeting(Meeting m) {
+		m.setMeetingStatus(m.CANCELED);
+		List<Meeting> arrMeeting = getAllMeeting();
+		for(int i=0;i<arrMeeting.size();i++) {
+			if(arrMeeting.get(i).getId()==m.getId()) {
+				if(arrMeeting.get(i).getMeetingStatus()==arrMeeting.get(i).FINISH ||
+					arrMeeting.get(i).getMeetingStatus()==arrMeeting.get(i).RUNNING) {
+						System.out.println("The meeting is no longer able to be canceled (status: Running / Finish");
+					} else {
+						arrMeeting.set(i, m);
+						jParserMeeting.write(arrMeeting, fileMeetingData);
+						
+						System.out.println("The meeting successfully canceled");
+					}
+			}
+		}
 	}
 	
 	public boolean checkAvailabilityTimeSlotOfParticipant(MeetingTimeSlot mts, String email) {
@@ -230,6 +252,7 @@ public class MeetingController {
 	public boolean rejectInvitation(String meetingID, String email) {
 		// things that should be updated
 		// meeting participant --> response = reject
+		//timeslot di reset
 		
 		List<Meeting> mlist = getAllMeeting();
 		List<MeetingParticipant> mp = new ArrayList<MeetingParticipant>();
@@ -240,7 +263,7 @@ public class MeetingController {
 				mp = m.getMeetingParticipant();
 				for(int j=0;j<mp.size();j++) {
 					if(mp.get(j).getEmail().equals(email)) {
-						mp.get(j).setResponseDate("28/11/2016 12:00");
+						mp.get(j).setResponseDate(validator.getCurrentTime());
 						mp.get(j).setResponse(mp.get(j).REJECT);
 					}
 				}

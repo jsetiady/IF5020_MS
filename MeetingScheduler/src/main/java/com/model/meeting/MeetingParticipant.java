@@ -27,7 +27,7 @@ public class MeetingParticipant {
 	public MeetingParticipant(int meetingID, String email, boolean isImportant) {
 		this.email = email;
 		this.isImportant = isImportant;
-		this.responseDate = "--/--/----";
+		this.responseDate = "--/--/---- --:--";
 		this.meetingID = meetingID;
 		response = PENDING;
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
