@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import com.controller.user.UserController;
 import com.model.user.User;
+import com.utilities.Validator;
 import com.view.meeting.MeetingView;
 
 /**
@@ -15,6 +16,7 @@ import com.view.meeting.MeetingView;
 public class UserView {
 	Scanner scan = new Scanner(System.in);
 	UserController uc = new UserController();
+	Validator val = new Validator();
 	
 	public User login(String email, String password) {
 		return uc.checkLogin(email, password);
@@ -85,18 +87,22 @@ public class UserView {
 	{
 		User user = new User();
 		char status, auth;
+		String email, dob;
 		
 		System.out.println("+-------------------------------------------+");
 		System.out.println("|CREATE USER                                |");
 		System.out.println("+-------------------------------------------+");
+		System.out.print("  Email            :"); email = scan.nextLine();
+		user.setEmail(email);
 		System.out.print("  First Name       :"); user.setFirstName(scan.nextLine()); 
 		System.out.print("  Last Name        :"); user.setLastName(scan.nextLine());
 		System.out.print("  Address          :"); user.setAddress(scan.nextLine());
 		System.out.print("  Phone            :"); user.setPhone(scan.nextLine());
-		System.out.print("  DOB              :"); user.setDob(scan.nextLine());
+		//System.out.print("  DOB              :"); user.setDob(scan.nextLine());
+		dob = val.getAndValidateInput(scan, "  DOB              :", "date");
+		user.setDob(dob);
 		System.out.print("  Sex              :"); user.setSex(scan.next(".").charAt(0));
 		scan.nextLine();
-		System.out.print("  Email            :"); user.setEmail(scan.nextLine());
 		System.out.print("  Password         :"); user.setPassword(scan.nextLine());
 		System.out.print("  is Active ? [Y/N] :"); status = scan.next(".").charAt(0);
 		scan.nextLine();
@@ -116,9 +122,12 @@ public class UserView {
 			user.setAdmin(false);
 		}
 		
-		
-		uc.add(user);
-		uc.save();
+		if (uc.findUserByEmail(email)==null) {
+			uc.add(user);
+			uc.save();
+		} else {
+			System.out.println("User already exist, please use another email!");
+		}
 	}
 	
 	public void editUser(String email) {
