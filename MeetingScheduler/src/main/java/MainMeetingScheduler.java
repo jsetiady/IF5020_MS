@@ -8,7 +8,7 @@ import com.view.user.UserView;
  * @author jessiesetiady
  *
  */
-public class NewInterfaceMain {
+public class MainMeetingScheduler {
 	
 	private static boolean exit = false;
 	
