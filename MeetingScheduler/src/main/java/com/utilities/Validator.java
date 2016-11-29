@@ -16,7 +16,7 @@ public class Validator {
 	
 	public String getAndValidateInput(Scanner s, String label, String type) {
 		int test;
-		String input, regex = ".", errorMsg = ".";
+		String input, regex = ".*", errorMsg = "";
 		String[] daterange;
 		
 		
@@ -30,6 +30,10 @@ public class Validator {
 		}
 		else if(type.equals("duration")) { //positive integer between 1-8
 			regex = "^[1-9]+$";
+			errorMsg = "  Err: Please enter a value between 1-9";
+		}
+		else if(type.equals("durationEmpty")) { //positive integer between 1-8
+			regex = "(^$|^[1-9]+$)";
 			errorMsg = "  Err: Please enter a value between 1-9";
 		}
 		else if(type.equals("time")) { //format: hh:mm

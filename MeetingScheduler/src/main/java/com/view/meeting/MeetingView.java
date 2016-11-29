@@ -738,6 +738,120 @@ public class MeetingView {
 		}
 	}
 	
+	
+	public boolean askConfirmation(String message) {
+		String answer = validator.getAndValidateInput(s, message, "YN");
+		if(answer.equals("Y")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void editMeeting(String meetingID, String email) {
+		//check eligibility
+		Meeting m = mc.getMeetingByID(meetingID);
+		String answer = "";
+		if(m.getMeetingInitiator().equals(email)) {
+			answer = validator.getAndValidateInput(s, "Are you sure wants to edit meeting id: "+ meetingID + " (Y/N) ? ", "YN");
+			switch(answer) {
+				case "Y" : 
+					String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
+					String ordParticipantList = "", impParticipantList = "";
+					int duration, choice, test;
+					
+					System.out.println("EDIT MEETING");
+					System.out.println("--------------------------------");
+					
+					
+					System.out.println("# Old title\t\t\t: " + m.getTitle());
+					if(askConfirmation("Edit title (Y/N) ? ")) {
+						title = validator.getAndValidateInput(s, "# Title\t\t\t\t: ", "text");
+						m.setTitle(title);
+					}
+					
+					System.out.println("# Old agenda\t\t\t: " + m.getAgenda());
+					if(askConfirmation("Edit agenda (Y/N) ? ")) {
+						agenda = validator.getAndValidateInput(s, "# Agenda\t\t\t: ", "text");
+						m.setAgenda(agenda);
+					}
+					
+					System.out.println("# Old location\t\t\t: " + m.getLocation());
+					if(askConfirmation("Edit location (Y/N) ? ")) {
+						location = validator.getAndValidateInput(s, "# Location\t\t\t: ", "");
+						m.setLocation(location);
+					}
+					
+					System.out.println("\nYou may not edit the duration, proposed date range, negotiation deadline, and participant list");
+					System.out.println("# Duration\t\t\t: " + m.getDuration());
+					System.out.println("# Proposed Date Range\t\t: " + m.getProposedDateRange());
+					System.out.println("# Negotiation deadline\t\t: " + m.getNegotiationDeadline());
+					
+					boolean sudah = false;
+					System.out.print("\n# Old important participant\t: ");
+					sudah = false;
+					for(int i=0;i<m.getMeetingParticipant().size();i++) {
+						if(m.getMeetingParticipant().get(i).isImportant()) {
+							if(sudah) {
+								System.out.print(", ");
+							}
+							System.out.print(m.getMeetingParticipant().get(i).getEmail());
+							sudah = true;
+						}
+					}
+					System.out.println();
+					System.out.print("\n# Old ordinary participant\t: ");
+					sudah = false;
+					for(int i=0;i<m.getMeetingParticipant().size();i++) {
+						if(!m.getMeetingParticipant().get(i).isImportant()) {
+							if(sudah) {
+								System.out.print(", ");
+							}
+							System.out.print(m.getMeetingParticipant().get(i).getEmail());
+							sudah = true;
+						}
+					}
+					System.out.println();
+					
+					/*if(askConfirmation("Edit participant (Y/N) ? ")) {
+						System.out.println("\n  Note: Please enter participant list in format: <email>, <email>");
+						
+						do {
+							test = 1;
+							impParticipantList = validator.getAndValidateInput(s, "# Important participant\t\t: ", "participant");
+							ordParticipantList = validator.getAndValidateInput(s, "# Ordinary participant\t\t: ", "participant");
+							
+							if(ordParticipantList.equals("") && impParticipantList.equals("")) {
+								test = 0;
+								System.out.println("\n  Err: You have to enter at least one participant. Add one now.");
+							}
+						} while(test == 0);
+						
+						//System.out.println("\n# Confirmation:");
+						//setStrParticipantList("M"+ m.getId(), impParticipantList, true);
+						//setStrParticipantList("M"+ m.getId(), ordParticipantList, false);
+						System.out.println("\n  Press enter to continue");
+						
+						s.nextLine();
+					}*/
+					
+					mc.editMeeting(m);
+					
+					System.out.println("==========================");
+					System.out.println("Meeting has been succesfully edited");
+					System.out.println("\nPress enter to continue");
+					s.nextLine();
+					
+					break;
+				case "N" : 
+					System.out.println("Cancelling the edit-meeting");
+					break;
+			}
+		} else {
+			System.out.println("You are not eligible to edit this meeting");
+		}
+	}
+	
 	public void runScheduler(String meetingID, String email) {
 		Meeting m = mc.getMeetingByID(meetingID);
 		if(m==null) { //check meeting id exist

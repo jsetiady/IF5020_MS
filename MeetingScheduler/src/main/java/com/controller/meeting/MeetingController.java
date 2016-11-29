@@ -39,6 +39,9 @@ public class MeetingController {
 		
 	}
 	
+	
+	
+	
 	public int getNextMeetingID() {
 		int id = 0;
 		
@@ -48,6 +51,17 @@ public class MeetingController {
 		jParserMeetingID.writeObj(id, fileLastMeetingID);
 		
 		return id;
+	}
+	
+	public void editMeeting(Meeting m) {
+		m.setMeetingStatus(m.CANCELED);
+		List<Meeting> arrMeeting = getAllMeeting();
+		for(int i=0;i<arrMeeting.size();i++) {
+			if(arrMeeting.get(i).getId()==m.getId()) {
+				arrMeeting.set(i, m);
+				jParserMeeting.write(arrMeeting, fileMeetingData);
+			}
+		}
 	}
 	
 	public void addMeetingParticipant(String email, boolean isImportant) {
