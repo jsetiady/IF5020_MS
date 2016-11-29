@@ -1,3 +1,4 @@
+import java.io.Console;
 import java.util.Scanner;
 
 import com.model.user.User;
@@ -8,14 +9,13 @@ import com.view.user.UserView;
  * @author jessiesetiady
  *
  */
-public class MainMeetingScheduler {
+public class NewInterfaceMain {
 	
-<<<<<<< HEAD
 	private static boolean exit = false;
 	
 	public static void showHelp(int role) {
 		switch(role) {
-			case 1: 
+			case 1:
 				System.out.println("Administrator command");
 				System.out.println("---------------------");
 				System.out.println("list-user");
@@ -76,39 +76,11 @@ public class MainMeetingScheduler {
 				break;
 			case "detail-user":
 				if (checkCommandRole(1, role)) {
-					uv.viewUserByEmail(cmd[1]);
-=======
-	private static Scanner scan;
-
-	public static void main(String args[]) {
-		scan = new Scanner(System.in);
-		int choice;
-		MenuView menu = new MenuView();
-		UserView userView = new UserView();
-		UserController controller = new UserController();
-		//controller.createDummyUser();
-		//controller.save();
-		
-		menu.menuLogin();
-		
-		do {
-			System.out.println("Please type your choice...");
-			choice = scan.nextInt();
-			switch(choice) {
-			case 1:
-				//@putra
-				//call menu for manage user
-				//controller.add(userView.createUser());
-				int option;
-				option = scan.nextInt();
-				scan.nextLine();
-				if (option==1) {
-					//controller.add(userView.createUser());
-					//controller.save();
-					menu.menuHome();
-				} else if (option==2) {
-					menu.menuHome();
->>>>>>> putra-dev
+					try {
+						uv.viewUserByEmail(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
 				}
 				else
 					showErrorPrivilegeCommand();
@@ -116,13 +88,22 @@ public class MainMeetingScheduler {
 				
 			case "edit-user": 
 				if (checkCommandRole(1, role)) {
-					uv.editUser(cmd[1]);
+					try {
+						uv.editUser(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
+					
 				} else 
 					showErrorPrivilegeCommand();
 				break;
 			case "del-user": 
 				if (checkCommandRole(1, role)) {
-					uv.deleteUser(cmd[1]);
+					try {
+						uv.deleteUser(cmd[1]);
+					} catch (Exception e) {
+						System.out.println("Email must be included...");
+					}
 				} else {
 					showErrorPrivilegeCommand();
 				}
@@ -151,18 +132,7 @@ public class MainMeetingScheduler {
 				else
 					showErrorPrivilegeCommand();
 				break;
-			case "edit-meeting" : 
-				if(checkCommandRole(2, role)) {
-					try {
-						mv.editMeeting(cmd[1], email);
-					} catch(Exception e) {
-						System.out.println("Invalid command. Format: edit-meeting <meeting-id>");
-						e.printStackTrace();
-					}
-				}
-				else
-					showErrorPrivilegeCommand();
-				break;
+			case "edit-meeting <meeting-id>" : break;
 			case "cancel-meeting" : 
 				if(checkCommandRole(2, role)) {
 					try {
@@ -246,47 +216,87 @@ public class MainMeetingScheduler {
 	
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
+		Console console = System.console();
 		UserView uv = new UserView();
 		User user;
 		String email, password, command;
 		int role;
 		boolean login = false;
 		
-		do {
-			System.out.println("\n+-------------------------------------------+");
-			System.out.println("|LOGIN                                      |");
-			System.out.println("+-------------------------------------------+");
+		
+		if (console==null) {
 			do {
-				System.out.print(" Email      : "); email = s.nextLine();
-				System.out.print(" Password   : "); password = s.nextLine();
-				System.out.println();
-				user = uv.login(email, password);
-				if(user!=null) {
-					login = true;
-				} else {
-					System.out.println("## wrong email or password ##");
-				}
-			} while(!login);
-			
-			login = false;
-			do {
-					if(user.isAdmin()) {
+				System.out.println("\n+-------------------------------------------+");
+				System.out.println("|LOGIN                                      |");
+				System.out.println("+-------------------------------------------+");
+				do {
+					System.out.print(" Email      : "); email = s.nextLine();
+					System.out.print(" Password   : "); password = s.nextLine();
+					System.out.println();
+					user = uv.login(email, password);
+					if(user!=null) {
 						login = true;
-						role = 1;
 					} else {
-						login = true;
-						role = 2;
+						System.out.println("## wrong email or password ##");
 					}
-				if(login) {
-					System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
-					System.out.println("Waiting for your command...\n");	
-				}
-			} while(!login);
+				} while(!login);
+				
+				login = false;
+				do {
+						if(user.isAdmin()) {
+							login = true;
+							role = 1;
+						} else {
+							login = true;
+							role = 2;
+						}
+					if(login) {
+						System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
+						System.out.println("Waiting for your command...\n");	
+					}
+				} while(!login);
+				do {
+					System.out.print("> "); command = s.nextLine();
+					processMenu(command, email, role);
+				} while(!command.equals("logout"));
+			} while(!command.equals("exit"));
+		} else {
 			do {
-				System.out.print("> "); command = s.nextLine();
-				processMenu(command, email, role);
-			} while(!command.equals("logout"));
-		} while(!command.equals("exit"));
+				System.out.println("\n+-------------------------------------------+");
+				System.out.println("|LOGIN                                      |");
+				System.out.println("+-------------------------------------------+");
+				do {
+					System.out.print(" Email      : "); email = s.nextLine();
+					char[] passwordArray = console.readPassword(" Password   : ");
+					System.out.println();
+					user = uv.login(email, new String(passwordArray));
+					if(user!=null) {
+						login = true;
+					} else {
+						System.out.println("## wrong email or password ##");
+					}
+				} while(!login);
+				
+				login = false;
+				do {
+						if(user.isAdmin()) {
+							login = true;
+							role = 1;
+						} else {
+							login = true;
+							role = 2;
+						}
+					if(login) {
+						System.out.println("\nYou have signed in as a " + roleToString(role) + ".");
+						System.out.println("Waiting for your command...\n");	
+					}
+				} while(!login);
+				do {
+					System.out.print("> "); command = s.nextLine();
+					processMenu(command, email, role);
+				} while(!command.equals("logout"));
+			} while(!command.equals("exit"));
+		}
 	}
 	
 }

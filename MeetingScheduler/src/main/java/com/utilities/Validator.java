@@ -44,6 +44,10 @@ public class Validator {
 			regex = "[NYny]{1}";
 			errorMsg = "  Err: Please enter either Y or N character";
 		}
+		else if(type.equals("MF")) {
+			regex = "[MFmf]{1}";
+			errorMsg = "  Err: Please enter either M or F character";
+		}
 		else if(type.equals("text")) {
 			regex = "^(?!\\s*$).+";
 			errorMsg = "  Err: This field cannot be empty";
