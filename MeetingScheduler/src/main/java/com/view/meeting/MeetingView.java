@@ -13,7 +13,6 @@ import java.util.Scanner;
 import com.controller.meeting.MeetingController;
 import com.controller.user.UserController;
 import com.model.meeting.Meeting;
-import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
 import com.utilities.Validator;
@@ -32,11 +31,10 @@ public class MeetingView {
 	
 	public void createMeetingView(String meetingInitiatorID) {
 		//variables
-		DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
 		String title, agenda, location, negotiationDeadline = null, createdDate, proposedDateRange;
 		String ordParticipantList = "", impParticipantList = "";
-		int duration, choice, test;
+		int duration, test;
 		
 		System.out.println("CREATE MEETING");
 		System.out.println("--------------------------------");
@@ -356,12 +354,13 @@ public class MeetingView {
 			s.nextLine();
 		} else {
 			do {
-				System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tSchedule\tTitle");
+				System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tNegotiation Deadline\tSchedule\tTitle");
 				for(int i=0;i<createdMeetingList.size();i++) {
 					System.out.print(i+1 + "\t");
 					System.out.print("M" + createdMeetingList.get(i).getId() + "\t\t");
 					System.out.print(getStrMeetingStatus(createdMeetingList.get(i).getMeetingStatus()) + "\t");
 					System.out.print(createdMeetingList.get(i).getCreatedDate() + "\t");
+					System.out.print(createdMeetingList.get(i).getNegotiationDeadline() + "\t\t");
 					System.out.print(createdMeetingList.get(i).getScheduledDate() + "\t");
 					System.out.print(createdMeetingList.get(i).getTitle());
 					System.out.println();
@@ -875,9 +874,11 @@ public class MeetingView {
 					}
 					if(k==mp.size()) { //all participant already respond
 						//calculate & get schedule
-						
+						mc.runScheduler(meetingID);
 					} else { //some participant have not give respond
-						if(validator.strToDate(validator.getCurrentTime()).before(validator.strToDate(m.getNegotiationDeadline())) ){
+						mc.runScheduler(meetingID);
+						
+						/*if(validator.strToDate(validator.getCurrentTime()).before(validator.strToDate(m.getNegotiationDeadline())) ){
 							//check if pass negotiation deadline
 							System.out.println("You are not able to run-scheduler before the negotiation \ndeadline / before all participant responded");
 						} else {
@@ -885,6 +886,7 @@ public class MeetingView {
 							//calculate & get schedule
 							
 						}
+						*/
 					}
 					
 				}

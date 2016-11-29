@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import com.model.meeting.Meeting;
-import com.model.meeting.MeetingInvitation;
 import com.model.meeting.MeetingParticipant;
 import com.model.meeting.MeetingTimeSlot;
 import com.utilities.JSONParser;
@@ -23,7 +22,6 @@ public class MeetingController {
 	
 	private JSONParser<Meeting> jParserMeeting = new JSONParser<Meeting>(Meeting.class);
 	private JSONParser<Integer> jParserInteger = new JSONParser<Integer>(Integer.class);
-	private JSONParser<MeetingInvitation> jParserInvitation = new JSONParser<MeetingInvitation>(MeetingInvitation.class);
 	private JSONParser<Integer> jParserMeetingID = new JSONParser<Integer>(Integer.class);
 	
 	private String fileMeetingData = "resources/meetingdata.json";
@@ -71,6 +69,60 @@ public class MeetingController {
 			arrMP.add(mp);
 		}
 		meetingDraft.setMeetingParticipant(arrMP);
+	}
+	
+	public int getTotalParticipant(List<MeetingParticipant> mp, boolean isImportant) {
+		int num = 0;
+		for(int i=0;i<mp.size();i++) {
+			if(mp.get(i).isImportant()==isImportant) {
+				num++;
+			}
+		}
+		return 0;
+	}
+	
+	public void runScheduler(String meetingID) {
+		Meeting m = getMeetingByID(meetingID);
+		List<MeetingTimeSlot> mts = null;
+		int[] timeslotScore;
+		mts = m.getMeetingTimeSlots();
+		timeslotScore = new int[mts.size()];
+		for(int j=0;j<mts.size();j++) {
+			timeslotScore[j] = 0;
+			if(mts.get(j).getNumImportantParticipant() < getTotalParticipant(m.getMeetingParticipant(), true)) {
+				timeslotScore[j] = 0;
+			} else {
+				timeslotScore[j] = mts.get(j).getNumImportantParticipant() + mts.get(j).getNumOrdinaryParticipant();
+			}
+		}
+		
+		//sorting & get rank #1
+		int maxIndex = -9;
+		int max = -9;
+		for(int i=0;i<mts.size();i++) {
+			if(max<timeslotScore[i]) {
+				maxIndex = i;
+				max = timeslotScore[i];
+			}
+		}
+		
+		System.out.println("Timeslot score: " + max);
+		if(max != 0) {
+			System.out.println("Scheduled date: " + mts.get(maxIndex).getDate() + " " + mts.get(maxIndex).getStartTime() + "-" + mts.get(maxIndex).getEndTime());
+			
+			//TODO RUN SCHEDULER JEEEEH!
+			m.setScheduledDate(mts.get(maxIndex).getDate() + " " + mts.get(maxIndex).getStartTime() + "-" + mts.get(maxIndex).getEndTime());
+			m.setMeetingStatus(m.SCHEDULED);
+			
+			List<Meeting> arrMeeting = getAllMeeting();
+			for(int i=0;i<arrMeeting.size();i++) {
+				if(arrMeeting.get(i).getId()==m.getId()) {
+					arrMeeting.set(i, m);
+					jParserMeeting.write(arrMeeting, fileMeetingData);
+				}
+			}
+			
+		}
 	}
 	
 	public List<MeetingParticipant> getParticipantList() {
@@ -355,42 +407,5 @@ public class MeetingController {
 		return meetingTimeSlots;
 	}
 
-	public List<MeetingInvitation> generateMeetingInvitation(int meetingID, List<MeetingParticipant> mps, String initiator) {
-		List<MeetingInvitation> meetingInvitations = new ArrayList<MeetingInvitation>();
-		for(int i=0;i<mps.size();i++) {
-			// 1 participant, 1 invitation
-			meetingInvitations.add(new MeetingInvitation(meetingID, mps.get(i), initiator + " was added you as participant on meeting " + meetingID));
-		}
-		
-		return meetingInvitations;
-	}
-	
-	
-	
-	public void saveMeetingInvitation(List<MeetingInvitation> mis) {
-		List<MeetingInvitation> meetingInvitation = new ArrayList<MeetingInvitation>();
-		meetingInvitation = jParserInvitation.load(fileMeetingInvitation);
-		for(int i=0;i<mis.size();i++) {
-			meetingInvitation.add(mis.get(i));
-		}
-		jParserInvitation.write(meetingInvitation, fileMeetingInvitation);
-		
-		System.out.println("Meeting invitation has been sent to participants");
-	}
-	
-	public List<MeetingInvitation> getMeetingInvitationByEmail(String email) {
-		List<MeetingInvitation> meetingInvitations = new ArrayList<MeetingInvitation>();
-		List<MeetingInvitation> meetingInvitationsFiltered = new ArrayList<MeetingInvitation>();
-		
-		//load meeting invitation
-		meetingInvitations = jParserInvitation.load(fileMeetingInvitation);
-		for(int i=0;i<meetingInvitations.size();i++) {
-			if(meetingInvitations.get(i).getMp().getEmail().equals(email)) {
-				meetingInvitationsFiltered.add(meetingInvitations.get(i));
-			}
-		}
-				
-		return meetingInvitationsFiltered;
-	}
 	
 }
