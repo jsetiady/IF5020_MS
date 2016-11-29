@@ -155,22 +155,6 @@ public class UserView {
 		uc.editUser(user, email);
 	
 	}
-		
-	public void displayLogin() {
-		System.out.println("let's say user has been authenticated");
-		System.out.println();
-		//call displayMenu(User);
-		displayMenu(new User("jeje@gmail.com", "12344"));
-	}
-	
-	public void displayMenu(User user) {
-		MenuView menuView = new MenuView();
-		if(user.isAdmin()) {
-			menuView.menuHome();
-		} else {
-			displayUserMainMenu(user);
-		}
-	}
 	
 	public void displayUserMainMenu(User user) {
 		MeetingView meetingView = new MeetingView();
