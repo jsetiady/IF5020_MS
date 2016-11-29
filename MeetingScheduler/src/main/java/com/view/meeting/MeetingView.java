@@ -353,7 +353,7 @@ public class MeetingView {
 			System.out.println("Press enter to continue");
 			s.nextLine();
 		} else {
-			do {
+			//do {
 				System.out.println("No\tMeeting ID\tMeeting Status\tCreated Date\tNegotiation Deadline\tSchedule\tTitle");
 				for(int i=0;i<createdMeetingList.size();i++) {
 					System.out.print(i+1 + "\t");
@@ -369,7 +369,7 @@ public class MeetingView {
 				System.out.println("You have created " + createdMeetingList.size() + " meeting\n");
 				
 				
-				System.out.println("Menu");
+				/*System.out.println("Menu");
 				System.out.println("1. View Meeting Details");
 				System.out.println("2. Back");
 				System.out.print("Enter your choice: ");
@@ -407,6 +407,7 @@ public class MeetingView {
 						break;
 				}
 			} while(choice!=2);
+			*/
 		}
 		
 	}
