@@ -10,7 +10,6 @@ import com.view.user.UserView;
  */
 public class MainMeetingScheduler {
 	
-
 	private static boolean exit = false;
 	
 	public static void showHelp(int role) {
@@ -77,38 +76,6 @@ public class MainMeetingScheduler {
 			case "detail-user":
 				if (checkCommandRole(1, role)) {
 					uv.viewUserByEmail(cmd[1]);
-
-	private static Scanner scan;
-
-	public static void main(String args[]) {
-		scan = new Scanner(System.in);
-		int choice;
-		MenuView menu = new MenuView();
-		UserView userView = new UserView();
-		UserController controller = new UserController();
-		//controller.createDummyUser();
-		//controller.save();
-		
-		menu.menuLogin();
-		
-		do {
-			System.out.println("Please type your choice...");
-			choice = scan.nextInt();
-			switch(choice) {
-			case 1:
-				//@putra
-				//call menu for manage user
-				//controller.add(userView.createUser());
-				int option;
-				option = scan.nextInt();
-				scan.nextLine();
-				if (option==1) {
-					//controller.add(userView.createUser());
-					//controller.save();
-					menu.menuHome();
-				} else if (option==2) {
-					menu.menuHome();
-
 				}
 				else
 					showErrorPrivilegeCommand();
