@@ -10,7 +10,7 @@ import com.view.user.UserView;
  */
 public class MainMeetingScheduler {
 	
-<<<<<<< HEAD
+
 	private static boolean exit = false;
 	
 	public static void showHelp(int role) {
@@ -77,7 +77,7 @@ public class MainMeetingScheduler {
 			case "detail-user":
 				if (checkCommandRole(1, role)) {
 					uv.viewUserByEmail(cmd[1]);
-=======
+
 	private static Scanner scan;
 
 	public static void main(String args[]) {
@@ -108,7 +108,7 @@ public class MainMeetingScheduler {
 					menu.menuHome();
 				} else if (option==2) {
 					menu.menuHome();
->>>>>>> putra-dev
+
 				}
 				else
 					showErrorPrivilegeCommand();
